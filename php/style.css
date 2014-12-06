@@ -1,0 +1,95 @@
+body
+{
+	background-color: #EEEEFF;
+	padding: 10px;
+}
+
+#header
+{
+	width: 60%;
+	margin: auto;
+	text-transform: uppercase;
+	border: 2px solid black;
+	text-align: center;
+	font-size: x-large;
+	background-color: white;
+}
+
+.titre
+{
+	font-size: x-large;
+	font-weight: bold;
+	border-bottom: 1px solid black;
+	font-variant: small-caps;
+}
+
+.aide
+{
+	float: right;
+	width: 30%;
+	border: 1px dotted black;
+	background-color: white;
+	padding: 5px;
+	position: relative;
+	top: -15px;
+	z-index: 1;
+}
+
+.update
+{
+	font-weight: bold;
+	color: #FF0000;
+}
+
+#pseudo
+{
+	text-align: center;
+}
+
+#confirm
+{
+	text-align: center;
+	font-weight: bold;
+}
+
+.explication
+{
+	margin: auto;
+	width: 60%;
+	text-align: justify;
+}
+
+.droite
+{
+	position: absolute;
+	left: 300px;
+}
+
+.cle
+{
+	font-size: large;
+	width: 100%;
+	font-weight: bold;
+	border-bottom: 1px solid black;
+}
+
+.liste
+{
+	clear: both;
+}
+
+.sousliste
+{
+	width: 80%;
+	margin-left: 0%;
+}
+
+.phrase
+{
+	width: 65%;
+}
+
+.supprimer img
+{
+	border: none;
+}

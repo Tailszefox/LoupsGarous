@@ -1,0 +1,1343 @@
+<?xml version="1.0" encoding="iso-8859-15"?>
+<caractere>
+	<nom>M. Basique</nom>
+	<roles>
+		<role nom="loup">un loup garou</role>
+		<role nom="voyante">la voyante</role>
+		<role nom="chasseur">le chasseur</role>
+		<role nom="salvateur">le salvateur</role>
+		<role nom="idiot">l'idiot du village</role>
+		<role nom="ancien">l'ancien</role>
+		<role nom="cupidon">Cupidon</role>
+		<role nom="sorciere">la sorcière</role>
+		<role nom="fille">la petite fille</role>
+		<role nom="policier">le policier</role>
+		<role nom="corbeau">le corbeau</role>
+		<role nom="enfant">l'enfant loup</role>
+		<role nom="sv">un simple villageois</role>
+	</roles>
+	<declencheurs>
+		<declencheur nom="participer" contexte="Participation au jeu">!participer</declencheur>
+		<declencheur nom="non" contexte="Recevoir à nouveau son rôle">!non</declencheur>
+		<declencheur nom="roles" contexte="Recevoir la liste des rôles">!roles</declencheur>
+		<declencheur nom="tuerLoups" contexte="Meurtre d'un joueur par les loups">!tuer</declencheur>
+		<declencheur nom="voterMaire" contexte="Voter pour quelqu'un au poste de maire">!voter</declencheur>
+		<declencheur nom="voter" contexte="Arrêter les débats et commencer les votes">!voter</declencheur>
+		<declencheur nom="tuerLapidation" contexte="Lapidation d'un joueur">!tuer</declencheur>
+		<declencheur nom="chuchoter" contexte="Envoyer un message à un autre joueur">!chuchoter</declencheur>
+	</declencheurs>
+	<repliques>
+		<dire>
+			<cle>ERREUR</cle>
+			<contexte>Le bot vient de rencontrer une erreur et doit s'arrêter. Ça ne devrait normalement pas arriver !</contexte>
+			<variables>$1 : Texte de l'erreur.</variables>
+			<phrases>
+				<phrase>Oups, il semblerait que j'ai un petit problème...Je vous prie de m'en excuser. Voici l'erreur qui a causé ma perte : $1.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>COMMENCER_JOUER</cle>
+			<contexte>Début de la partie, juste après l'annonce du nom de la personnalité choisie.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Bien, nous allons commencer à jouer.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DIRE_PARTICIPER</cle>
+			<contexte>Annonce au joueur ce qu'ils doivent dire pour participer au jeu.</contexte>
+			<variables>$1 : Déclencheur pour participer.</variables>
+			<phrases>
+				<phrase>Que tous ceux qui désirent participer disent maintenant $1.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>PAS_ASSEZ_DE_JOUEURS</cle>
+			<contexte>Il n'y a pas assez de joueurs pour commencer la partie. Il en faut au moins quatre pour démarrer.</contexte>
+			<variables>$1 : Déclencheur pour participer.</variables>
+			<phrases>
+				<phrase>Je n'ai pas encore assez de joueurs pour démarrer la partie. Personne d'autre ne souhaite participer ? N'oubliez pas de dire $1...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>ABANDON_PARTIE</cle>
+			<contexte>Au bout d'un certain temps, si personne ne demande à participer ou à voter, le bot suppose que plus personne ne joue et abandonne la partie.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Hé ho ? Vous êtes là ? Bon, j'en ai marre de me répéter, alors je laisse tomber. Relancez la partie quand vous serez décidés à jouer.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>PARTIE_VA_COMMENCER</cle>
+			<contexte>Le bot a fermé les inscriptions, le jeu va commencer. Pensez à bien dire un mot contre le changement de pseudo, comme dans la phrase originale.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Très bien, nous allons pouvoir commencer la partie. Je vous demande à présent d'éviter de changer de pseudo.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VA_ENVOYER_ROLES</cle>
+			<contexte>Le bot va envoyer à chacun son rôle par message privé.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Dans quelques secondes, je vais envoyer à chacun son rôle par message privé. Faites attention de ne pas le louper !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DONNER_ROLE</cle>
+			<contexte>Rôle donné au joueur par message privé.</contexte>
+			<variables>$1 : Rôle du joueur.</variables>
+			<phrases>
+				<phrase>Voici votre rôle dans le jeu : vous êtes $1.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DONNER_TUTEUR</cle>
+			<contexte>Annonce à l'enfant-loup le rôle de son tuteur.</contexte>
+			<variables>$1 : Rôle du tuteur.</variables>
+			<phrases>
+				<phrase>Votre tuteur est $1. Cette personne vous empêche de sortir la nuit pour rejoindre les autres loups-garous. Mais s'il lui arrivait malheur, qui sait ce que vous deviendriez...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>ROLES_ENVOYES</cle>
+			<contexte>Le bot a envoyé les rôles à chacun des joueurs.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Bien, j'ai envoyé leur rôle à tous les joueurs.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VERIFIER_ONGLET</cle>
+			<contexte>Le bot donne son pseudo pour que les joueurs qui pensent avoir raté leur rôle vérifient.</contexte>
+			<variables>$1 : Pseudo du bot.</variables>
+			<phrases>
+				<phrase>Si vous pensez ne pas l'avoir reçu, vérifiez que vous n'avez pas un onglet intitulé $1.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DIRE_NON</cle>
+			<contexte>Déclencheur à dire pour recevoir à nouveau son rôle.</contexte>
+			<variables>$1 : Déclencheur pour recevoir son rôle.</variables>
+			<phrases>
+				<phrase>Si vous êtes sûr de n'avoir rien reçu, dites $1 et je vous enverrai à nouveau votre rôle.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DIRE_EQUIVALENCES_ROLES</cle>
+			<contexte>Déclencheur à dire pour recevoir la liste des rôles et leur équivalence dans le vrai jeu.</contexte>
+			<variables>$1 : Déclencheur pour recevoir les équivalences.</variables>
+			<phrases>
+				<phrase>Si vous ne comprenez pas votre rôle, ou voulez avoir la liste de tous les rôles, dites $1.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>QUELQUES_SECONDES</cle>
+			<contexte>Le jeu va commencer !</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Nous allons commencer le jeu dans quelques secondes.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>RAPPEL_ROLE</cle>
+			<contexte>Rappel du rôle par message privé si le joueur a dit !non</contexte>
+			<variables>$1 : Rôle du joueur.</variables>
+			<phrases>
+				<phrase>Vous êtes $1.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>NUIT_TOMBEE</cle>
+			<contexte>La phase de nuit démarre</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>La nuit vient de tomber sur le village. Les villageois s'endorment paisiblement.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>APPEL_CUPIDON</cle>
+			<contexte>Le bot va envoyer un message privé à Cupidon.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>J'appelle maintenant Cupidon.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DEMANDE_CUPIDON_1</cle>
+			<contexte>Message privé à Cupidon.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Donnez-moi le pseudo de la première personne qui va tomber amoureuse.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DEMANDE_CUPIDON_2</cle>
+			<contexte>Second message privé à Cupidon.</contexte>
+			<variables>$1 : Pseudo donné juste avant par Cupidon.</variables>
+			<phrases>
+				<phrase>Donnez-moi maintenant le pseudo de la personne qui va tomber amoureuse de $1.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CUPIDON_DEMANDE_PRESENTATEUR</cle>
+			<contexte>Cupidon veut que le présentateur tombe amoureux !</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Désolé, mon programme m'interdit de tomber amoureux de qui que ce soit. J'aimerais pourtant tellement connaitre l'amour...Herm, bref, donnez moi un vrai pseudo si possible.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CUPIDON_MEME_PSEUDO</cle>
+			<contexte>Cupidon demande la même personne deux fois.</contexte>
+			<variables>$1 : Pseudo du joueur demandé par Cupidon.</variables>
+			<phrases>
+				<phrase>Vous croyez que $1 est narcissique au point de n'aimer que lui-même ? C'est votre travail de le rendre amoureux de quelqu'un d'autre !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CUPIDON_CONFIRMATION</cle>
+			<contexte>Confirmation par message privé à Cupidon.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Ces deux personnes sont désormais liées par l'amour...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CUPIDON_LENT</cle>
+			<contexte>Cupidon n'a touché personne.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Cupidon semble viser très mal et a réussi à complètement rater ses cibles. Tant pis, le village n'aura pas son beau couple romantique.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CUPIDON_A_CHOISI</cle>
+			<contexte>Confirmation aux villageois que Cupidon est passé par là...</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Cupidon vient de frapper deux personnes du village de ses flèches enchantées. Ah, l'amour...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MESSAGE_AMOUREUX</cle>
+			<contexte>Message privé envoyé aux deux amoureux pour leur annoncer l'identité de l'autre joueur.</contexte>
+			<variables>$1 : Pseudo de l'autre amoureux.</variables>
+			<phrases>
+				<phrase>Vous êtes désormais l'âme sœur de $1. Peu importe si vous découvrez que votre amour n'est pas dans le même camp que vous, votre seul objectif à présent est de protéger sa vie. Et s'il lui arrivait le pire, qui sait ce que vous seriez capable de faire...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>APPEL_POLICIER</cle>
+			<contexte>Le bot annonce qu'il va envoyer un message privé au policier.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Le policier est là. Y aura-t-il quelqu'un en prison ce soir ?</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DEMANDE_POLICIER</cle>
+			<contexte>Message privé au policier lui demandant qui il va enfermer.</contexte>
+			<variables>Aucune, mais précisez bien que le joueur doit donner un pseudo et qu'il ne peut pas enfermer la même personne deux fois de suite.</variables>
+			<phrases>
+				<phrase>Donnez-moi le pseudo de la personne que vous allez enfermer. Vous ne pouvez pas enfermer deux fois la même personne !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DEJA_ENFERME</cle>
+			<contexte>Le policier veut enfermer la même personne deux fois de suite.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Vous avez déjà enfermé cette personne la nuit dernière ! Laissez-lui un peu de répis et choisissez quelqu'un d'autre cette fois.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CONFIRMATION_POLICIER</cle>
+			<contexte>Le policier vient de donner un pseudo à enfermer.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Bien, vous pouvez aller l'arrêter. Espérons qu'il ne s'agit pas de quelqu'un d'utile au village...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MESSAGE_PRISON</cle>
+			<contexte>Informe le joueur enfermé par le policier qu'il ne pourra rien faire cette nuit.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>J'espère que vous n'aviez rien de prévu cette nuit, car le policier vient de vous mettre en prison. Vous ne pourrez donc rien faire jusqu'à demain matin.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>POLICIER_DEMANDE_PRESENTATEUR</cle>
+			<contexte>Le policier veut enfermer le présentateur.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Non mais et puis quoi encore ? Je veux un avocat ! Enfermez un joueur, plutôt que de faire n'importe quoi.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>POLICIER_LENT</cle>
+			<contexte>Le policier n'a pas répondu.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Notre ami le policier semble s'être endormi. Avec une force policière pareille, pas étonnant que le village soit attaqué.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>APPEL_VOYANTE</cle>
+			<contexte>Le bot annonce qu'il va envoyer un message privé à la voyante.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>J'appelle maintenant la voyante.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DEMANDE_VOYANTE</cle>
+			<contexte>Message privé à la voyante lui demandant un pseudo.</contexte>
+			<variables>Aucune, mais précisez-bien au joueur qu'il doit donner un pseudo.</variables>
+			<phrases>
+				<phrase>De quel personne désirez-vous connaitre l'identité ? Donnez moi juste son pseudo.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DONNER_IDENTITE_A_VOYANTE</cle>
+			<contexte>Message privé à la voyante pour lui donner le rôle du joueur demandé</contexte>
+			<variables>$1 : Rôle du joueur.</variables>
+			<phrases>
+				<phrase>Cette personne est...$1.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VOYANTE_DEMANDE_PRESENTATEUR</cle>
+			<contexte>La voyante demande le rôle du présentateur.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Je vous rappelle que je ne joue pas, hein...Je suis le présentateur, moi. Vous voulez pas demander le rôle d'un vrai joueur, plutôt ?</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VOYANTE_LENTE</cle>
+			<contexte>La voyante n'a pas répondu.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>La voyante semble ne pas se réveiller. Elle vient de louper une opportunité, dommage pour les villageois...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>APPEL_SALVATEUR</cle>
+			<contexte>Le bot annonce qu'il va envoyer un message privé au salvateur.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>J'appelle maintenant le salvateur.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DEMANDE_SALVATEUR</cle>
+			<contexte>Message privé au salvateur lui demandant qui protéger.</contexte>
+			<variables>Aucune, mais précisez bien que le joueur doit donner un pseudo et qu'il ne peut pas protéger la même personne deux fois de suite.</variables>
+			<phrases>
+				<phrase>Qui désirez-vous protégez ? Vous pouvez vous protéger vous-même, mais pas protéger la même personne deux nuits de suite.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DEJA_PROTEGE</cle>
+			<contexte>Le joueur veut protéger la même personne deux fois de suite.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Vous avez déjà protégé ce joueur la nuit dernière. Vous devez protéger quelqu'un d'autre cette fois.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CONFIRMATION_SALVATEUR</cle>
+			<contexte>Le salvateur vient de donner un pseudo à protéger.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Très bien, cette personne sera protégée des loups. Espérons que vous ayez fait le bon choix...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SALVATEUR_DEMANDE_PRESENTATEUR</cle>
+			<contexte>Le salvateur veut protéger le présentateur.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Je vous remercie de vous inquiéter pour moi, mais, vu que je ne joue pas, je n'ai pas vraiment besoin d'être protégé...Essayez de protéger un vrai joueur, plutôt.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SALVATEUR_LENT</cle>
+			<contexte>Le salvateur n'a pas répondu.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Le salvateur n'a semble-t-il pas envie d'aider le village. À cause de lui, il se peut que quelqu'un meurt ce soir...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>PSEUDO_INCONNU</cle>
+			<contexte>Le pseudo donné par le joueur (voyante, salvateur, Cupidon, loups, ...) n'existe pas</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Je ne connais pas ce pseudo. Vous êtes sûr de ne pas vous être trompé ?</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>APPEL_LOUPS</cle>
+			<contexte>Appel des loups sur leur canal.</contexte>
+			<variables>$1 : Nom du canal des loups.</variables>
+			<phrases>
+				<phrase>J'appelle à présent les loups garous, sur le canal $1.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MANQUE_DES_LOUPS</cle>
+			<contexte>Tous les loups ne sont pas présents sur le canal.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Il semblerait qu'il manque des loups garous. Ma foi, tant pis, nous commenceront sans les retardataires.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>INSTRUCTIONS_LOUPS</cle>
+			<contexte>Instructions pour expliquer aux loups comment ils doivent tuer.</contexte>
+			<variables>$1 : Déclencheur à utiliser pour tuer.</variables>
+			<phrases>
+				<phrase>Vous pouvez à présent choisir votre première victime. Vous avez quelques secondes pour cela. Quand vous aurez décidé, dites moi $1 suivi du pseudo de la personne à tuer.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CONFIRMATION_LOUPS</cle>
+			<contexte>Les loups ont annoncé leur victime.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Très bien, ce sera donc cette personne qui sera tuée. À plus tard. Du moins, j'espère pour vous...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>LOUPS_LENTS</cle>
+			<contexte>Les loups n'ont pas réagit dans le temsp imparti.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>On dirait que les loups garous n'ont pas réussi à se mettre d'accord. N'y aura-t-il aucune victime cette nuit ?</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>LOUPS_ONT_CHOISI</cle>
+			<contexte>Les loups ont choisi une victime, la nouvelle est annoncée aux villageois.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Les loups garous ont fait leur choix. La victime qu'ils ont choisi va-t-elle survivre à cette nuit ?</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>APPEL_FILLE</cle>
+			<contexte>Informe la petite fille que le bot va lui envoyer ce que les loups se disent sur leur canal.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Je vais à présent vous transmettre ce que les loups complotent entre eux. Faites-en bon usage...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>TUER_PRESENTATEUR</cle>
+			<contexte>Les loups veulent tuer le présentateur !</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Ce genre de demande mériterait une exclusion définitive du jeu, mais enfin...À part ça, vous n'auriez pas une VRAIE proposition ?</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>APPEL_SORCIERE</cle>
+			<contexte>Le bot va envoyer un message privé à la sorcière.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>J'appelle maintenant la sorcière...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SORCIERE_LENTE</cle>
+			<contexte>La sorcière ne répond pas.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Bon, la sorcière doit être occupée à préparer ses potions. On viendra la revoir plus tard...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SORCIERE_POTION_GUERISON</cle>
+			<contexte>La sorcière veut-elle utiliser sa potion de guérison pour sauver la victime des loups ?</contexte>
+			<variables>$1 : Victime des loups. Posez bien la question pour que le joueur soit obligé de répondre "oui" ou "non"</variables>
+			<phrases>
+				<phrase>$1 a été tué cette nuit. Voulez-vous utiliser votre potion de guérison pour faire revenir $1 à la vie ? Vous ne pourrez vous servir de cette potion qu'une fois !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SORCIERE_POTION_POISON</cle>
+			<contexte>La sorcière veut-elle utiliser sa potion d'empoisonnement sur quelqu'un ?</contexte>
+			<variables>Aucune, mais précisez bien que le joueur doit donner un pseudo ou dire "non" s'il ne veut tuer personne</variables>
+			<phrases>
+				<phrase>Si vous voulez utiliser votre potion d'empoisonnement sur quelqu'un, donnez-moi son pseudo. Si vous ne voulez pas l'utiliser, dites-moi non. Vous ne pourrez vous en servir qu'une fois !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SORCIERE_TUER_PRESENTATEUR</cle>
+			<contexte>La sorcière veut tuer le présentateur !</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Oh, une boisson ? Pour moi ? Merci, je la boirai plus tard. À part ça, vous voulez me donner un pseudo oui ou non ?</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>APPEL_CORBEAU</cle>
+			<contexte>Le bot va envoyer un message privé au corbeau.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Qui le corbeau va-t-il désigner aujourd'hui ?</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DEMANDE_CORBEAU</cle>
+			<contexte>Le corbeau veut-il désigner quelqu'un qui recevra deux votes contre lui ?</contexte>
+			<variables>Aucune, mais indiquez que le joueur doit donner un pseudo ou dire "non".</variables>
+			<phrases>
+				<phrase>Si vous voulez nuire à quelqu'un en lui attribuant d'office deux voix, donnez-moi son pseudo. Autrement, dites "non".</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CORBEAU_DEMANDE_PRESENTATEUR</cle>
+			<contexte>Le corbeau veut désigner le maitre du jeu !</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Bien tenté, mais vous auriez beau voter vingt-cinq fois contre moi, je ne peux tout simplement pas perdre.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MESSAGE_AU_MORT</cle>
+			<contexte>Message envoyé à chaque personne qui meurt (que ce soit tué par les loups, par lapidation, ...)</contexte>
+			<variables>$1 : Canal du paradis. $2 : Canal des loups.</variables>
+			<phrases>
+				<phrase>Ah, je suis désolé pour vous. En tant que mort, vous pouvez maintenant venir commenter la partie avec les autres sur $1, et voir les plans des loups sur $2. C'est une maigre consolation, mais enfin...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>JOUR_SE_LEVE</cle>
+			<contexte>On passe à la phase de jour.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Le jour se lève sur un village en apparence tranquille.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>PERSONNE_N_A_ETE_TUE</cle>
+			<contexte>Utilisé dans tous les cas où il n'y a aucune victime, que ce soit si les loups n'ont tué personnes, ou si la personne visée a été protégée, etc.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Et il n'en a pas que l'apparence. Car cette nuit, personne n'a été tué !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MESSAGE_MORT_1</cle>
+			<contexte>Quelqu'un a été tué pendant la nuit !</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Mais pourtant, cette nuit, un drame s'est produit.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MESSAGE_MORT_2</cle>
+			<contexte>On fait durer le suspense avant d'annoncer la victime...</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Car à l'entrée du village, on découvre un cadavre. Celui de...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MESSAGE_MORT_VICTIME</cle>
+			<contexte>Annonce du pseudo de la personne qui vient de mourir.</contexte>
+			<variables>$1 : Pseudo du joueur tué.</variables>
+			<phrases>
+				<phrase>$1 !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VICTIME_LOUPS_ETAIT_LOUP</cle>
+			<contexte>Le joueur mort pendant la nuit était un loup.</contexte>
+			<variables>$1 : Pseudo du joueur tué.</variables>
+			<phrases>
+				<phrase>Cependant, ce drame n'en est pas vraiment un. Car $1 cachait bien son jeu, puisqu'il était...un loup garou !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VICTIME_LOUPS_ETAIT_VILLAGEOIS</cle>
+			<contexte>Le joueur mort pendant la nuit était un villageois. On donne son rôle.</contexte>
+			<variables>$1 : Pseudo du joueur tué. $2 : Rôle du joueur tué.</variables>
+			<phrases>
+				<phrase>Pauvre $1. Lui qui était $2...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MESSAGE_AUTRE_MORT</cle>
+			<contexte>Quelqu'un D'AUTRE a été tué pendant la nuit !</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Mais, mais...Encore une autre victime cette nuit, en plus de la précédente ! Comment est-ce possible ?</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>INSTRUCTIONS_CHASSEUR</cle>
+			<contexte>Annonce aux villageois que le chasseur va tuer quelqu'un.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Chasseur, dans votre dernier souffle, vous avez le droit de vous venger sur une dernière personne. Dites moi par message privé le pseudo de la personne que vous désirez tuer.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DEMANDE_CHASSEUR</cle>
+			<contexte>Demande du pseudo à tuer en message privé au chasseur.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Chasseur, donnez moi le pseudo de la personne sur laquelle vous voulez vous venger.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CHASSEUR_LENT</cle>
+			<contexte>Le chasseur n'a pas répondu dans le temps imparti.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Malheureusement, le chasseur n'avait plus assez de force pour se venger. Il mouru ainsi, alors qu'il aurait peut être pu aider le village une dernière fois. Ah, il lui aurait pourtant suffit de répondre un peu plus vite...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CONFIRMATION_CHASSEUR</cle>
+			<contexte>On confirme au chasseur que la personne va être tuée...</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Très bien.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CHASSEUR_A_CHOISI</cle>
+			<contexte>On annonce aux villageois que le chasseur s'apprête à faire feu...</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Hé bien ma foi, le chasseur a fait son choix.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>TUER_VICTIME_CHASSEUR</cle>
+			<contexte>Et le chasseur tire sur sa victime !</contexte>
+			<variables>$1 : Pseudo du joueur visé par le chasseur.</variables>
+			<phrases>
+				<phrase>Au revoir, $1 ...BANG !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VICTIME_CHASSEUR_ETAIT_LOUP</cle>
+			<contexte>Le chasseur a réussi à tuer un loup.</contexte>
+			<variables>$1 : Pseudo du joueur tué.</variables>
+			<phrases>
+				<phrase>La mort du chasseur n'a pas été vaine, car avant de mourir, celui-ci avait réussi à tuer $1...qui n'était autre qu'un loup garou !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VICTIME_CHASSEUR_ETAIT_VILLAGEOIS</cle>
+			<contexte>Le chasseur a tué un villageois</contexte>
+			<variables>$1 : Pseudo du joueur tué. $2 : Rôle du joueur tué.</variables>
+			<phrases>
+				<phrase>Ah, pauvre $1. Lui qui était $2. Les accidents de chasse, ça arrive.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>INSTRUCTIONS_MAIRE</cle>
+			<contexte>Les villageois doivent voter pour leur maire. Le bot explique comment se présenter.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Avant de continuer, il serait bon d'élire le maire du village. Tous ceux qui veulent se présenter peuvent dès maintenant m'envoyer un ou plusieurs MP avec leurs arguments de campagne. Je les lirai ensuite, en les citant.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>AUCUN_CANDIDAT</cle>
+			<contexte>Personne ne s'est présenté pour l'élection du maire !</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Allons bon, je n'ai reçu aucune candidature. Si personne ne se présente, il ne peut y avoir de vote. Tant pis, le village n'aura tout simplement pas de maire !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>LECTURE_CANDIDATURES</cle>
+			<contexte>Le bot va lire les diffférentes candidatures pour le poste de maire.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Je vais maintenant lire les arguments de chaque personne s'étant présentée au poste du maire. Seront-ils suffisamment convaincants ?</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DEBUT_VOTE_MAIRE</cle>
+			<contexte>Les villageois peuvent à présenter voter.</contexte>
+			<variables>$1 : Déclencheur pour voter</variables>
+			<phrases>
+				<phrase>Vous avez quelques secondes pour discuter et voter. Pour cela, dites $1 suivi du pseudo de la personne que vous voulez élire.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>AUCUN_VOTE_MAIRE</cle>
+			<contexte>Personne n'a voté pour un maire !</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Hé bien, vous ne voulez pas exercer votre droit de vote ? Tant pis, dans ce cas, ce village restera sans maire !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VOTE_MAIRE_TERMINE</cle>
+			<contexte>Les votes sont terminés. Qui va être élu ?</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Les votes sont terminés. Laissez-moi quelques secondes le temps de faire les comptes...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>NOUVEAU_MAIRE</cle>
+			<contexte>Voilà le nouveau maire du village !</contexte>
+			<variables>$1 : Pseudo du maire, $2 : Nombre de voix pour cette personne</variables>
+			<phrases>
+				<phrase>Hé bien, avec $2 voix, vous avez choisi comme maire...$1 !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>NOUVEAU_MAIRE_EGALITE</cle>
+			<contexte>Il y a une égalité au niveau du nombre de voix. Le nouveau maire est choisi au hasard parmi ceux qui ont le plus de voix.</contexte>
+			<variables>$1 : Pseudos des candidats à égalité, $2 : Nombre de voix pour ces candidats, $3 : Maire choisi au hasard</variables>
+			<phrases>
+				<phrase>$1...Tous ceux là ont reçu $2 voix. Puisqu'il y a une égalité, je vais choisir moi-même ! Et je décide que...$3 est le maire ! Bravo $3 !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MORT_MAIRE</cle>
+			<contexte>Le maire a été tué.</contexte>
+			<variables>$1 : Pseudo du maire</variables>
+			<phrases>
+				<phrase>Dans son dernier souffle, le maire va nous révéler le nom de son successeur. Écoutez-le bien...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MESSAGE_MORT_MAIRE</cle>
+			<contexte>Message à feu le maire pour lui demander qui est son successeur.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Vite, monsieur le maire ! Profitez de vos derniers instants pour nous dire qui doit vous remplacer !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SUCCESSEUR_IDIOT</cle>
+			<contexte>Le maire veut désigner l'idiot comme son successeur.</contexte>
+			<variables>$1 : Pseudo de l'idiot</variables>
+			<phrases>
+				<phrase>Mais enfin ! Vous savez bien que $1 est l'idiot du village, il ne peut pas devenir maire. Choisissez quelqu'un d'autre !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SUCCESSEUR_MAIRE</cle>
+			<contexte>Le maire a designé son successeur.</contexte>
+			<variables>$1 : Pseudo du nouveau maire</variables>
+			<phrases>
+				<phrase>Le maire est mort, vive le maire ! Désormais, ce sera $1 qui mènera la barque. Avec talent, espérons-le.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MORT_MAIRE_LENT</cle>
+			<contexte>Le maire est trop lent à désigner son successeur.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Monsieur le maire semble vouloir garder son poste même après la mort, puisqu'il refuse de désigner son successeur. Tant pis, le village n'a désormais plus de maire.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MESSAGE_LAPIDATION_1</cle>
+			<contexte>La lapidation va commencer !</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Sur ce, il est l'heure de lapider quelqu'un. Pour le bien du village !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>COMMENT_LAPIDER</cle>
+			<contexte>Explique aux joueurs comment désigner qui lapider</contexte>
+			<variables>$1 : Déclencheur pour lapider.</variables>
+			<phrases>
+				<phrase>Vous avez plusieurs minutes pour discuter. À tout moment, vous pouvez voter contre quelqu'un en disant $1 suivi du pseudo de la personne à lapider. Les votes s'arrêteront plus tôt si tout le monde a voté ou que la majorité absolue est atteinte.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VOTES_CORBEAU</cle>
+			<contexte>Le corbeau a agit : quelqu'un a déjà reçu deux voix</contexte>
+			<variables>$1 : Joueur ayant été désigné par le corbeau</variables>
+			<phrases>
+				<phrase>Tiens, c'est étrange, il y a déjà deux votes pour $1. Je ne sais pas d'où ils viennent, mais puisqu'ils sont déjà dans l'urne, je suis légalement obligé de les compter. Désolé, $1.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>LAPIDATION_UNE_MINUTE</cle>
+			<contexte>Il ne reste qu'une minute pour débattre et voter.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Attention, il ne vous reste plus qu'une minute pour faire votre choix et voter. Décidez-vous !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>PAS_ASSEZ_VOTES</cle>
+			<contexte>Le bot n'a pas reçu un seul vote pour lapider quelqu'un !</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Hé bien, personne ne souhaite voter ? Nous ne pouvons pas continuer tant que je n'ai pas reçu au moins un vote.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VOTES_TERMINES_1</cle>
+			<contexte>Les votes viennent de se terminer, le bot ne les accepte plus.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Les votes sont maintenant terminés. Qui subira la colère des villageois ?</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VOTES_TERMINES_2</cle>
+			<contexte>On fait encore durer le suspense...</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Voyons rapidement combien de personnes ont désigné chacun des accusés.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>NOMBRE_VOTES_POUR_JOUEUR</cle>
+			<contexte>Nombre de voix obtenu par chaque joueur. Essayez d'utiliser un invariable (comme "voix") après $2.</contexte>
+			<variables>$1 : Pseudo du joueur qui a reçu les votes. $2 : Nombre de votes reçus par le joueur.</variables>
+			<phrases>
+				<phrase>$1 : $2 voix.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VOTE_POUR_PRESENTATEUR</cle>
+			<contexte>Les villageois ont voté contre le présentateur !</contexte>
+			<variables>$1 : Pseudo du présentateur. $2 : Nombre de votes contre le présentateur</variables>
+			<phrases>
+				<phrase>$1 : $2 vo...Hé ! Allez vous faire foutre !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>PREMIERE_EGALITE</cle>
+			<contexte>Égalité après le premier vote, le maire n'est pas présent.</contexte>
+			<variables>Aucune, mais précisez bien que les joueurs doivent voter contre ceux qui sont à égalité.</variables>
+			<phrases>
+				<phrase>Il semblerait que nous ayons une égalité. Nous allons donc faire un second tour entre les gens désignés par le plus grand nombre de voix. Vous pouvez dès maintenant me dire qui vous désirez lapider parmi les villageois à égalité.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MAIRE_DEPARTAGE</cle>
+			<contexte>Égalité après le vote. Le maire doit choisir qui sera lapidé.</contexte>
+			<variables>$1 : Pseudo du maire. Précisez qu'il doit directement donner le pseudo de celui qu'il choisit parmi ceux à égalité.</variables>
+			<phrases>
+				<phrase>Il semblerait que nous ayons une égalité. Nous allons donc nous tourner vers $1, notre maire. Alors, $1, qu'en pensez-vous ? Donnez-nous le pseudo de celui qui sera lapidé parmi les personnes à égalité.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MAIRE_DEPARTAGE_LENT</cle>
+			<contexte>Le maire met trop de temps à choisir qui sera lapidé.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Monsieur le maire ? Vous ne voulez tuer personne ? Bon, très bien, dans ce cas, pas de lapidation aujourd'hui...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DEUXIEME_EGALITE</cle>
+			<contexte>Les votes sont arrivés deux fois à égalité. Personne ne sera lapidé.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Bon, il semblerait que vous ne sachiez vraiment pas vous mettre d'accord. Pour cette fois, le village ne tuera personne. Un jour de repos en plus pour les loups garous...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>JOUEUR_DESIGNE_1</cle>
+			<contexte>La personne qui a reçu le plus de votes va être tuée...</contexte>
+			<variables>$1 : Pseudo du joueur désigné.</variables>
+			<phrases>
+				<phrase>Je suis désolé $1, mais le village vous a désigné.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>JOUEUR_DESIGNE_2</cle>
+			<contexte>Hop, on tue le joueur.</contexte>
+			<variables>$1 : Pseudo du joueur désigné.</variables>
+			<phrases>
+				<phrase>C'est ainsi que $1 fut brûlé vif et mourût dans d'atroces souffrances. C'était beau, en tout cas.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>JOUEUR_DESIGNE_ETAIT_LOUP</cle>
+			<contexte>Le joueur que le village a tué était un loup !</contexte>
+			<variables>$1 : Pseudo du joueur désigné.</variables>
+			<phrases>
+				<phrase>Et de plus, les villageois venaient de fait un excellent choix. Car en vérité, $1 était...un loup garou !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>JOUEUR_DESIGNE_ETAIT_VILLAGEOIS</cle>
+			<contexte>Le joueur que le village a tué n'était qu'un autre villageois...</contexte>
+			<variables>$1 : Pseudo du joueur désigné. $2 : Rôle du joueur désigné.</variables>
+			<phrases>
+				<phrase>Malheureusement, cette fois, les villageois brûlèrent un des leurs. Pauvre $1, lui qui était $2...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>JOUEUR_DESIGNE_ETAIT_IDIOT_1</cle>
+			<contexte>Le joueur désigné par le village était l'idiot. Il est gracié.</contexte>
+			<variables>$1 : Pseudo de l'idiot.</variables>
+			<phrases>
+				<phrase>...Quoi que. Alors que les flammes lui brûlaient les pieds, on se souvint soudain que $1 était en fait l'idiot du village. Vu ses quelques...difficultés, il paraissait peu probable qu'il s'agisse d'un loup. $1 fut donc descendu du bûcher, et ses pieds amputés vu les dégâts subis.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>JOUEUR_DESIGNE_ETAIT_IDIOT_2</cle>
+			<contexte>L'idiot est gracié, mais ne peut plus voter.</contexte>
+			<variables>$1 : Pseudo de l'idiot. Précisez bien qu'il ne peut plus voter.</variables>
+			<phrases>
+				<phrase>Cependant, les villageois décidèrent aussi que, puisque $1 était l'idiot du village, il n'aurait désormais plus le droit de voter. Qui sait, stupide comme il est, il pourrait carrément désigner une personne de confiance comme loup.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>IDIOT_ETAIT_MAIRE</cle>
+			<contexte>L'idiot était le maire ! Il perd son poste.</contexte>
+			<variables>$1 : Pseudo de l'idiot.</variables>
+			<phrases>
+				<phrase>Évidemment, $1 est immédiatement déchu de son poste de maire. Du fait, mieux vaut pas de maire du tout qu'un maire idiot.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>ANCIEN_EST_MORT</cle>
+			<contexte>L'ancien est mort. Les joueurs perdent tous leurs pouvoirs.</contexte>
+			<variables>$1 : Pseudo de l'ancien.</variables>
+			<phrases>
+				<phrase>Ah, $1 était l'ancien alors ? Bien joué les gars, vous venez de perdre tous vos pouvoirs spéciaux. Adieu voyante. Et le reste.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>FIN_JOURNEE</cle>
+			<contexte>Fin de la journée, la phase de nuit va bientôt recommencer.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Et c'est ainsi que s'achève cette journée.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>INSTRUCTIONS_MURS</cle>
+			<contexte>Avant la nuit, les joueurs peuvent laisser des messages anonymes sur le mur de la mairie, qui seront ensuite lus.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Mais avant d'aller se coucher, les villageois vont faire un tour du côté du mur derrière la mairie pour voir les messages que les autres y ont laissé.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>INSTRUCTIONS_MURS_2</cle>
+			<contexte>Indique aux joueurs qu'ils peuvent envoyer un message privé au bot, qui sera ensuite inscrit sur le mur.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Vous pouvez maintenant m'envoyer un court message privé, que je lirai ensuite de manière anonyme. Seul votre premier message sera pris en compte. Profitez-en pour dénoncer les traitres ou annoncer vos soupçons !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VA_LIRE_MUR</cle>
+			<contexte>Le bot va maintenant lire les différents messages qu'il a reçu.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Allez hop, c'est terminé. Voyons maintenant ce que les villageois ont inscrit sur le mur...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MUR_VIDE</cle>
+			<contexte>Il n'y a aucun message sur le mur !</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Mais...le mur de la mairie ne contient aucune trace de message ! Les villageois ont-ils trop peur pour donner leur opinion ? Tant pis, aucune info croustillante pour cette nuit...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MUR_LU</cle>
+			<contexte>Les messages du mur ont été lus, on passe maintenant à la nuit...</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Hé bien, que de messages boulversants...Espérons que les villageois parviendront à trouver le sommeil après tout ça !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_DEBUT</cle>
+			<contexte>La séance de spiritisme commence !</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Attendez...Je sens que quelqu'un de l'au-delà tente de me contacter...Je crois qu'il est l'heure de faire une séance de spiritisme.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_MEMECAMP_0</cle>
+			<contexte>Séance de spiritisme - Deux joueurs dans le même camp - Demande du premier pseudo</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Les morts vous pouvoir nous dire si deux personnes sont dans le même camp...Donnons leur le nom de la première personne.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_MEMECAMP_1</cle>
+			<contexte>Demande du second pseudo</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Oui, je vois...Donnons leur maintenant le nom de la seconde personne.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_MEMECAMP_2</cle>
+			<contexte>Les deux joueurs demandés sont dans le même camp</contexte>
+			<variables>$1 : Pseudo du premier joueur, $2 : Pseudo du second joueur</variables>
+			<phrases>
+				<phrase>Les morts me disent que $1 et $2 sont dans le même camp. Ils ne peuvent malheureusement pas me dire lequel...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_MEMECAMP_3</cle>
+			<contexte>Les deux joueurs demandés ne sont pas dans le même camp</contexte>
+			<variables>$1 : Pseudo du premier joueur, $2 : Pseudo du second joueur</variables>
+			<phrases>
+				<phrase>Les morts me disent que $1 et $2 ne sont pas dans le même camp ! Duquel se méfier, à présent...?</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_NOMBREROLES_0</cle>
+			<contexte>Séance de spiritisme - Nombre de rôles restants - Demande de la catégorie</contexte>
+			<variables>Aucune mais les joueurs doivent savoir qu'ils doivent dire 1, 2 ou 3</variables>
+			<phrases>
+				<phrase>Les morts réclament un chiffre pour nous dire combien il reste de gens dans cette catégorie. 1 pour les loups-garous, 2 pour les villageois, 3 pour les rôles spéciaux.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_NOMBREROLES_1</cle>
+			<contexte>Nombre de loups restants</contexte>
+			<variables>$1 : Nombre de LG</variables>
+			<phrases>
+				<phrase>Je vois, c'est très clair...Des loups-garous, il en reste encore $1 !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_NOMBREROLES_2</cle>
+			<contexte>Nombre de simples villageois restants</contexte>
+			<variables>$1 : Nombre de SV</variables>
+			<phrases>
+				<phrase>Les villageois devraient se méfier, car les morts me disent qu'il en reste $1.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_NOMBREROLES_3</cle>
+			<contexte>Nombre de joueurs avec un rôle spécial restants</contexte>
+			<variables>$1 : Nombre</variables>
+			<phrases>
+				<phrase>Parmi nous, les morts me disent qu'il y a encore $1 villageois avec des pouvoirs spéciaux.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_ROLEEXISTE_0</cle>
+			<contexte>Séance de spiritisme - Existence d'un rôle particulier - Demande du rôle</contexte>
+			<variables>Aucune mais les joueurs doivent savoir qu'ils doivent répondre par un des chiffres proposés</variables>
+			<phrases>
+				<phrase>Si on leur donne le chiffre correspondant, les morts peuvent nous dire si une personne dans ce village est : 1- la petite fille, 2- l'ancien, 3- le chasseur, 4- l'idiot</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_ROLEEXISTE_1</cle>
+			<contexte>Le rôle demandé n'existe pas</contexte>
+			<variables>$1 : Rôle demandé</variables>
+			<phrases>
+				<phrase>Les morts me disent que personne dans le village n'est $1.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_ROLEEXISTE_2</cle>
+			<contexte>Le rôle demandé existe</contexte>
+			<variables>$1 : Rôle demandé</variables>
+			<phrases>
+				<phrase>Il y a bien parmi nous $1, les morts sont formels à ce sujet.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_PSEUDOSORCIERE_0</cle>
+			<contexte>Séance de spiritisme - Pseudo de la sorcière entre A et M - Pas de sorcière</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Les morts auraient pu me donner des informations sur le nom de la sorcière, mais...Il n'y a pas de sorcière parmi nous !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_PSEUDOSORCIERE_1</cle>
+			<contexte>Pseudo de la sorcière entre A et M</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Les morts ont pu voir la première lettre du nom de la sorcière...Et celui-ci est entre A et M !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_PSEUDOSORCIERE_2</cle>
+			<contexte>Pseudo de la sorcière pas entre A et M</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Même s'ils n'ont pu voir que la première lettre du nom de la sorcière, les morts en sont sûr : il n'est pas entre A et M.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_MAIRESV_0</cle>
+			<contexte>Séance de spiritisme - Le maire est-il SV ? - Pas de maire</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Les morts voulaient me donner des informations sur notre maire...Mais nous n'en avons pas !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_MAIRESV_1</cle>
+			<contexte>Le maire est simple villageois (donc ni loup ni villageois avec pouvoir spéciaux)</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Notre maire est un villageois tout ce qu'il y a de plus normal. Les morts sont certains qu'il n'a aucun pouvoir...à part celui du maire, bien sûr !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_MAIRESV_2</cle>
+			<contexte>Le maire n'est pas un simple villageois (peut-être un loup, peut-être un villageois à pouvoir spéciaux)</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Les morts l'ont vu, notre maire est quelqu'un de spécial ! Spécial de quelle manière, les morts n'ont malheureusement pas pu me le dire...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_VOYANTELOUP_0</cle>
+			<contexte>Séance de spiritisme - La voyante a-elle démasqué un loup ? - La voyante a démasqué un loup</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Les morts m'ont dit quelque chose d'intéressant : la voyante aurait découvert au moins un loup-garou ! Faites-la parler !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_VOYANTELOUP_1</cle>
+			<contexte>La voyante n'a démasqué aucun loup</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Aucun loup n'a été découvert par notre voyante. Ce sont les morts qui me le disent.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_LOUPSPSEUDO_0</cle>
+			<contexte>Séance de spiritisme - Pseudo des loups entre A et M - Il y a des loups avec un pseudo entre A et M</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Il y a un loup avec un nom qu commence par une lettre entre A et M, c'est certain. Les morts me disent qu'il y en a peut-être même plusieurs...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_LOUPSPSEUDO_1</cle>
+			<contexte>Aucun loup avec un pseudo entre A et M</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Même s'ils n'ont pu voir que la première lettre du nom des loups, les morts m'assurent qu'aucune d'elle n'est entre A et M.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_ESTSV_0</cle>
+			<contexte>Séance de spiritisme - Savoir si un joueur est simple villageois - Demande du pseudo</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Les morts vont pouvoir nous donner une information importante : savoir si une personne est un villageois sans histoire. Mais qui ?</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_ESTSV_1</cle>
+			<contexte>Le joueur demandé est SV</contexte>
+			<variables>$1 : Joueur demandé</variables>
+			<phrases>
+				<phrase>C'est sûr et certain : $1 est un villageois tout ce qu'il y a de plus normal.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_ESTSV_2</cle>
+			<contexte>Le joueur demandé n'est pas SV</contexte>
+			<variables>$1 : Joueur demandé</variables>
+			<phrases>
+				<phrase>Les morts ont vu que $1 n'était pas n'importe qui. Reste à savoir si ce n'importe qui n'est pas aussi un loup-garou...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>SPR_TERMINE</cle>
+			<contexte>La séance de spiritisme est terminée</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Je n'entends plus rien. Il semblerait que les morts soient repartis dans leur monde. Espérons que les informations qu'ils ont pu nous donner vous aideront...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VOTE_CHUCHOTEMENT</cle>
+			<contexte>Les joueurs veulent-ils activer le chuchotement ?</contexte>
+			<variables>Aucune, mais précisez qu'il faut dire "oui" ou "non".</variables>
+			<phrases>
+				<phrase>Avant de commencer, désirez-vous activer les chuchotements ? Votez en disant "oui" ou "non".</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>COMMENT_CHUCHOTER</cle>
+			<contexte>Explique aux joueurs comment utiliser le chuchotement.</contexte>
+			<variables>$1 : Déclencheur pour chuchoter. N'OUBLIEZ PAS de préciser qu'il faut le dire au bot par MP et quelle est la syntaxe !</variables>
+			<phrases>
+				<phrase>À tout moment, si vous souhaitez parler en privé à un autre joueur, envoyez-moi PAR MP "$1 pseudo du destinataire votre message". Mais attention de ne pas parler trop fort...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>ERREUR_CHUCHOTER</cle>
+			<contexte>Le joueur a mal utilisé la commande pour chuchoter. On lui rappelle son fonctionnement.</contexte>
+			<variables>$1 : Déclencheur pour chuchoter.</variables>
+			<phrases>
+				<phrase>Pour chuchoter à quelqu'un, dites-moi simplement $1 suivi du pseudo de la personne à qui vous désirez parler suivi de votre message. Par exemple, pour envoyer un message à Bidule, dites-moi "$1 Bidule J'aime les frites".</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CHUCHOTEMENT_CONFIRMATION</cle>
+			<contexte>Confirmation d'envoi du chuchotement</contexte>
+			<variables>$1 : Pseudo du destinataire.</variables>
+			<phrases>
+				<phrase>Je transmets votre message à $1. Soyez discret.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CHUCHOTEMENT_ENVOI</cle>
+			<contexte>Le joueur se fait chuchoter quelque chose par un autre joueur.</contexte>
+			<variables>$1 : Joueur qui chuchote, $2 : Message chuchoté.</variables>
+			<phrases>
+				<phrase>$1 s'approche discrètement de vous et vous murmure à l'oreille : "$2"</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CHUCHOTEMENT_ECHEC</cle>
+			<contexte>Le chuchotement a raté : le message est diffusé à tout le monde.</contexte>
+			<variables>$1 : Joueur qui chuchote, $2 : Message chuchoté.</variables>
+			<phrases>
+				<phrase>$1 tente de parler discrètement à quelqu'un, mais il parle si fort qu'on l'entend clairement dire : "$2"</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CHUCHOTEMENT_ECHEC_2</cle>
+			<contexte>Le chuchotement a raté : le message est diffusé à tout le monde, ainsi que le destinataire.</contexte>
+			<variables>$1 : Joueur qui chuchote, $2 : Destinataire, $3 : Message chuchoté.</variables>
+			<phrases>
+				<phrase>$1 tente de s'approcher discrètement de $2, mais fait plus de bruit qu'un troupeau d'éléphant. On entend clairement $1 dire à $2 : "$3"</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CRISE_CARDIAQUE</cle>
+			<contexte>Un des joueurs est parti avant la fin. Pour la peine, il meurt d'une crise cardiaque (ou de n'importe quoi d'autre, l'importance c'est que les loups n'ont rien à voir là dedans) !</contexte>
+			<variables>$1 : Nom du joueur qui s'est barré.</variables>
+			<phrases>
+				<phrase>Mais, qu'arrive-t-il à $1 ? Il s'agite, il a du mal à respirer, et...Il s'effondre. Crise cardiaque foudroyante. Le cœur de $1 n'a pas supporté le stress.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CRISE_CARDIAQUE_LOUP</cle>
+			<contexte>Le joueur qui s'est barré était un loup.</contexte>
+			<variables>$1 : Nom du joueur qui s'est barré.</variables>
+			<phrases>
+				<phrase>Heureusement pour les villageois, il s'avère que $1 était un loup. Voilà que la nature fait bien les choses, pour une fois !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CRISE_CARDIAQUE_VILLAGEOIS</cle>
+			<contexte>Le joueur qui s'est barré était un villageois.</contexte>
+			<variables>$1 : Nom du joueur qui s'est barré. $2 : Rôle du joueur qui s'est barré.</variables>
+			<phrases>
+				<phrase>Dommage d'ainsi perdre $1, lui qui était $2. Ah, la nature peut être cruelle parfois...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>AMOUREUX_MORT</cle>
+			<contexte>Un amoureux vient de mourir. L'autre se suicide.</contexte>
+			<variables>$1 : Pseudo de l'amoureux qui va se suicider.</variables>
+			<phrases>
+				<phrase>En apprenant la mort de son bien aimé, $1 court vers la falaise près du village tout en pleurant son désespoir. Malheureusement, personne ne parvient à le rattraper avant qu'il ne décide de faire le grand saut afin de rejoindre son âme sœur...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>AMOUREUX_ETAIT_LOUP</cle>
+			<contexte>L'amoureux qui vient de se suicider était un loup !</contexte>
+			<variables>$1 : Pseudo de l'amoureux.</variables>
+			<phrases>
+				<phrase>Même si l'évènement semble dramatique, il faut plutôt se réjouir. Car $1 n'était autre...qu'un loup !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>AMOUREUX_ETAIT_VILLAGEOIS</cle>
+			<contexte>L'amoureux qui vient de se suicider était un villageois.</contexte>
+			<variables>$1 : Pseudo de l'amoureux. $2 : Rôle de l'amoureux.</variables>
+			<phrases>
+				<phrase>Quel dommage d'ainsi voir partir $1. Lui n'avait pas demandé à tomber amoureux, et à cause de ça, voilà que le village perd $2.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MESSAGE_TRAITRE</cle>
+			<contexte>Le bot envoie un message au traitre une fois tous les loups morts, pour lui signaler qu'il est maintenant un loup.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Le dernier loup garou est mort. Quoi que, il en reste encore un...vous ! En tant que traitre, vous êtes maintenant un loup garou, et comme tout loup garou qui se respecte, votre unique but est de vous débarasser de tous les villageois restants...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MESSAGE_ENFANT</cle>
+			<contexte>Le bot envoie un message à l'enfant loup une fois son tuteur mort, pour lui signaler qu'il est maintenant un loup.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Maintenant que votre tuteur est mort et ne peut plus vous protéger, votre vraie nature se révèle : vous êtes à présent un loup garou !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>MATCH_NUL</cle>
+			<contexte>Il ne reste aucun loup ni aucun villageois.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Eeeeeet...Je crois que nous avons un match nul. Ma foi, disons que vous avez tous gagné, mais ce n'est quand même pas très glorieux...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VICTOIRE_VILLAGEOIS</cle>
+			<contexte>Il ne reste plus aucun loup.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Et c'est ainsi qu'est mort...Le dernier loup garou ! Bravo, villageois, vous avez éradiqué la menace ! Messieurs les loups garous, vous ferez un festin une autre fois, je le crains.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VICTOIRE_LOUPS_UN_VILLAGEOIS</cle>
+			<contexte>Il reste un villageois et un ou plusieurs loups. Le villageois perd forcément.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>La nuit suivante, le seul villageois restant fut lui aussi dévoré. Les loups garous, très habiles, étaient parvenus à cacher leur identité pendant suffisament longtemps pour se débarasser de tous les villageois. Félicitations, messieurs les loups garous, pour cette belle performance.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VICTOIRE_LOUPS_ZERO_VILLAGEOIS</cle>
+			<contexte>Il ne reste plus aucun villageois.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Et c'est ainsi que le dernier villageois fut tué. Les loups garous, très habiles, étaient parvenus à cacher leur identité pendant suffisament longtemps pour se débarasser de tous les villageois. Félicitations, messieurs les loups garous, pour cette belle performance.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VICTOIRE_AMOUREUX</cle>
+			<contexte>Les deux amoureux étaient un loup et un villageois. Ils ont gagné car ils sont les seuls encore en vie à la fin du jeu.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Il ne reste qu'un villageois et qu'un loup. Il est évident que le villageois va...Mais ? Nos deux survivants s'enlacent tendrement ! Cupidon avait formé un amour contre-nature, pourtant nos deux amoureux ont réussi à triompher de tout le village et de tous les autres loups. Il ne nous reste plus qu'à leur souhaiter une vie heureuse ensemble malgré leurs différences.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>FIN</cle>
+			<contexte>La partie est terminée !</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Et ainsi se termine notre histoire. Merci à tous d'avoir joué, j'espère vous revoir très bientôt pour une autre partie ! Quant à moi, je retourne me plonger dans mes livres...</phrase>
+			</phrases>
+		</dire>
+	</repliques>
+</caractere>
