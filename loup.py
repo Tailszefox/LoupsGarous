@@ -12,6 +12,7 @@ import string
 import re
 import xml.dom.minidom
 from datetime import datetime
+import ConfigParser
 
 class Bot(ircbot.SingleServerIRCBot):
 	
@@ -20,13 +21,29 @@ class Bot(ircbot.SingleServerIRCBot):
 	
 	#Connexion
 	def __init__(self):
-		self.pseudo = "MaitreDuJeu"
-		self.mdp = "password"
-		self.chanJeu = "#PlaceDuVillage"
-		self.chanParadis = "#Paradis"
-		self.chanLoups = "#LoupsGarous"
-		self.personnalite = None
+		config = ConfigParser.ConfigParser()
+		if len(config.read("./prefs.ini")) == 0:
+			print "Impossible de lire la configuration."
+			sys.exit()
+
+		self.pseudo = config.get("prefs", "pseudo")
+		self.mdp = config.get("prefs", "mdp")
+		self.chanJeu = config.get("prefs", "chanJeu")
+		self.chanParadis = config.get("prefs", "chanParadis")
+		self.chanLoups = config.get("prefs", "chanLoups")
+		serveur = config.get("prefs", "serveur")
+		port = config.getint("prefs", "port")
 		
+		print "Configuration :"
+		print "\tPseudo :", self.pseudo
+		print "\tMot de passe :", "oui" if len(self.mdp) > 0 else "non"
+		print "\tServeur :", serveur + ":" + str(port)
+		print "\tCanal de jeu :", self.chanJeu
+		print "\tCanal des loups : ", self.chanLoups
+		print "\tCanal du paradis : ", self.chanParadis
+		print
+		
+		self.personnalite = None
 		self.joueurs = []
 		self.repliques = {}
 		self.roles = {}
@@ -53,7 +70,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		
 		self.debug("Test d'encodage : Hé hé hé")
 		
-		ircbot.SingleServerIRCBot.__init__(self, [("localhost", 6667)], self.pseudo, "Maitre du jeu du loup garou")
+		ircbot.SingleServerIRCBot.__init__(self, [(serveur, port)], self.pseudo, "Maitre du jeu du loup garou")
 		self.debug(u"Connexion...")
 	
 	#Donne une liste de personnalités au hasard parmi celles disponibles
