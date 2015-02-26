@@ -1,3 +1,9 @@
+# Logs des parties
+/logs/*
+
+# Personalités validés
+/personnalites/accepted/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
