@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
+# -*- coding: iso-8859-15 -*-
 
 import sys
 import codecs
@@ -47,14 +47,16 @@ class Bot(ircbot.SingleServerIRCBot):
 		
 		self.log = None
 		
-		self.nbPersonnalites = 0
+		self.nbPersonnalites = 10
 		
 		random.seed()
+		
+		self.debug("Test d'encodage : Hé hé hé")
 		
 		ircbot.SingleServerIRCBot.__init__(self, [("localhost", 6667)], self.pseudo, "Maitre du jeu du loup garou")
 		self.debug(u"Connexion...")
 	
-	#Donne une liste de personnalitÃ©s au hasard parmi celles disponibles
+	#Donne une liste de personnalités au hasard parmi celles disponibles
 	def listePersonnalites(self):
 		fichiers = os.listdir('./personnalites/accepted')
 		return random.sample(fichiers, self.nbPersonnalites)
@@ -64,13 +66,13 @@ class Bot(ircbot.SingleServerIRCBot):
 		nb = 0
 		
 		for e in document.childNodes[0].childNodes :
-			#RÃ©cupÃ©ration du nom
+			#Récupération du nom
 			if(e.localName == "nom"):
 				nom = e.childNodes[0].nodeValue
 				break
 				
                 for e in document.childNodes[0].childNodes :
-			#RÃ©cupÃ©ration des rÃ©pliques
+			#Récupération des répliques
 			if(e.localName == "repliques"):
 				for f in e.childNodes:
 					if(f.localName == "dire"):
@@ -81,7 +83,7 @@ class Bot(ircbot.SingleServerIRCBot):
                 document.unlink()
                 return nom, nb
 	
-	#Charge les rÃ©pliques depuis le fichier XML
+	#Charge les répliques depuis le fichier XML
 	def chargerRepliques(self, fichier):
 		self.debug(u"Choix du fichier" + fichier)
 		document = xml.dom.minidom.parse(fichier)
@@ -89,25 +91,25 @@ class Bot(ircbot.SingleServerIRCBot):
 		roles = {}
 		declencheurs = {}
 		
-		#RÃ©cupÃ©ration de la personnalitÃ©
+		#Récupération de la personnalité
 		for e in document.childNodes[0].childNodes :
-			#RÃ©cupÃ©ration du nom
+			#Récupération du nom
 			if(e.localName == "nom"):
 				self.personnalite = e.childNodes[0].nodeValue
 			
-			#RÃ©cupÃ©ration des rÃ´les
+			#Récupération des rôles
 			if(e.localName == "roles"):
 				for f in e.childNodes:
 					if(f.localName == "role"):
 						roles[f.attributes["nom"].value] = f.childNodes[0].nodeValue
 			
-			#RÃ©cupÃ©ration des dÃ©clencheurs
+			#Récupération des déclencheurs
 			elif(e.localName == "declencheurs"):
 				for f in e.childNodes:
 					if(f.localName == "declencheur"):
 						declencheurs[f.attributes["nom"].value] = f.childNodes[0].nodeValue
 						
-			#RÃ©cupÃ©ration des rÃ©pliques
+			#Récupération des répliques
 			elif(e.localName == "repliques"):
 				for f in e.childNodes:
 					if(f.localName == "dire"):
@@ -127,7 +129,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		document.unlink()
 		return [repliques, roles, declencheurs]
 	
-	#Envoie le message en utilisant la personnalitÃ©
+	#Envoie le message en utilisant la personnalité
 	def envoyer(self, destination, cle, variables = [], gras = True):
 		replique = None
 		
@@ -137,7 +139,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		elif(cle in self.repliquesDefault):
 			replique = self.repliquesDefault[cle]
 		
-		#Si la replique n'existe pas, on met directement la clÃ©
+		#Si la replique n'existe pas, on met directement la clé
 		if(replique != None):
 			message = replique[random.randint(0, len(replique)-1)]
 			noVariable = 1
@@ -148,7 +150,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		else:
 			message = cle
 		
-		#Le message n'est pas destinÃ© au service : on rajoute le gras et on change quelques trucs
+		#Le message n'est pas destiné au service : on rajoute le gras et on change quelques trucs
 		if(gras):
 			message = message[0].capitalize() + message[1:]
 			message = message.replace(" de un ", " d'un ")
@@ -175,7 +177,7 @@ class Bot(ircbot.SingleServerIRCBot):
 					try:
 						self.addLog('chat', message, {'auteur' : self.pseudo, 'mp' : mp, 'destination' : destination}, 'logPartie')
 					except:
-						self.debug(u'Impossible d\'ajouter la rÃ©plique au log')
+						self.debug(u'Impossible d\'ajouter la réplique au log')
 			
 			message = chr(2) + message
 			
@@ -191,13 +193,14 @@ class Bot(ircbot.SingleServerIRCBot):
 				print "\033[1;37m", message, "\033[0m"
 			else:
 				print message
-		except:
+		except Exception as e :
 			try:
-				print message.encode('ascii', 'ignore')
-			except:
-				print u"Erreur impression"
+				#print message.encode('ascii', 'ignore')
+				print unicode(message, errors="replace")
+			except Exception as eb:
+				print u"Erreur impression totale : ", str(eb)
 	
-	# Ã‰crit dans le log
+	# Écrit dans le log
 	# self.addLog('action', self.victimeLoups, {'type' : 'mort', 'typeMort' : 'nuit', 'role' : self.identiteBrute(joueur)}, 'tour')
 	def addLog(self, balise, texte = None, attributs = {}, fils = None):
 		try:
@@ -222,7 +225,7 @@ class Bot(ircbot.SingleServerIRCBot):
 	def erreur(self, erreur):
 		self.envoyer(self.chanJeu, "ERREUR", [str(erreur)])
 	
-	#Traiter le message reÃ§u
+	#Traiter le message reçu
 	def traiterMessage(self, serv, ev):
 		message = ev.arguments()[0].strip().decode('iso-8859-15')
 		regex = re.compile("\x1f|\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?", re.UNICODE)
@@ -236,27 +239,27 @@ class Bot(ircbot.SingleServerIRCBot):
 			try:
 				self.addLog('chat', messageNormal, {'auteur' : irclib.nm_to_n(ev.source()), 'mp' : 'false', 'destination' : ev.target()}, 'logPartie')
 			except:
-				self.debug(u'Impossible d\'ajouter la rÃ©plique au log')
+				self.debug(u'Impossible d\'ajouter la réplique au log')
 		
-		# Demande des rÃ´les sur le paradis
+		# Demande des rôles sur le paradis
 		if(self.demarre and message == '!roles'  and ev.target().lower() == self.chanParadis.lower()):
 			self.envoyerRolesAutresJoueurs(ev.source())
-		#Jeu pas encore dÃ©marrÃ©
+		#Jeu pas encore démarré
 		elif(self.statut == "attente" and message == '!jouer'):
 			self.demarrerJeu(serv)
-		#Jeu dÃ©marrÃ©, Ã©lection du prÃ©sentateur
+		#Jeu démarré, élection du présentateur
 		elif(self.statut == "votePresentateurs" and message.isdigit()):
 			self.compterVotePresentateur(ev.source(), message)
-		#Jeu dÃ©marrÃ©, attente des joueurs
+		#Jeu démarré, attente des joueurs
 		elif(self.statut == "appelJoueurs" and self.declencheurs['participer'] in message):
 			self.ajouterJoueur(ev)
 		# Vote pour chuchotement
 		elif(self.statut == "voteChuchotement" and ("oui" in message or "non" in message)):
 			self.voteChuchotement(ev.source(), message)
-		#Jeu dÃ©marrÃ©, joueur n'ayant pas reÃ§u son rÃ´le
+		#Jeu démarré, joueur n'ayant pas reçu son rôle
 		elif('non' in self.declencheurs and self.declencheurs['non'] in message):
 			self.envoyerRole(serv, ev.source())
-		#Jeu dÃ©marrÃ©, joueur voulant connaitre les Ã©quivalences
+		#Jeu démarré, joueur voulant connaitre les équivalences
 		elif('roles' in self.declencheurs and self.declencheurs['roles'] in message and ev.target().lower() == self.chanJeu.lower()):
 			self.equivalencesRoles(serv, ev.source())
 		#Message des loups sur qui ils veulent tuer
@@ -271,14 +274,14 @@ class Bot(ircbot.SingleServerIRCBot):
 		#Vote pour le maire
 		elif(self.statut == "votesMaire"):
 			self.compterVoteMaire(ev.source(), message)
-		#Le maire dÃ©partage ceux Ã  Ã©galitÃ©
+		#Le maire départage ceux à égalité
 		elif(self.statut == "maireDepartage" and ev.source() == self.maire):
 			self.lapidationMaire(message)
 		# Spritisme en cours
 		elif(self.statut == "spr" and ev.target().lower() == self.chanJeu.lower()):
 			self.choix_spr(serv, ev.source(), message)
 	
-	#Traite le message privÃ© reÃ§u
+	#Traite le message privé reçu
 	def traiterMessagePrive(self, serv, ev):
 		message = ev.arguments()[0].strip().decode('iso-8859-15')
 		regex = re.compile("\x1f|\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?", re.UNICODE)
@@ -292,7 +295,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			try:
 				self.addLog('chat', messageNormal, {'auteur' : irclib.nm_to_n(ev.source()), 'mp' : 'true', 'destination' : self.pseudo}, 'logPartie')
 			except:
-				self.debug(u'Impossible d\'ajouter la rÃ©plique au log')
+				self.debug(u'Impossible d\'ajouter la réplique au log')
 		
 		# Chuchotement
 		if(self.demarre and self.whisper and ev.source() in self.joueurs and (('chuchoter' in self.declencheurs and self.declencheurs['chuchoter'] in message) or ('chuchoter' in self.declencheursDefault and self.declencheursDefault['chuchoter'] in message))):
@@ -312,13 +315,13 @@ class Bot(ircbot.SingleServerIRCBot):
 		#Appel de Cupidon, et c'est Cupidon
 		elif(self.statut == "appelCupidon" and self.cupidon == ev.source()):
 			self.messageCupidon(serv, message)
-		#Appel de la sorciÃ¨re, et c'est la sorciÃ¨re
+		#Appel de la sorcière, et c'est la sorcière
 		elif((self.statut == "sorciereVie" or self.statut == "sorciereMort") and self.sorciere == ev.source() and self.sorciere != self.enPrison):
 			self.messageSorciere(serv, message)
 		#Appel du corbeau, et c'est le corbeau
 		elif(self.statut == "appelCorbeau" and self.corbeau == ev.source() and self.corbeau != self.enPrison):
 			self.messageCorbeau(serv, message)
-		#Message pour le mur, faut que le gars soit encore vivant bien sÃ»r
+		#Message pour le mur, faut que le gars soit encore vivant bien sûr
 		elif(self.statut == "messageMurs" and ev.source() in self.joueurs):
 			self.ajoutMurs(serv, ev.source(), messageNormal)
 		#Message pour la candidature de Maire.
@@ -329,9 +332,9 @@ class Bot(ircbot.SingleServerIRCBot):
 			self.successeurMaire(serv, ev.source(), message)
 
 	############
-	# DÃ©roulement du jeu
+	# Déroulement du jeu
 
-	#DÃ©marre le jeu en envoyant les premiÃ¨res instructions
+	#Démarre le jeu en envoyant les premières instructions
 	def demarrerJeu(self, serv):
 		
 		self.log = xml.dom.minidom.parseString("<log></log>")
@@ -369,7 +372,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			self.tableauPersonnalitesVote[nb] = personnaliteVote
 			nb += 1
 			
-		serv.execute_delayed(3, self.envoyer, [self.chanJeu, u"Nous avons de nombreux prÃ©sentateurs aujourd'hui. Votez pour votre prÃ©fÃ©rÃ©, en donnant simplement son chiffre. Chaque personalitÃ©e est accompagnÃ©e du pourcentage de rÃ©pliques qui ont Ã©tÃ© adaptÃ©es. Voici maintenant les prÃ©sentateurs proposÃ©s :"])
+		serv.execute_delayed(3, self.envoyer, [self.chanJeu, u"Nous avons de nombreux présentateurs aujourd'hui. Votez pour votre préféré, en donnant simplement son chiffre. Chaque personalitée est accompagnée du pourcentage de répliques qui ont été adaptées. Voici maintenant les présentateurs proposés :"])
 		serv.execute_delayed(3, self.envoyer, [self.chanJeu, stringPersonnaliteVote])
 		
 		self.statut = "votePresentateurs"
@@ -379,24 +382,24 @@ class Bot(ircbot.SingleServerIRCBot):
 		#serv.execute_delayed(3, self.personnaliteeChoisie, [serv])
 		serv.execute_delayed(30, self.personnaliteeChoisie, [serv])
 	
-	#On reÃ§oit un vote pour le prÃ©sentateur
+	#On reçoit un vote pour le présentateur
 	def compterVotePresentateur(self, joueur, message):
 		numeroVote = int(message)
 		
 		if(numeroVote >= 0 and numeroVote <= self.nbPersonnalites):
 			self.debug(u"Vote pour " + str(numeroVote) + " de " + joueur)
-			#Si le le joueur n'a pas dÃ©jÃ  votÃ©
+			#Si le le joueur n'a pas déjà voté
 			if(joueur not in self.aVote):
 				self.aVote.append(joueur)
 				self.votes.append(numeroVote)
 
-	#La personnalitÃ© a Ã©tÃ© Ã©lue, on peut la charger et la lancer
+	#La personnalité a été élue, on peut la charger et la lancer
 	def personnaliteeChoisie(self, serv):
 		
-		#Si personne n'a votÃ©, on choisi par dÃ©faut
+		#Si personne n'a voté, on choisi par défaut
 		if(len(self.aVote) == 0):
 			personnaliteChoisie = 0
-		#On cherche le gagnant, si y'a une Ã©galitÃ© on choisit au pif parmi les ex-aequo
+		#On cherche le gagnant, si y'a une égalité on choisit au pif parmi les ex-aequo
 		else:
 			maximum = 0
 			personnalitesEgalite = []
@@ -414,13 +417,13 @@ class Bot(ircbot.SingleServerIRCBot):
 				personnaliteChoisie = personnalitesEgalite[random.randint(0, len(personnalitesEgalite) - 1)]
 						
 		
-		#Charge la personnalitÃ© par dÃ©faut
+		#Charge la personnalité par défaut
 		chargement = self.chargerRepliques("./personnalites/default/default.xml")
 		self.repliquesDefault = chargement[0]
 		self.rolesDefault = chargement[1]
 		self.declencheursDefault = chargement[2]
 		
-		#Charge la personnalitÃ© choisie
+		#Charge la personnalité choisie
 		self.debug(u"Personnalite " + str(personnaliteChoisie) + " choisie")
 		#chargement = self.chargerRepliques("./personnalites/default/default.xml")
 		if(self.tableauPersonnalitesVote[personnaliteChoisie] == 'default.xml'):
@@ -431,12 +434,12 @@ class Bot(ircbot.SingleServerIRCBot):
 		self.roles = chargement[1]
 		self.declencheurs = chargement[2]
 		
-		#Si le dÃ©clencheur n'existe pas dans la personnalitÃ©, on la prend dans celle par dÃ©faut
+		#Si le déclencheur n'existe pas dans la personnalité, on la prend dans celle par défaut
 		for decl in self.declencheursDefault:
 			if(decl not in self.declencheurs):
 				self.declencheurs[decl] = self.declencheursDefault[decl]
 		
-		self.envoyer(self.chanJeu, u"Bien, les votes sont terminÃ©s. Veuillez donc applaudir bien fort..." + self.personnalite + " !")
+		self.envoyer(self.chanJeu, u"Bien, les votes sont terminés. Veuillez donc applaudir bien fort..." + self.personnalite + " !")
 		self.addLog('personnalite', self.personnalite)
 		serv.mode(self.chanJeu, "+N")
 		serv.execute_delayed(6, self.envoyer, [self.chanJeu, "COMMENCER_JOUER"])
@@ -456,7 +459,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		
 		self.sprFonctions = [self.spr_memeCamp, self.spr_nombreRoles, self.spr_roleExiste, self.spr_sorcierePseudo, self.spr_loupsPseudo, self.spr_maireSV, self.spr_voyanteLoup, self.spr_estSV]
 		
-		#RÃ´les spÃ©ciaux
+		#Rôles spéciaux
 		self.voyante = "non"
 		self.voyanteObserveLoup = False
 		
@@ -508,10 +511,10 @@ class Bot(ircbot.SingleServerIRCBot):
 		serv.execute_delayed(60, self.verifierSuffisant, [serv, 0])
 		#serv.execute_delayed(20, self.verifierSuffisant, [serv, 0])
 	
-	#Ajoute le joueur Ã  la liste
+	#Ajoute le joueur à la liste
 	def ajouterJoueur(self, ev):
 		
-		#Si joueur pas dÃ©jÃ  prÃ©sent dans la liste
+		#Si joueur pas déjà présent dans la liste
 		if(ev.source() not in self.joueurs):
 			self.debug(u"Participation de " + ev.source())
 			
@@ -521,7 +524,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			self.joueurs.append(ev.source())
 			self.connection.mode(self.chanJeu, " +v " + irclib.nm_to_n(ev.source()))
 	
-	#VÃ©rifie que le nombre de joueur est suffisant. Si oui, passe Ã  l'Ã©tape suivante. Sinon, attend encore
+	#Vérifie que le nombre de joueur est suffisant. Si oui, passe à l'étape suivante. Sinon, attend encore
 	def verifierSuffisant(self, serv, nbAppels):
 		if(len(self.joueurs) < 4):
 			if (nbAppels == 10):
@@ -559,7 +562,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		self.envoyer(self.chanJeu, "VOTE_CHUCHOTEMENT")
 		serv.execute_delayed(40, self.partieVaCommencer, [serv])
 		
-	# ReÃ§oit un vote pour chuchotement
+	# Reçoit un vote pour chuchotement
 	def voteChuchotement(self, joueur, message):
 		if(joueur not in self.listeVotesChuchotement):
 			self.listeVotesChuchotement.append(joueur)
@@ -592,7 +595,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			if(pseudo.lower() not in self.pseudos):
 				serv.mode(self.chanJeu, " -v " + pseudo)
 	
-	#Attribue un rÃ´le Ã  chacun des joueurs et leur envoie un message pour leur donner
+	#Attribue un rôle à chacun des joueurs et leur envoie un message pour leur donner
 	def attributerRoles(self, serv):
 		self.statut = "attribuerRoles"
 		self.debug(u"Nombre de loups : ")
@@ -626,7 +629,7 @@ class Bot(ircbot.SingleServerIRCBot):
 				self.roleVoyante(joueur)
 			
 			elif(noRole < len(self.rolesSpeciaux)):
-				self.debug(u'Attribution rÃ´le ' + str(noRole) + ' : ' + str(self.rolesSpeciaux[noRole]))
+				self.debug(u'Attribution rôle ' + str(noRole) + ' : ' + str(self.rolesSpeciaux[noRole]))
 				self.villageois.append(joueur)
 				self.rolesSpeciaux[noRole](joueur)
 				noRole = noRole + 1
@@ -643,7 +646,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		random.shuffle(self.joueurs)
 		serv.execute_delayed(attente + 5, self.verifierRolesRecus, [serv])
 	
-	#Fonctions d'attributions des rÃ´les spÃ©ciaux
+	#Fonctions d'attributions des rôles spéciaux
 	def roleVoyante(self, joueur):
 		self.voyante = joueur
 		self.addLog('joueur', irclib.nm_to_n(joueur), {'role' : 'voyante'}, 'joueurs')
@@ -688,10 +691,10 @@ class Bot(ircbot.SingleServerIRCBot):
 		self.enfant = joueur
 		self.addLog('joueur', irclib.nm_to_n(joueur), {'role' : 'enfant'}, 'joueurs')
 	
-	#Demande Ã  tous les joueurs s'ils ont reÃ§u leur rÃ´le
+	#Demande à tous les joueurs s'ils ont reçu leur rôle
 	def verifierRolesRecus(self, serv):
 		
-		# On donne son tuteur Ã  l'enfant loup
+		# On donne son tuteur à l'enfant loup
 		if(self.enfant is not None):
 			if(self.ancien is not None and self.ancien != "non"):
 				self.tuteur = self.ancien
@@ -742,7 +745,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		# LE VRAI
 		serv.execute_delayed(attente + 20, self.passerNuit, [serv])
 	
-	#Retourne le rÃ´le d'un joueur Ã  partir de son domaine
+	#Retourne le rôle d'un joueur à partir de son domaine
 	def identite(self, joueur):
 		if(joueur in self.loups):
 			if("loup" in self.roles):
@@ -825,7 +828,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		else:
 			return None
 	
-	# Retourne le rÃ´le brut d'un joueur Ã  partir de son domaine	
+	# Retourne le rôle brut d'un joueur à partir de son domaine	
 	def identiteBrute(self, joueur):
 		if(joueur in self.loups):
 			return "loup"
@@ -869,14 +872,14 @@ class Bot(ircbot.SingleServerIRCBot):
 		else:
 			return None
 	
-	#Donne au joueur son rÃ´le
+	#Donne au joueur son rôle
 	def envoyerRole(self, serv, source):
 		pseudo = irclib.nm_to_n(source)
 		identite = self.identite(source)
 		if(identite != None):
 			self.envoyer(pseudo, "RAPPEL_ROLE", [identite])
 	
-	#Donne l'Ã©quivalent des roles
+	#Donne l'équivalent des roles
 	def equivalencesRoles(self, serv, source):
 		pseudo = irclib.nm_to_n(source)
 		tout = ""
@@ -884,14 +887,14 @@ class Bot(ircbot.SingleServerIRCBot):
 			tout += self.roles[key].capitalize() + ' = ' + self.rolesDefault[key].capitalize() + '. '
 		self.envoyer(pseudo, tout);
 	
-	#Passe Ã  l'Ã©tape de nuit
+	#Passe à l'étape de nuit
 	def passerNuit(self, serv):
 		self.statut = "nuit"
 		self.addLog('tour')
 		
 		self.envoyer(self.chanJeu, "NUIT_TOMBEE")
 		
-		#Si Cupidon est lÃ  (premier tour), on l'appelle
+		#Si Cupidon est là (premier tour), on l'appelle
 		if (self.cupidon != None):
 			self.statut = "appelCupidon"
 			serv.execute_delayed(10, self.envoyer, [self.chanJeu, "APPEL_CUPIDON"])
@@ -910,7 +913,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		elif(self.amoureux2 == None):
 			self.envoyer(irclib.nm_to_n(self.cupidon), "DEMANDE_CUPIDON_2", [irclib.nm_to_n(self.amoureux1)])
 	
-	#RÃ©pond Ã  Cupidon
+	#Répond à Cupidon
 	def messageCupidon(self, serv, message):
 		if(message == self.pseudo.lower()):
 			self.envoyer(irclib.nm_to_n(self.cupidon), "CUPIDON_DEMANDE_PRESENTATEUR")
@@ -963,7 +966,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			self.envoyer(irclib.nm_to_n(self.policier), "DEMANDE_POLICIER")
 			serv.execute_delayed(30, self.appelVoyante, [serv])
 
-	#RÃ©pond au policier
+	#Répond au policier
 	def messagePolicier(self, serv, message):
 		
 		if(message == self.pseudo.lower()):
@@ -1013,7 +1016,7 @@ class Bot(ircbot.SingleServerIRCBot):
 				self.envoyer(irclib.nm_to_n(self.voyante), "DEMANDE_VOYANTE")
 			serv.execute_delayed(30, self.appelSalvateur, [serv])
 		
-	#RÃ©pond Ã  la voyante
+	#Répond à la voyante
 	def messageVoyante(self, serv, message):
 		if(message == self.pseudo.lower()):
 			self.envoyer(irclib.nm_to_n(self.voyante), "VOYANTE_DEMANDE_PRESENTATEUR")
@@ -1061,7 +1064,7 @@ class Bot(ircbot.SingleServerIRCBot):
 				self.envoyer(irclib.nm_to_n(self.salvateur), "DEMANDE_SALVATEUR")
 			serv.execute_delayed(30, self.appelLoups, [serv])
 			
-	#RÃ©pond au salvateur
+	#Répond au salvateur
 	def messageSalvateur(self, serv, message):
 		if(message == "moi"):
 			message = irclib.nm_to_n(self.salvateur).lower()
@@ -1128,7 +1131,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		
 		#if(not self.aParlerLoup):
 		#	self.envoyer(self.chanLoups, "INSTRUCTIONS_LOUPS", [self.declencheurs['tuerLoups']])
-		#	self.debug(u"A parlÃ© aux loups")
+		#	self.debug(u"A parlé aux loups")
 	
 	#Traite les messages de mort des loups
 	def traiterMessageLoups(self, serv, source, message, messageNormal):
@@ -1151,7 +1154,7 @@ class Bot(ircbot.SingleServerIRCBot):
 				self.statut = "attaqueLoup"
 				serv.execute_delayed(5, self.kickerLoups, [serv])
 	
-	#Kick les loups une fois qu'ils ont choisi quelqu'un Ã  tuer
+	#Kick les loups une fois qu'ils ont choisi quelqu'un à tuer
 	def kickerLoups(self, serv):
 		for loup in self.loups:
 			serv.kick(self.chanLoups, irclib.nm_to_n(loup))
@@ -1169,19 +1172,19 @@ class Bot(ircbot.SingleServerIRCBot):
 		self.sauvetageSorciere = None
 		self.victimeSorciere = None
 		
-		#SorciÃ¨re morte; il lui restait des potions
+		#Sorcière morte; il lui restait des potions
 		if(self.sorciere == None and (self.potionVie or self.potionMort)):
 			serv.execute_delayed(5, self.appelCorbeau, [serv])
 			
-		#Pas de sorciÃ¨re; ou sorciÃ¨re vivante mais plus de potion
+		#Pas de sorcière; ou sorcière vivante mais plus de potion
 		elif(self.sorciere == "non" or (not self.potionVie and not self.potionMort)):
 			serv.execute_delayed(5, self.appelCorbeau, [serv])
 		
-		#SorciÃ¨re vivante avec potion de vie uniquement, mais pas de victime loup
+		#Sorcière vivante avec potion de vie uniquement, mais pas de victime loup
 		elif(self.potionVie and not self.potionMort and self.victimeLoups == None):
 			serv.execute_delayed(5, self.appelCorbeau, [serv])
 		
-		#SorciÃ¨re vivante et avec des potions
+		#Sorcière vivante et avec des potions
 		else:
 			serv.execute_delayed(5, self.envoyer, [self.chanJeu, "APPEL_SORCIERE"])
 			if(self.sorciere != self.enPrison):
@@ -1191,7 +1194,7 @@ class Bot(ircbot.SingleServerIRCBot):
 				self.statut = "sorciereVie"
 			serv.execute_delayed(50, self.verifierSorciere, [serv])
 	
-	#Appelle la sorciÃ¨re
+	#Appelle la sorcière
 	def appelSorciere(self, serv):
 		if(self.victimeLoups != None and self.potionVie and self.statut != "sorciereVie" and self.statut != "sorciereMort"):
 			self.statut = "sorciereVie"
@@ -1204,12 +1207,12 @@ class Bot(ircbot.SingleServerIRCBot):
 		else:
 			self.appelCorbeau(serv)
 		
-	#Message de la sorciÃ¨re
+	#Message de la sorcière
 	def messageSorciere(self, serv, message):
 		self.debug(self.statut)
 		self.debug(u'Vie : ' + str(self.potionVie))
 		self.debug(u'Mort : ' +str(self.potionMort))
-		#Ã‰tape de la potion de guÃ©rison
+		#Étape de la potion de guérison
 		if(self.statut == "sorciereVie"):
 			if("oui" in message):
 				self.sauvetageSorciere = self.victimeLoups
@@ -1219,7 +1222,7 @@ class Bot(ircbot.SingleServerIRCBot):
 				self.sauvetageSorciere = None
 			self.appelSorciere(serv)
 		
-		#Ã‰tape de la potion d'empoisonnement
+		#Étape de la potion d'empoisonnement
 		elif(self.statut == "sorciereMort"):
 			if(message == "non"):
 				self.appelSorciere(serv)
@@ -1234,7 +1237,7 @@ class Bot(ircbot.SingleServerIRCBot):
 					self.addLog('action', self.victimeSorciere, {'type' : 'sorciereMort'}, 'tour')
 					self.appelSorciere(serv)
 					
-	#Si la sorciÃ¨re est trop lente, tant pis
+	#Si la sorcière est trop lente, tant pis
 	def verifierSorciere(self, serv):
 		self.debug(u"Check sorciere : " + str(self.statut))
 		if(self.statut == "sorciereVie" or self.statut == "sorciereMort"):
@@ -1257,7 +1260,7 @@ class Bot(ircbot.SingleServerIRCBot):
 				self.envoyer(irclib.nm_to_n(self.corbeau), "DEMANDE_CORBEAU")
 			serv.execute_delayed(30, self.passerJour, [serv])
 			
-	#RÃ©pond au corbeau
+	#Répond au corbeau
 	def messageCorbeau(self, serv, message):
 		if(message == self.pseudo.lower()):
 			self.envoyer(irclib.nm_to_n(self.corbeau), "CORBEAU_DEMANDE_PRESENTATEUR")
@@ -1298,24 +1301,24 @@ class Bot(ircbot.SingleServerIRCBot):
 		if(self.victimeSorciere != None):
 			self.debug(u"Victime sorciere : " + self.pseudos[self.victimeSorciere])
 			
-		#Si pas de victime des loup ou victime protÃ©gÃ©, aucune victime loup
+		#Si pas de victime des loup ou victime protégé, aucune victime loup
 		if(self.victimeLoups == None or self.pseudos[self.victimeLoups] == self.salvateurDernier or self.victimeLoups == self.sauvetageSorciere):
 			self.debug(u"Pas de victime loup")
 			self.victimeLoups = None
 		
-		#Si victime loup est ancien et qu'il n'avait jamais Ã©tÃ© attaquÃ©, aucune victime
+		#Si victime loup est ancien et qu'il n'avait jamais été attaqué, aucune victime
 		if(self.victimeLoups != None and self.pseudos[self.victimeLoups] == self.ancien and self.ancienResiste):
 			self.debug(u"L'ancien resiste aux loups !")
 			self.ancienResiste = False
 			self.victimeLoups = None
 		
-		#Si pas de victime loup mais une victime sorciÃ¨re
+		#Si pas de victime loup mais une victime sorcière
 		if(self.victimeLoups == None and self.victimeSorciere != None):
 			self.debug(u"Une victime sorciere uniquement")
 			self.victimeLoups = self.victimeSorciere
 			self.victimeSorciere = None
 		
-		#Si les victimes sont les mÃªmes
+		#Si les victimes sont les mêmes
 		if(self.victimeLoups != None and self.victimeLoups == self.victimeSorciere):
 			self.debug(u"Memes victimes loups et sorciere")
 			self.victimeSorciere = None
@@ -1326,7 +1329,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			serv.execute_delayed(5, self.envoyer, [self.chanJeu, "PERSONNE_N_A_ETE_TUE"])
 			serv.execute_delayed(10, self.annoncerAttenteVote, [serv])
 			
-		#On tue la victime (soit loup, soit pas loup mais sorciÃ¨re)
+		#On tue la victime (soit loup, soit pas loup mais sorcière)
 		else:
 			joueur = self.pseudos[self.victimeLoups]
 			identite = self.identite(joueur)
@@ -1345,7 +1348,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			self.suivante = self.tuerVictimeSorciere
 			self.tuer(20, joueur)
 	
-	#On tue la victime de la sorciÃ¨re, s'il y en a une
+	#On tue la victime de la sorcière, s'il y en a une
 	def tuerVictimeSorciere(self, serv):
 		if(self.victimeSorciere == None or self.victimeSorciere not in self.pseudos):
 			self.debug(u"Pas de victime sorciere : " + str(self.victimeSorciere))
@@ -1369,7 +1372,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			self.victimeSorciere = None
 			self.tuer(20, joueur)
 	
-	#Le chasseur vient d'Ãªtre tuÃ©, on lui demande qui il tue en retour
+	#Le chasseur vient d'être tué, on lui demande qui il tue en retour
 	def chasseurTue(self):
 		self.envoyer(self.chanJeu, "INSTRUCTIONS_CHASSEUR")
 		self.connection.execute_delayed(3, self.envoyer, [irclib.nm_to_n(self.chasseur), "DEMANDE_CHASSEUR"])
@@ -1386,7 +1389,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			self.tuer(5, ancienChasseur, self.continuer)
 			
 	
-	#Tue la personne dÃ©signÃ©e par le chasseur	
+	#Tue la personne désignée par le chasseur	
 	def messageChasseur(self, serv, source, message):
 		pseudo = message
 		if(pseudo == self.pseudo.lower()):
@@ -1409,7 +1412,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			else:
 				serv.execute_delayed(10, self.envoyer, [self.chanJeu, "VICTIME_CHASSEUR_ETAIT_VILLAGEOIS", [pseudo.capitalize()  ,identite]])
 			
-			#On enlÃ¨ve le chasseur maintenant
+			#On enlève le chasseur maintenant
 			self.chasseur = None
 			self.secondeVictime = joueur
 			self.tuer(15, source, False)
@@ -1434,10 +1437,10 @@ class Bot(ircbot.SingleServerIRCBot):
 				self.connection.execute_delayed(20, self.tueAmoureux, [self.amoureux1])
 				return
 			
-			#On enlÃ¨ve le chasseur maintenant
+			#On enlève le chasseur maintenant
 			self.chasseur = None
 			
-			#Si personne n'a gagnÃ©, on exÃ©cute la fonction suivante
+			#Si personne n'a gagné, on exécute la fonction suivante
 			if(self.verifierVictoire(25) == 0):
 				serv.execute_delayed(25, self.suivante, [serv])
 			"""
@@ -1447,17 +1450,17 @@ class Bot(ircbot.SingleServerIRCBot):
 		self.pseudosPresents = []
 		serv.who(self.chanJeu)
 		self.suivante = self.votesLapidation
-		self.debug(u"Who effectuÃ©")
+		self.debug(u"Who effectué")
 		serv.execute_delayed(6, self.tuerAbsents, [serv])
 	
-	#Donne les instructions concernant l'Ã©lection du maire
+	#Donne les instructions concernant l'élection du maire
 	def demarrerElection(self, serv):
 		self.statut = "candidaturesMaire"
 		self.envoyer(self.chanJeu, "INSTRUCTIONS_MAIRE")
 		self.messagesCandidats = {}
 		serv.execute_delayed(60, self.verifierCandidats, [serv])
 		
-	#Message pour Ãªtre candidat
+	#Message pour être candidat
 	def candidatureMaire(self, source, message):
 		pseudo = irclib.nm_to_n(source)
 		
@@ -1468,13 +1471,13 @@ class Bot(ircbot.SingleServerIRCBot):
 		if(len(message) > 250):
 			message = message[0:250] + '...'
 		
-		#Si la personne a dÃ©jÃ  envoyÃ© 5 messages, on l'ignore
+		#Si la personne a déjà envoyé 5 messages, on l'ignore
 		if(len(self.messagesCandidats[pseudo]) < 5):
 			self.messagesCandidats[pseudo].append(message)
 			
 		self.debug(self.messagesCandidats)
 	
-	#VÃ©rifie qu'il y a des candidats, lit leurs messages puis lance les votes
+	#Vérifie qu'il y a des candidats, lit leurs messages puis lance les votes
 	def verifierCandidats(self, serv):
 		#Aucun candidat, on laisse tomber
 		if(len(self.messagesCandidats) == 0):
@@ -1510,27 +1513,27 @@ class Bot(ircbot.SingleServerIRCBot):
 			pseudo = messageSplit[1]
 			self.debug(u"Vote pour " + messageSplit[1] + " de " + joueur)
 			
-			#Si le pseudo s'est prÃ©sentÃ© et que le joueur n'a pas dÃ©jÃ  votÃ©
+			#Si le pseudo s'est présenté et que le joueur n'a pas déjà voté
 			if(pseudo in self.candidats and joueur not in self.aVoteMaire):
 				self.aVoteMaire.append(joueur)
 				self.votesMaire.append(pseudo)
 				self.debug(self.votesMaire)
 				self.addLog('vote', joueur, {'pour' : pseudo}, 'votes')
 				
-				#Si tout le monde a votÃ©, on peut continuer directement
+				#Si tout le monde a voté, on peut continuer directement
 				if(len(self.aVoteMaire) == len(self.joueurs)):
 					self.verifierVotesMaire(self.connection)
 	
-	#Passe aux rÃ©sultats des Ã©lÃ©ctions si les votes sont encore en cours
+	#Passe aux résultats des éléctions si les votes sont encore en cours
 	def passerVoteMaire(self, serv):
 		if(self.statut == "votesMaire"):
 			self.verifierVotesMaire(serv)
 	
-	#VÃ©rifie qu'il y a des votes, puis donne son statut de maire Ã  la personne choisie
+	#Vérifie qu'il y a des votes, puis donne son statut de maire à la personne choisie
 	def verifierVotesMaire(self, serv):
 		self.statut = "votesMaireFini"
 		
-		#Personne n'a votÃ© ?
+		#Personne n'a voté ?
 		if(len(self.aVoteMaire) == 0):
 			self.addLog('resultat', "", {'type' : 'aucun'}, 'votes')
 			self.envoyer(self.chanJeu, "AUCUN_VOTE_MAIRE")
@@ -1573,8 +1576,8 @@ class Bot(ircbot.SingleServerIRCBot):
 	"""
 	def annoncerAttenteVote_2(self, serv):
 		
-		#Si c'est le jour 2, on procÃ¨de d'abord Ã  l'Ã©lection du maire
-		self.debug(u'DÃ©but du jour ' + str(self.noJour))
+		#Si c'est le jour 2, on procède d'abord à l'élection du maire
+		self.debug(u'Début du jour ' + str(self.noJour))
 		
 		if(self.noJour == 2 and not self.maireElu):
 			self.maireElu = True
@@ -1589,7 +1592,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		else:
 			self.minimumConfirmation = len(self.joueurs) - 1
 		
-		#Si l'idiot ne peut plus voter, on enlÃ¨ve son vote
+		#Si l'idiot ne peut plus voter, on enlève son vote
 		if(self.idiot != None and not self.idiotVote):
 			self.minimumConfirmation = self.minimumConfirmation - 1
 		
@@ -1604,7 +1607,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		self.noVote = self.noVote + 1
 		serv.execute_delayed(240, self.debatsTropLongs, [serv, self.noVote])
 		
-	#Passe aux votes au bout d'un moment si ce n'est pas dÃ©jÃ  le cas
+	#Passe aux votes au bout d'un moment si ce n'est pas déjà le cas
 	def debatsTropLongs(self, serv, noVote):
 		if(self.statut == "attenteVote" and noVote == self.noVote):
 			self.envoyer(self.chanJeu, "DEBAT_LENTS")
@@ -1613,7 +1616,7 @@ class Bot(ircbot.SingleServerIRCBot):
 	#Traiter demande vote
 	def traiterDemandeVote(self, serv, joueur):
 		self.debug(joueur + " veut voter.")
-		#Si le joueur n'a pas dÃ©jÃ  demandÃ©, que ce n'est pas l'idiot, ou que c'est l'idiot et qu'il vote
+		#Si le joueur n'a pas déjà demandé, que ce n'est pas l'idiot, ou que c'est l'idiot et qu'il vote
 		if(joueur not in self.joueursDemandant and (self.idiot != joueur or (self.idiot == joueur and self.idiotVote))):
 			self.joueursDemandant.append(joueur)
 		
@@ -1624,8 +1627,8 @@ class Bot(ircbot.SingleServerIRCBot):
 	
 	#Passe aux votes
 	def votesLapidation(self, serv):
-		#Si c'est le jour 2, on procÃ¨de d'abord Ã  l'Ã©lection du maire
-		self.debug(u'DÃ©but du jour ' + str(self.noJour))
+		#Si c'est le jour 2, on procède d'abord à l'élection du maire
+		self.debug(u'Début du jour ' + str(self.noJour))
 		
 		if(self.noJour == 2 and not self.maireElu):
 			self.maireElu = True
@@ -1671,10 +1674,10 @@ class Bot(ircbot.SingleServerIRCBot):
 			elif(pseudo in self.pseudos):
 				#Et que c'est pas l'idiot, ou que c'est l'idiot et qu'il a le droit de voter
 				if((joueur != self.idiot)  or (joueur == self.idiot and self.idiotVote)):
-					#Si Ã©galitÃ©, on vÃ©rifie que le joueur concernÃ© est dans les Ã©galitaires
+					#Si égalité, on vérifie que le joueur concerné est dans les égalitaires
 					if(not self.egalite or (self.egalite and pseudo in self.joueursEgalite)):
 						
-						# S'il a dÃ©jÃ  votÃ©, on annule son vote
+						# S'il a déjà voté, on annule son vote
 						if(joueur in self.votes):
 							del self.votes[joueur]
 							
@@ -1703,9 +1706,9 @@ class Bot(ircbot.SingleServerIRCBot):
 						majorite = round(total / 2) + 1
 						actuel = self.votes.values().count(pseudo)
 						
-						self.debug(u"Total : " + str(total) + u", VotÃ© : " + str(len(self.votes)) +  u", MajoritÃ© : " + str(majorite) + u", Actuel : " + str(actuel)) 
+						self.debug(u"Total : " + str(total) + u", Voté : " + str(len(self.votes)) +  u", Majorité : " + str(majorite) + u", Actuel : " + str(actuel)) 
 						
-						# Si tout le monde a votÃ© ou majoritÃ© absolue
+						# Si tout le monde a voté ou majorité absolue
 						if(len(self.votes) == total or actuel >= majorite):
 							self.lapidation(self.connection, 0)
 	
@@ -1726,7 +1729,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		
 		self.lapidation(serv, nbAppels)
 
-	#VÃ©rifie les votes et lapide le...gagnant
+	#Vérifie les votes et lapide le...gagnant
 	def lapidation(self, serv, nbAppels):
 		
 		self.debug("Victime corbeau : " + str(self.victimeCorbeau))
@@ -1736,7 +1739,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			self.debug(self.votes)
 			self.victimeCorbeau = None
 		
-		#Personne n'a votÃ© ?
+		#Personne n'a voté ?
 		if(len(self.votes) == 0):
 			if (nbAppels == 1):
 				self.egalite = True
@@ -1789,12 +1792,12 @@ class Bot(ircbot.SingleServerIRCBot):
 			serv.execute_delayed(attente, self.envoyer, [self.chanJeu, "DEUXIEME_EGALITE"])
 			self.addLog('resultat', "", {'type' : 'egalite'}, 'votes')
 			
-			#Personne n'a gagnÃ© ?
+			#Personne n'a gagné ?
 			if(self.verifierVictoire(attente) == 0):
 				serv.execute_delayed(attente+5, self.envoyer, [self.chanJeu, "FIN_JOURNEE"])
 				serv.execute_delayed(attente+10, self.demarrerMurs, [serv])
 		
-		#Ã‰galitÃ©. Si pas de maire, on refait un autre, sinon c'est lui qui choisit
+		#Égalité. Si pas de maire, on refait un autre, sinon c'est lui qui choisit
 		elif(self.egalite):
 			if(self.maire != None):
 				self.statut = "maireDepartage"
@@ -1805,7 +1808,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			serv.execute_delayed(attente, self.envoyer, [self.chanJeu, "PREMIERE_EGALITE"])
 			serv.execute_delayed(attente, self.annoncerEgalite, [serv])
 			
-		#Pas d'Ã©galitÃ©, Ã§a roule
+		#Pas d'égalité, ça roule
 		else:
 			serv.execute_delayed(attente, self.tuerLapidation, [serv, joueurDesigne])
 	
@@ -1829,14 +1832,14 @@ class Bot(ircbot.SingleServerIRCBot):
 			serv.execute_delayed(5, self.envoyer, [self.chanJeu, "FIN_JOURNEE"])
 			serv.execute_delayed(10, self.demarrerMurs, [serv])
 	
-	#Tue le joueur dÃ©signÃ© par le maire
+	#Tue le joueur désigné par le maire
 	def lapidationMaire(self, message):
 		if(message in self.joueursEgalite):
 			self.statut = "maireDepartageTermine"
 			self.addLog('resultat', message, {'type' : 'maire'}, 'votes')
 			self.tuerLapidation(self.connection, message)
 	
-	#Tue le joueur dÃ©signÃ© par lapidation	
+	#Tue le joueur désigné par lapidation	
 	def tuerLapidation(self, serv, joueurDesigne):
 		
 		identite = self.identite(self.pseudos[joueurDesigne])
@@ -1850,7 +1853,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			
 			self.addLog('action', joueurDesigne.capitalize(), {'type' : 'mort', 'typeMort' : 'idiot'}, fils = 'tour')
 			
-			#S'il s'agissait du maire, on supprime le rÃ´le
+			#S'il s'agissait du maire, on supprime le rôle
 			if(self.pseudos[joueurDesigne] == self.maire):
 				serv.execute_delayed(30, self.envoyer, [self.chanJeu, "IDIOT_ETAIT_MAIRE", [joueurDesigne.capitalize()]])
 				self.addLog('action', joueurDesigne.capitalize(), {'type' : 'finMaire'}, fils = 'tour')
@@ -1864,7 +1867,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			serv.execute_delayed(10, self.envoyer, [self.chanJeu, "JOUEUR_DESIGNE_ETAIT_VILLAGEOIS", [joueurDesigne.capitalize(), identite]])
 			self.addLog('action', joueurDesigne.capitalize(), {'type' : 'mort', 'typeMort' : 'lapidation', 'role' : self.identiteBrute(self.pseudos[joueurDesigne])}, 'tour')
 			
-			#Si c'Ã©tait l'ancien, tout le monde perd ses pouvoirs
+			#Si c'était l'ancien, tout le monde perd ses pouvoirs
 			if(self.pseudos[joueurDesigne] == self.ancien):
 				self.addLog('action', joueurDesigne.capitalize(), {'type' : 'mort', 'typeMort' : 'ancien', 'role' : self.identiteBrute(self.pseudos[joueurDesigne])}, 'tour')
 				serv.execute_delayed(15, self.envoyer, [self.chanJeu, "ANCIEN_EST_MORT", [joueurDesigne.capitalize()]])
@@ -1884,19 +1887,19 @@ class Bot(ircbot.SingleServerIRCBot):
 				self.victimeCorbeau = None
 				self.enPrison = None
 				
-		#Si c'Ã©tait pas l'idiot, on le tue
+		#Si c'était pas l'idiot, on le tue
 		if(self.pseudos[joueurDesigne] != self.idiot):
-			#On tue le joueur dÃ©signÃ©
+			#On tue le joueur désigné
 			joueur = self.pseudos[joueurDesigne]
 			self.suivante = self.demarrerMurs
 			self.tuer(20, joueur)
 		
-		#C'Ã©tait l'idiot, on continue normalement
+		#C'était l'idiot, on continue normalement
 		elif(self.verifierVictoire(35) == 0):
 			serv.execute_delayed(40, self.envoyer, [self.chanJeu, "FIN_JOURNEE"])
 			serv.execute_delayed(45, self.demarrerMurs, [serv])
 				
-	#DÃ©marre la phase des murs-murs
+	#Démarre la phase des murs-murs
 	def demarrerMurs(self, serv):
 		self.statut = "messageMurs"
 		self.messagesMurs = {}
@@ -1913,7 +1916,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		
 	#Ajoute le message sur le mur
 	def ajoutMurs(self, serv, source, message):
-		#Si le joueur n'a pas dÃ©jÃ  donnÃ© un message, on l'ajoute Ã  la liste
+		#Si le joueur n'a pas déjà donné un message, on l'ajoute à la liste
 		if (source not in self.messagesMurs):
 			#Si le message est trop long, on le coupe
 			if(len(message) > 140):
@@ -1921,7 +1924,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			self.messagesMurs[source] = message
 			self.addLog('message', message, {'auteur': irclib.nm_to_n(source)}, 'murs')
 			
-	#Lit les messages ajoutÃ©s sur le mur
+	#Lit les messages ajoutés sur le mur
 	def lireMurs(self, serv):
 		self.statut = "finMurs"
 		self.envoyer(self.chanJeu, "VA_LIRE_MUR")
@@ -1937,14 +1940,14 @@ class Bot(ircbot.SingleServerIRCBot):
 			serv.execute_delayed(attente, self.envoyer, [self.chanJeu, "MUR_LU"])
 			serv.execute_delayed(attente + 10, self.avantPasserNuit, [serv])
 	
-	#DeuxiÃ¨me vÃ©rification des prÃ©sents
+	#Deuxième vérification des présents
 	def avantPasserNuit(self, serv):
 		self.pseudosPresents = []
 		serv.who(self.chanJeu)
 		self.suivante = self.verifierSpr
 		serv.execute_delayed(6, self.tuerAbsents, [serv])
 		
-	# Fait dÃ©marrer le spiritisme si nÃ©cessaire
+	# Fait démarrer le spiritisme si nécessaire
 	def verifierSpr(self, serv):
 		self.suivante = self.passerNuit
 		
@@ -1999,7 +2002,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		del self.pseudos[irclib.nm_to_n(joueur).lower()]
 		self.joueurs.remove(joueur)
 		
-		#Retire le joueur de la bonne liste en fonction de son rÃ´le
+		#Retire le joueur de la bonne liste en fonction de son rôle
 		
 		if(joueur in self.loups):
 			self.loups.remove(joueur)
@@ -2101,14 +2104,14 @@ class Bot(ircbot.SingleServerIRCBot):
 		self.amoureux2 = None
 		self.tuer(10, amoureux, continuer)
 	
-	#Tue les gens qui ne sont plus prÃ©sents sur le canal
+	#Tue les gens qui ne sont plus présents sur le canal
 	def tuerAbsents(self, serv):
 		attente = 0
 		#Pour chaque joueur qui n'est pas sur le canal
 		for joueur in frozenset(self.joueurs):
 			self.debug(u"Check " + irclib.nm_to_n(joueur).lower())
 			if (irclib.nm_to_n(joueur).lower() not in self.pseudosPresents):
-				#On le tue et on lui enlÃ¨ve son rÃ´le
+				#On le tue et on lui enlève son rôle
 				serv.execute_delayed(attente, self.envoyer, [self.chanJeu, "CRISE_CARDIAQUE", [irclib.nm_to_n(joueur)]])
 				serv.execute_delayed(attente, self.connection.mode, [self.chanJeu, "-v " + irclib.nm_to_n(joueur)])
 				
@@ -2187,7 +2190,7 @@ class Bot(ircbot.SingleServerIRCBot):
 						
 				attente = attente + 20
 			
-		#Si personne n'a gagnÃ©, on exÃ©cute la fonction suivante
+		#Si personne n'a gagné, on exécute la fonction suivante
 		if(self.verifierVictoire(attente) == 0):
 			serv.execute_delayed(attente, self.suivante, [serv])
 	
@@ -2198,7 +2201,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		self.envoyer(irclib.nm_to_n(self.maire), "MESSAGE_MORT_MAIRE")
 		self.connection.execute_delayed(60, self.mortMaireLent, [self.maire])
 		
-	#Le maire est trop lent Ã  dÃ©signer son successeur
+	#Le maire est trop lent à désigner son successeur
 	def mortMaireLent(self, ancienMaire):
 		if(self.statut == "mortMaire" and ancienMaire == self.maire):
 			self.envoyer(self.chanJeu, "MORT_MAIRE_LENT")
@@ -2210,7 +2213,7 @@ class Bot(ircbot.SingleServerIRCBot):
 	def successeurMaire(self, serv, source, message):
 		if (message not in self.pseudos or message == irclib.nm_to_n(self.maire).lower()):
 			self.envoyer(irclib.nm_to_n(self.maire), "PSEUDO_INCONNU")
-		#L'idiot ne peut pas Ãªtre dÃ©signÃ© s'il a Ã©tÃ© dÃ©masquÃ©
+		#L'idiot ne peut pas être désigné s'il a été démasqué
 		elif (self.idiot != None and message == irclib.nm_to_n(self.idiot).lower() and not self.idiotVote):
 			self.envoyer(irclib.nm_to_n(self.maire), "SUCCESSEUR_IDIOT", [irclib.nm_to_n(self.idiot).capitalize()])
 		else:
@@ -2221,7 +2224,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			self.tuer(5, source, self.continuer)
 			
 	
-	#VÃ©rifie si quelqu'un a gagnÃ©
+	#Vérifie si quelqu'un a gagné
 	def verifierVictoire(self, attente):
 		self.debug(u"Quelqu'un a gagne ?")
 		self.debug(u"Loups : " + str(len(self.loups)))
@@ -2274,7 +2277,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			
 		#Un seul villageois et plusieurs loups
 		elif(len(self.villageois) == 1 and len(self.loups) > 1):
-			# Il reste les amoureux et ils ne sont pas dans le mÃªme camp
+			# Il reste les amoureux et ils ne sont pas dans le même camp
 			if (self.amoureux1 != None and self.amoureux2 != None and 
 					(self.amoureux1 in self.loups and self.amoureux2 not in self.loups) or
 					(self.amoureux1 not in self.loups and self.amoureux2 in self.loups)):
@@ -2298,7 +2301,7 @@ class Bot(ircbot.SingleServerIRCBot):
 				
 				retour = 1
 				
-			# Conditions spÃ©ciales (maire, sorciÃ¨re, chasseur)
+			# Conditions spéciales (maire, sorcière, chasseur)
 			elif (self.chasseur != None or (self.sorciere != None and self.sorciere != "non" and self.potionMort) or (self.maire != None and self.maire in self.villageois)):
 				self.debug(u"Condition speciale")
 				self.debug(u"Chasseur : " + str(self.chasseur))
@@ -2369,7 +2372,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			destinataire = irclib.nm_to_n(self.pseudos[destinataire])
 			
 			if(expediteur == destinataire):
-				self.debug(u"Se parle Ã  lui-mÃªme")
+				self.debug(u"Se parle à lui-même")
 				self.envoyer(expediteur, "PSEUDO_INCONNU")
 				return
 			else:
@@ -2377,7 +2380,7 @@ class Bot(ircbot.SingleServerIRCBot):
 				self.envoyer(expediteur, "CHUCHOTEMENT_CONFIRMATION", [destinataire])
 				self.envoyer(destinataire, "CHUCHOTEMENT_ENVOI", [expediteur, messageNormalSplit[2]])
 			
-			# Calcul probabilitÃ© d'echec
+			# Calcul probabilité d'echec
 			proba = self.whisperProbaJoueurs[source]
 			self.debug(u"Proba " + str(proba))
 			
@@ -2403,7 +2406,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			else:
 				self.addLog('action', messageNormalSplit[2], {'type': 'chuchotement', 'echec': '0', 'expediteur': expediteur, 'destinataire': destinataire}, 'tour')
 				
-				# Augmentation de la probabilitÃ© d'Ã©chec
+				# Augmentation de la probabilité d'échec
 				proba += 1
 				
 				if(proba < len(self.whisperProba)):
@@ -2414,7 +2417,7 @@ class Bot(ircbot.SingleServerIRCBot):
 	#############
 	# SPIRITISME
 	
-	# Deux joueurs dans le mÃªme camp
+	# Deux joueurs dans le même camp
 	def spr_memeCamp(self, serv, source = None, message = None):
 		try:
 			# Demande du premier pseudo
@@ -2429,7 +2432,7 @@ class Bot(ircbot.SingleServerIRCBot):
 					self.envoyer(self.chanJeu, "SPR_MEMECAMP_1")
 					self.spr_statut = 2
 			
-			# Donne la rÃ©ponse
+			# Donne la réponse
 			elif(self.spr_statut == 2):
 				if(message in self.pseudos and message != self.spr_variables[0]):
 					self.spr_variables.append(message)
@@ -2447,15 +2450,15 @@ class Bot(ircbot.SingleServerIRCBot):
 					self.spr_statut = 3
 					self.spr_terminer(serv)
 		except:
-			self.envoyer(self.chanJeu, u"SÃ©ance annulÃ©e, problÃ¨me de connexion avec les morts.")
+			self.envoyer(self.chanJeu, u"Séance annulée, problème de connexion avec les morts.")
 			self.debug(u"Erreur spiritisme ! " + str(sys.exc_info()[1]))
 			self.spr_statut = 99
 			self.spr_terminer(serv)
 				
-	# Connaitre le nombre de rÃ´les particuliers restants
+	# Connaitre le nombre de rôles particuliers restants
 	def spr_nombreRoles(self, serv, source = None, message = None):
 		try:
-			# Demande de la catÃ©gorie
+			# Demande de la catégorie
 			if(self.spr_statut == 0):
 				self.envoyer(self.chanJeu, "SPR_NOMBREROLES_0")
 				self.spr_statut = 1
@@ -2476,20 +2479,20 @@ class Bot(ircbot.SingleServerIRCBot):
 						self.envoyer(self.chanJeu, "SPR_NOMBREROLES_3", [str(nombre)])
 					self.spr_terminer(serv)
 		except:
-			self.envoyer(self.chanJeu, u"SÃ©ance annulÃ©e, problÃ¨me de connexion avec les morts.")
+			self.envoyer(self.chanJeu, u"Séance annulée, problème de connexion avec les morts.")
 			self.debug(u"Erreur spiritisme ! " + str(sys.exc_info()[1]))
 			self.spr_statut = 99
 			self.spr_terminer(serv)
 								
-	# Savoir si un rÃ´le existe
+	# Savoir si un rôle existe
 	def spr_roleExiste(self, serv, source = None, message = None):
 		try:
-			# Demande du rÃ´le
+			# Demande du rôle
 			if(self.spr_statut == 0):
 				self.envoyer(self.chanJeu, "SPR_ROLEEXISTE_0")
 				self.spr_statut = 1
 				
-			# Envoi du rÃ´le
+			# Envoi du rôle
 			elif(self.spr_statut == 1):
 				if(message == "1" or message == "2" or message == "3" or message == "4"):
 					self.spr_statut = 2
@@ -2522,12 +2525,12 @@ class Bot(ircbot.SingleServerIRCBot):
 					self.spr_terminer(serv)
 						
 		except:
-			self.envoyer(self.chanJeu, u"SÃ©ance annulÃ©e, problÃ¨me de connexion avec les morts.")
+			self.envoyer(self.chanJeu, u"Séance annulée, problème de connexion avec les morts.")
 			self.debug(u"Erreur spiritisme ! " + str(sys.exc_info()[1]))
 			self.spr_statut = 99
 			self.spr_terminer(serv)
 			
-	# Savoir si la sorciÃ¨re a un pseudo entre A et M
+	# Savoir si la sorcière a un pseudo entre A et M
 	def spr_sorcierePseudo(self, serv, source = None, message = None):
 		try:
 			if(self.spr_statut == 0):
@@ -2545,7 +2548,7 @@ class Bot(ircbot.SingleServerIRCBot):
 					
 				self.spr_terminer(serv)
 		except:
-			self.envoyer(self.chanJeu, u"SÃ©ance annulÃ©e, problÃ¨me de connexion avec les morts.")
+			self.envoyer(self.chanJeu, u"Séance annulée, problème de connexion avec les morts.")
 			self.debug(u"Erreur spiritisme ! " + str(sys.exc_info()[1]))
 			self.spr_statut = 99
 			self.spr_terminer(serv)
@@ -2570,7 +2573,7 @@ class Bot(ircbot.SingleServerIRCBot):
 					
 				self.spr_terminer(serv)
 		except:
-			self.envoyer(self.chanJeu, u"SÃ©ance annulÃ©e, problÃ¨me de connexion avec les morts.")
+			self.envoyer(self.chanJeu, u"Séance annulée, problème de connexion avec les morts.")
 			self.debug(u"Erreur spiritisme ! " + str(sys.exc_info()[1]))
 			self.spr_statut = 99
 			self.spr_terminer(serv)
@@ -2593,12 +2596,12 @@ class Bot(ircbot.SingleServerIRCBot):
 					
 				self.spr_terminer(serv)
 		except:
-			self.envoyer(self.chanJeu, u"SÃ©ance annulÃ©e, problÃ¨me de connexion avec les morts.")
+			self.envoyer(self.chanJeu, u"Séance annulée, problème de connexion avec les morts.")
 			self.debug(u"Erreur spiritisme ! " + str(sys.exc_info()[1]))
 			self.spr_statut = 99
 			self.spr_terminer(serv)
 			
-	# Savoir si la voyante a dÃ©jÃ  vu un LG
+	# Savoir si la voyante a déjà vu un LG
 	def spr_voyanteLoup(self, serv, source = None, message = None):
 		try:
 			if(self.spr_statut == 0):
@@ -2613,7 +2616,7 @@ class Bot(ircbot.SingleServerIRCBot):
 					
 				self.spr_terminer(serv)
 		except:
-			self.envoyer(self.chanJeu, u"SÃ©ance annulÃ©e, problÃ¨me de connexion avec les morts.")
+			self.envoyer(self.chanJeu, u"Séance annulée, problème de connexion avec les morts.")
 			self.debug(u"Erreur spiritisme ! " + str(sys.exc_info()[1]))
 			self.spr_statut = 99
 			self.spr_terminer(serv)
@@ -2626,7 +2629,7 @@ class Bot(ircbot.SingleServerIRCBot):
 				self.envoyer(self.chanJeu, "SPR_ESTSV_0")
 				self.spr_statut = 1
 			
-			# Donne la rÃ©ponse
+			# Donne la réponse
 			elif(self.spr_statut == 1):
 				if(message in self.pseudos):
 					
@@ -2642,12 +2645,12 @@ class Bot(ircbot.SingleServerIRCBot):
 					self.spr_statut = 2
 					self.spr_terminer(serv)
 		except:
-			self.envoyer(self.chanJeu, u"SÃ©ance annulÃ©e, problÃ¨me de connexion avec les morts.")
+			self.envoyer(self.chanJeu, u"Séance annulée, problème de connexion avec les morts.")
 			self.debug(u"Erreur spiritisme ! " + str(sys.exc_info()[1]))
 			self.spr_statut = 99
 			self.spr_terminer(serv)
 	
-	# Termine le spiritisme et passe Ã  la suite
+	# Termine le spiritisme et passe à la suite
 	def spr_terminer(self, serv):
 		self.sprFonctions.remove(self.choix_spr)
 		self.connection.execute_delayed(15, self.envoyer, [self.chanJeu, "SPR_TERMINE"])
@@ -2656,7 +2659,7 @@ class Bot(ircbot.SingleServerIRCBot):
 	#############
 	# FONCTIONS IRC
 	
-	#Pseudo dÃ©jÃ  utilisÃ©
+	#Pseudo déjà utilisé
 	def on_nicknameinuse(self, serv, ev):
 		serv.nick(self.pseudo + str(random.randint(0, 1000)))
 		
@@ -2687,15 +2690,15 @@ class Bot(ircbot.SingleServerIRCBot):
 		serv.execute_delayed(5, serv.mode, [self.chanJeu, "-m"])
 		serv.execute_delayed(5, serv.mode, [self.chanJeu, "-N"])
 	
-	#RÃ©ception d'un message
+	#Réception d'un message
 	def on_pubmsg(self, serv, ev):
 		self.traiterMessage(serv, ev)
 		
-	#RÃ©ception d'un message privÃ©
+	#Réception d'un message privé
 	def on_privmsg(self, serv, ev):
 		self.traiterMessagePrive(serv, ev)
 	
-	#RÃ©ception d'une notice privÃ©e
+	#Réception d'une notice privée
 	def on_privnotice(self, serv, ev):
 		try:
 			self.debug(irclib.nm_to_n(ev.source()) + " >>> " + ev.arguments()[0])
@@ -2720,7 +2723,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			
 		
 	
-	#RÃ©ception d'un who
+	#Réception d'un who
 	def on_whoreply(self, serv, ev):
 		self.pseudosPresents.append(ev.arguments()[4].lower())
 	
@@ -2729,7 +2732,7 @@ class Bot(ircbot.SingleServerIRCBot):
 
 		self.debug(ev.source() + " a rejoint " + ev.target())
 
-		#Si c'est nous, Ã§a compte pas...
+		#Si c'est nous, ça compte pas...
 		if(irclib.nm_to_n(ev.source()) == self.pseudo):
 			return 0
 		
@@ -2754,7 +2757,7 @@ class Bot(ircbot.SingleServerIRCBot):
 					self.statut = "traiterCanalLoups"
 					serv.execute_delayed(5, self.envoyer, [self.chanLoups, "INSTRUCTIONS_LOUPS", [self.declencheurs['tuerLoups']]])
 	
-	# Quelqu'un sur le paradis demande les rÃ´les
+	# Quelqu'un sur le paradis demande les rôles
 	def envoyerRolesAutresJoueurs(self, source):
 		try:
 			listeRoles = ""
@@ -2767,7 +2770,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		except:
 			self.debug(u"Erreur envoyerRolesAutresJoueurs")
 	
-	#Un joueur a changÃ© de nick. Si on est en jeu, on doit le changer partout
+	#Un joueur a changé de nick. Si on est en jeu, on doit le changer partout
 	def on_nick(self, serv, ev):
 		if(self.statut != "attente"):
 			ancienPseudo = irclib.nm_to_n(ev.source()).lower()
@@ -2799,7 +2802,7 @@ class Bot(ircbot.SingleServerIRCBot):
 					del self.loupsInconnus[ancienDomaine]
 					self.debug(self.loupsInconnus)
 		
-				#RÃ´les spÃ©ciaux
+				#Rôles spéciaux
 				if(self.voyante == ancienDomaine):
 					self.voyante = nouveauDomaine
 					
@@ -2891,5 +2894,5 @@ except:
 	bot.erreur(sys.exc_info()[1])
 	print(sys.exc_info()[1])
 	traceback.print_exc()
-	bot.connection.disconnect(u"Le maitre du jeu se retire aprÃ¨s avoir plantÃ©...")
+	bot.connection.disconnect(u"Le maitre du jeu se retire après avoir planté...")
         bot.connection.close()
