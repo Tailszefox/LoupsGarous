@@ -78,6 +78,8 @@ function traiterAction($noeud)
 			
 		case('voyante'):
 			echo 'La voyante observe ' . $noeud . ', ' . role($noeud['role']) . '.';
+			if(role($noeud['role']) == 'l\'enfant loup')
+				echo ' Cependant, elle le voit comme un simple villageois.';
 			break;
 			
 		case('salvateur'):
