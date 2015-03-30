@@ -156,6 +156,14 @@
 			</phrases>
 		</dire>
 		<dire>
+			<cle>ANNONCE_TRAITRE</cle>
+			<contexte>La première nuit, le bot annonce s'il y a un traitre en jeu</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Les villageois ne se doutent cependant pas qu'un traitre se trouve parmi eux...</phrase>
+			</phrases>
+		</dire>
+		<dire>
 			<cle>APPEL_CUPIDON</cle>
 			<contexte>Le bot va envoyer un message privé à Cupidon.</contexte>
 			<variables></variables>
@@ -569,6 +577,14 @@
 			<variables>$1 : Pseudo du joueur tué. $2 : Rôle du joueur tué.</variables>
 			<phrases>
 				<phrase>Pauvre $1. Lui qui était $2...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VICTIME_ETAIT_TRAITRE</cle>
+			<contexte>Le joueur mort était le traitre.</contexte>
+			<variables>$1 : Pseudo du joueur tué.</variables>
+			<phrases>
+				<phrase>Remarquez, ce n'était peut-être pas plus mal, puisque $1 était aussi un traitre !</phrase>
 			</phrases>
 		</dire>
 		<dire>
