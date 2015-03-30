@@ -726,9 +726,17 @@ class Bot(ircbot.SingleServerIRCBot):
 			self.addLog('tuteur', irclib.nm_to_n(self.tuteur))
 		
 		self.debug(u"Nombre final de SV : " + str(len(self.sv)))
-		if(len(self.sv) >= 3):
+
+		# 1 chance sur 2 d'avoir un traitre
+		randomTraitre = random.randint(0, 10)
+
+		self.debug(u"Random traitre : " + str(randomTraitre))
+		if(len(self.sv) >= 4 and randomTraitre >= 5):
 			self.traitre = random.sample(self.sv, 1)[0]
-		self.debug(u"Traitre : " + str(self.traitre))
+			self.debug(u"Traitre : " + str(self.traitre))
+		else:
+			self.traitre = None
+			self.debug(u"Pas de traitre")
 		
 		self.statut = "verifierRolesRecus"
 		self.envoyer(self.chanJeu, "ROLES_ENVOYES")
