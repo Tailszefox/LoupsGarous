@@ -712,7 +712,7 @@
 			<contexte>Le maire a été tué.</contexte>
 			<variables>$1 : Pseudo du maire</variables>
 			<phrases>
-				<phrase>Dans son dernier souffle, le maire va nous révéler le nom de son successeur. Écoutez-le bien...</phrase>
+				<phrase>Dans son dernier souffle, le maire $1 va nous révéler le nom de son successeur. Écoutez-le bien...</phrase>
 			</phrases>
 		</dire>
 		<dire>
