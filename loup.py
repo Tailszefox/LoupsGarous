@@ -517,6 +517,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		self.maire = None
 		self.maireElu = False
 		self.noJour = 0
+		self.noNuit = 0
 		
 		self.traitre = None
 		
@@ -915,9 +916,14 @@ class Bot(ircbot.SingleServerIRCBot):
 	#Passe à l'étape de nuit
 	def passerNuit(self, serv):
 		self.statut = "nuit"
+		self.noNuit += 1
 		self.addLog('tour')
 		
 		self.envoyer(self.chanJeu, "NUIT_TOMBEE")
+
+		# S'il y a un traitre, on l'annonce lors de la première nuit
+		if(self.noNuit == 1 and self.traitre is not None):
+			serv.execute_delayed(5, self.envoyer, [self.chanJeu, "ANNONCE_TRAITRE"])
 		
 		#Si Cupidon est là (premier tour), on l'appelle
 		if (self.cupidon != None):
@@ -1369,6 +1375,10 @@ class Bot(ircbot.SingleServerIRCBot):
 				serv.execute_delayed(25, self.envoyer, [self.chanJeu, "VICTIME_LOUPS_ETAIT_LOUP", [self.victimeLoups.capitalize()]])
 			else:
 				serv.execute_delayed(25, self.envoyer, [self.chanJeu, "VICTIME_LOUPS_ETAIT_VILLAGEOIS", [self.victimeLoups.capitalize(), identite]])
+
+				# Si c'était le traitre, on l'annonce
+				if(joueur == self.traitre):
+					serv.execute_delayed(27, self.envoyer, [self.chanJeu, "VICTIME_ETAIT_TRAITRE", [self.victimeLoups.capitalize()]])
 					
 			self.suivante = self.tuerVictimeSorciere
 			self.tuer(20, joueur)
@@ -1392,6 +1402,10 @@ class Bot(ircbot.SingleServerIRCBot):
 				serv.execute_delayed(25, self.envoyer, [self.chanJeu, "VICTIME_LOUPS_ETAIT_LOUP", [self.victimeSorciere.capitalize()]])
 			else:
 				serv.execute_delayed(25, self.envoyer, [self.chanJeu, "VICTIME_LOUPS_ETAIT_VILLAGEOIS", [self.victimeSorciere.capitalize(), identite]])
+
+				# Si c'était le traitre, on l'annonce
+				if(joueur == self.traitre):
+					serv.execute_delayed(27, self.envoyer, [self.chanJeu, "VICTIME_ETAIT_TRAITRE", [self.victimeSorciere.capitalize()]])
 					
 			self.suivante = self.annoncerAttenteVote
 			self.victimeSorciere = None
@@ -1436,6 +1450,10 @@ class Bot(ircbot.SingleServerIRCBot):
 				serv.execute_delayed(10, self.envoyer, [self.chanJeu, "VICTIME_CHASSEUR_ETAIT_LOUP", [pseudo.capitalize()]])
 			else:
 				serv.execute_delayed(10, self.envoyer, [self.chanJeu, "VICTIME_CHASSEUR_ETAIT_VILLAGEOIS", [pseudo.capitalize()  ,identite]])
+
+				# Si c'était le traitre, on l'annonce
+				if(joueur == self.traitre):
+					serv.execute_delayed(12, self.envoyer, [self.chanJeu, "VICTIME_ETAIT_TRAITRE", [pseudo.capitalize()]])
 			
 			#On enlève le chasseur maintenant
 			self.chasseur = None
@@ -1911,6 +1929,10 @@ class Bot(ircbot.SingleServerIRCBot):
 				self.corbeau = None
 				self.victimeCorbeau = None
 				self.enPrison = None
+
+			# Si c'était le traitre, on l'annonce
+			elif(self.pseudos[joueurDesigne] == self.traitre):
+				serv.execute_delayed(15, self.envoyer, [self.chanJeu, "VICTIME_ETAIT_TRAITRE", [joueurDesigne.capitalize()]])
 				
 		#Si c'était pas l'idiot, on le tue
 		if(self.pseudos[joueurDesigne] != self.idiot):
@@ -2122,6 +2144,10 @@ class Bot(ircbot.SingleServerIRCBot):
 			
 		else:
 			self.connection.execute_delayed(5, self.envoyer, [self.chanJeu, "AMOUREUX_ETAIT_VILLAGEOIS", [irclib.nm_to_n(amoureux).capitalize(), identite]])
+
+			# Si c'était le traitre, on l'annonce
+			if(amoureux == self.traitre):
+				self.connection.execute_delayed(7, self.envoyer, [self.chanJeu, "VICTIME_ETAIT_TRAITRE", [irclib.nm_to_n(amoureux).capitalize()]])
 		
 		self.addLog('action', irclib.nm_to_n(amoureux).capitalize(), {'type' : 'mort', 'typeMort' : 'amoureux', 'role' : self.identiteBrute(amoureux)}, 'tour')
 		
