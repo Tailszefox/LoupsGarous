@@ -53,8 +53,21 @@ class Bot(ircbot.SingleServerIRCBot):
 		self.rolesDefault = {}
 		self.declencheursDefault = {}
 		
-		self.rolesSpeciaux = [self.roleChasseur, self.roleIdiot, self.roleSalvateur, self.roleAncien, self.roleCupidon, self.roleFille, self.roleSorciere, self.rolePolicier, self.roleCorbeau, self.roleEnfant]
-		#self.rolesSpeciaux = [self.roleSorciere, self.roleEnfant]
+		self.rolesSpeciaux = [
+				# Une apparition
+				self.roleCorbeau,
+				self.roleEnfant,
+				# Deux apparitions
+				self.roleIdiot, self.roleIdiot,
+				self.roleChasseur, self.roleChasseur,
+				# Trois apparitions
+				self.roleAncien, self.roleAncien, self.roleAncien,
+				self.roleSalvateur, self.roleSalvateur, self.roleSalvateur,
+				self.rolePolicier, self.rolePolicier, self.rolePolicier,
+				self.roleFille, self.roleFille, self.roleFille,
+				# Quatre apparitions
+				self.roleSorciere, self.roleSorciere, self.roleSorciere, self.roleSorciere,
+			]
 		
 		self.whisper = False
 		self.whisperProba = [10, 30, 50, 80, 100]
@@ -633,7 +646,6 @@ class Bot(ircbot.SingleServerIRCBot):
 		self.addLog('joueurs')
 		
 		attente = 0
-		noRole = 0
 		for joueur in self.joueurs:
 			pseudo = irclib.nm_to_n(joueur)
 			
@@ -652,11 +664,18 @@ class Bot(ircbot.SingleServerIRCBot):
 				self.villageois.append(joueur)
 				self.roleVoyante(joueur)
 			
-			elif(noRole < len(self.rolesSpeciaux)):
-				self.debug(u'Attribution rôle ' + str(noRole) + ' : ' + str(self.rolesSpeciaux[noRole]))
+			# Il reste encore des rôles spéciaux
+			elif(len(self.rolesSpeciaux) > 0):
+				roleSpecialActuel = self.rolesSpeciaux[0]
+				self.debug(u'Attribution rôle spécial : ' + str(roleSpecialActuel))
 				self.villageois.append(joueur)
-				self.rolesSpeciaux[noRole](joueur)
-				noRole = noRole + 1
+				roleSpecialActuel = self.rolesSpeciaux[0]
+				roleSpecialActuel(joueur)
+
+				# On retire le rôle de la liste
+				self.rolesSpeciaux[:] = [role for role in self.rolesSpeciaux if role != roleSpecialActuel]
+
+				self.debug(u'Rôles spéciaux restants :' + str(self.rolesSpeciaux))
 				
 			else:
 				self.villageois.append(joueur)
