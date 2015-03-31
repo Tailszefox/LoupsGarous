@@ -1535,8 +1535,13 @@ class Bot(ircbot.SingleServerIRCBot):
 				self.debug(self.votesMaire)
 				self.addLog('vote', joueur, {'pour' : pseudo}, 'votes')
 				
-				#Si tout le monde a voté, on peut continuer directement
-				if(len(self.votesMaire) == len(self.joueurs)):
+				majorite = round(len(self.joueurs) / 2) + 1
+				actuel = self.votesMaire.values().count(pseudo)
+
+				self.debug(u"Voté : " + str(len(self.votesMaire)) +  u", Majorité : " + str(majorite) + u", Actuel : " + str(actuel))
+
+				#Si tout le monde a voté ou majorité absolue, on peut continuer directement
+				if(len(self.votesMaire) == len(self.joueurs) or actuel >= majorite):
 					self.verifierVotesMaire(self.connection)
 	
 	#Passe aux résultats des éléctions si les votes sont encore en cours
