@@ -11,6 +11,7 @@ import os
 import string
 import re
 import xml.dom.minidom
+import ipdb
 from datetime import datetime
 import ConfigParser
 
@@ -354,6 +355,9 @@ class Bot(ircbot.SingleServerIRCBot):
 	#Démarre le jeu en envoyant les premières instructions
 	def demarrerJeu(self, serv):
 		
+		if(isDebug):
+			ipdb.set_trace()
+
 		self.log = xml.dom.minidom.parseString("<log></log>")
 		self.addLog('date', datetime.today().strftime("%d/%m/%y %H:%M:%S"))
 		self.addLog('logPartie')
@@ -2855,11 +2859,16 @@ class Bot(ircbot.SingleServerIRCBot):
 					self.traitre = nouveauDomaine
 
 toFile = False
+isDebug = False
+
 if(len(sys.argv) > 1):
-	if(sys.argv[1] == '-r'):
-		toFile = True
-		f = codecs.open('./log.txt', 'w', 'utf-8', 'ignore');
-		sys.stdout = f
+	for arg in sys.argv:
+		if(arg == '-r'):
+			toFile = True
+			f = codecs.open('./log.txt', 'w', 'utf-8', 'ignore');
+			sys.stdout = f
+		elif(arg == '-d'):
+			isDebug = True
 
 bot = Bot()
 
