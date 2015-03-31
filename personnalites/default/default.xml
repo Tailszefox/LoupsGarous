@@ -668,11 +668,19 @@
 			</phrases>
 		</dire>
 		<dire>
-			<cle>AUCUN_CANDIDAT</cle>
-			<contexte>Personne ne s'est présenté pour l'élection du maire !</contexte>
+			<cle>AUCUN_CANDIDAT_RAPPEL</cle>
+			<contexte>Il y a zéro (ou un seul) candidat à l'élection. On fait un rappel.</contexte>
 			<variables></variables>
 			<phrases>
-				<phrase>Allons bon, je n'ai reçu aucune candidature. Si personne ne se présente, il ne peut y avoir de vote. Tant pis, le village n'aura tout simplement pas de maire !</phrase>
+				<phrase>Il n'y a pas grand monde qui veut devenir maire, on dirait. Je vous donne un peu plus de temps pour vous présenter, mais dépêchez-vous !</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>AUCUN_CANDIDAT</cle>
+			<contexte>Personne ne s'est présenté pour l'élection du maire malgré le rappel !</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Bon, je n'ai toujours reçu aucune candidature. Si personne ne se présente, il ne peut y avoir de vote. Tant pis, le village n'aura tout simplement pas de maire !</phrase>
 			</phrases>
 		</dire>
 		<dire>

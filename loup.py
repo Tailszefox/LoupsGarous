@@ -1495,8 +1495,14 @@ class Bot(ircbot.SingleServerIRCBot):
 		self.debug(self.messagesCandidats)
 	
 	#Vérifie qu'il y a des candidats, lit leurs messages puis lance les votes
-	def verifierCandidats(self, serv):
-		#Aucun candidat, on laisse tomber
+	def verifierCandidats(self, serv, isRappel = False):
+		# Zéro ou un seul candidat, on fait un rappel
+		if(not isRappel and len(self.messagesCandidats) <= 1):
+			self.envoyer(self.chanJeu, "AUCUN_CANDIDAT_RAPPEL")
+			serv.execute_delayed(60, self.verifierCandidats, [serv, True])
+			return
+
+		# Toujours aucun candidat après rappel, on laisse tomber
 		if(len(self.messagesCandidats) == 0):
 			self.envoyer(self.chanJeu, "AUCUN_CANDIDAT")
 			serv.execute_delayed(10, self.votesLapidation, [serv])
