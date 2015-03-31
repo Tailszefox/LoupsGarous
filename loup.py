@@ -393,8 +393,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		serv.execute_delayed(3, self.envoyer, [self.chanJeu, stringPersonnaliteVote])
 		
 		self.statut = "votePresentateurs"
-		self.aVote = []
-		self.votes = []
+		self.votes = {}
 		
 		#serv.execute_delayed(3, self.personnaliteeChoisie, [serv])
 		serv.execute_delayed(30, self.personnaliteeChoisie, [serv])
@@ -405,29 +404,29 @@ class Bot(ircbot.SingleServerIRCBot):
 		
 		if(numeroVote >= 0 and numeroVote <= self.nbPersonnalites):
 			self.debug(u"Vote pour " + str(numeroVote) + " de " + joueur)
-			#Si le le joueur n'a pas déjà voté
-			if(joueur not in self.aVote):
-				self.aVote.append(joueur)
-				self.votes.append(numeroVote)
+			self.votes[joueur] = numeroVote
 
 	#La personnalité a été élue, on peut la charger et la lancer
 	def personnaliteeChoisie(self, serv):
 		
 		#Si personne n'a voté, on choisi par défaut
-		if(len(self.aVote) == 0):
+		if(len(self.votes) == 0):
 			personnaliteChoisie = 0
 		#On cherche le gagnant, si y'a une égalité on choisit au pif parmi les ex-aequo
 		else:
 			maximum = 0
 			personnalitesEgalite = []
-			for personnalite in set(self.votes):
-				if(self.votes.count(personnalite) > maximum):
-					maximum = self.votes.count(personnalite)
+			votesValues = self.votes.values()
+			self.debug(u"votesValues : " + str(votesValues))
+
+			for personnalite in set(votesValues):
+				if(votesValues.count(personnalite) > maximum):
+					maximum = votesValues.count(personnalite)
 					personnaliteChoisie = personnalite
 					personnalitesEgalite = []
 					personnalitesEgalite.append(personnalite)
 					egalite = False
-				elif(self.votes.count(personnalite) == maximum and maximum != 0):
+				elif(votesValues.count(personnalite) == maximum and maximum != 0):
 					egalite = True
 					personnalitesEgalite.append(personnalite)
 			if(egalite):
