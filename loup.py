@@ -1518,8 +1518,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		
 		serv.execute_delayed(attente + 60, self.passerVoteMaire, [serv])
 		self.candidats = map(str.lower, self.messagesCandidats.keys())
-		self.votesMaire = []
-		self.aVoteMaire = []
+		self.votesMaire = {}
 		self.statut = "votesMaire"
 		
 		self.addLog('votes', "", {'type' : 'maire'}, 'tour')
@@ -1530,15 +1529,14 @@ class Bot(ircbot.SingleServerIRCBot):
 			pseudo = messageSplit[1]
 			self.debug(u"Vote pour " + messageSplit[1] + " de " + joueur)
 			
-			#Si le pseudo s'est présenté et que le joueur n'a pas déjà voté
-			if(pseudo in self.candidats and joueur not in self.aVoteMaire):
-				self.aVoteMaire.append(joueur)
-				self.votesMaire.append(pseudo)
+			#Si le pseudo s'est présenté
+			if(pseudo in self.candidats):
+				self.votesMaire[joueur] = pseudo
 				self.debug(self.votesMaire)
 				self.addLog('vote', joueur, {'pour' : pseudo}, 'votes')
 				
 				#Si tout le monde a voté, on peut continuer directement
-				if(len(self.aVoteMaire) == len(self.joueurs)):
+				if(len(self.votesMaire) == len(self.joueurs)):
 					self.verifierVotesMaire(self.connection)
 	
 	#Passe aux résultats des éléctions si les votes sont encore en cours
@@ -1551,7 +1549,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		self.statut = "votesMaireFini"
 		
 		#Personne n'a voté ?
-		if(len(self.aVoteMaire) == 0):
+		if(len(self.votesMaire) == 0):
 			self.addLog('resultat', "", {'type' : 'aucun'}, 'votes')
 			self.envoyer(self.chanJeu, "AUCUN_VOTE_MAIRE")
 			serv.execute_delayed(10, self.votesLapidation, [serv])
@@ -1564,19 +1562,22 @@ class Bot(ircbot.SingleServerIRCBot):
 		
 		self.envoyer(self.chanJeu, "VOTE_MAIRE_TERMINE")
 		
-		for joueur in set(self.votesMaire):
-			if(self.votesMaire.count(joueur) > maximum):
-				maximum = self.votesMaire.count(joueur)
+		votesValues = self.votesMaire.values()
+		self.debug(u"votesValues : " + str(votesValues))
+
+		for joueur in set(votesValues):
+			if(votesValues.count(joueur) > maximum):
+				maximum = votesValues.count(joueur)
 				joueurDesigne = joueur
 				joueursEgalite = []
 				joueursEgalite.append(joueur)
 				egalite = False
-			elif(self.votesMaire.count(joueur) == maximum and maximum != 0):
+			elif(votesValues.count(joueur) == maximum and maximum != 0):
 				egalite = True
 				joueursEgalite.append(joueur)
 				
 		if(not egalite):
-			serv.execute_delayed(5, self.envoyer, [self.chanJeu, "NOUVEAU_MAIRE", [joueurDesigne.capitalize(), str(self.votesMaire.count(joueurDesigne))]])
+			serv.execute_delayed(5, self.envoyer, [self.chanJeu, "NOUVEAU_MAIRE", [joueurDesigne.capitalize(), str(votesValues.count(joueurDesigne))]])
 			self.addLog('resultat', joueurDesigne.capitalize(), {'type' : 'majorite'}, 'votes')
 		else:
 			joueursEgaliteString = ', '.join(joueursEgalite)
@@ -1584,7 +1585,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			li = joueursEgaliteString.rsplit(',', 1)
 			joueursEgaliteString = ' et'.join(li)
 			joueurDesigne = joueursEgalite[random.randint(0, len(joueursEgalite) - 1)]
-			serv.execute_delayed(5, self.envoyer, [self.chanJeu, "NOUVEAU_MAIRE_EGALITE", [joueursEgaliteString, str(self.votesMaire.count(joueursEgalite[0])), joueurDesigne.capitalize()]])
+			serv.execute_delayed(5, self.envoyer, [self.chanJeu, "NOUVEAU_MAIRE_EGALITE", [joueursEgaliteString, str(votesValues.count(joueursEgalite[0])), joueurDesigne.capitalize()]])
 			self.addLog('resultat', joueurDesigne.capitalize(), {'type' : 'egalite'}, 'votes')
 		
 		self.maire = self.pseudos[joueurDesigne]
