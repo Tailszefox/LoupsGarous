@@ -564,7 +564,8 @@ class Bot(ircbot.SingleServerIRCBot):
 			self.minSv = len(self.joueurs)/3
 				
 			self.connection.mode(self.chanJeu, "+m")
-			self.debutVotesChuchotement(serv)
+			self.partieVaCommencer(serv)
+			#self.debutVotesChuchotement(serv)
 	
 	# Vote pour le chuchotement	
 	def debutVotesChuchotement(self, serv):
@@ -593,15 +594,17 @@ class Bot(ircbot.SingleServerIRCBot):
 	
 	#Donne quelques instructions avant le lancement de la partie	
 	def partieVaCommencer(self, serv):
-		if(self.statut != "voteChuchotement"):
-			return
+		#if(self.statut != "voteChuchotement"):
+		#	return
 		
-		if(self.oui >= self.non):
-			self.whisper = True
-		else:
-			self.whisper = False
+		#if(self.oui >= self.non):
+		#	self.whisper = True
+		#else:
+		#	self.whisper = False
 			
-		self.debug(str(self.oui) + " " + str(self.non) + " " + str(self.whisper))
+		#self.debug(str(self.oui) + " " + str(self.non) + " " + str(self.whisper))
+
+		self.whisper = False
 		
 		self.envoyer(self.chanJeu, "PARTIE_VA_COMMENCER")
 		serv.execute_delayed(3, self.envoyer, [self.chanJeu, "VA_ENVOYER_ROLES"])
@@ -1587,7 +1590,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		
 		self.maire = self.pseudos[joueurDesigne]
 		serv.execute_delayed(15, self.votesLapidation, [serv])
-		
+
 	#Passe aux votes
 	def votesLapidation(self, serv):
 		#Si c'est le jour 2, on procède d'abord à l'élection du maire
