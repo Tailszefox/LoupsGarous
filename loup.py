@@ -1406,7 +1406,7 @@ class Bot(ircbot.SingleServerIRCBot):
 				# Si c'était le traitre, on l'annonce
 				if(joueur == self.traitre):
 					serv.execute_delayed(27, self.envoyer, [self.chanJeu, "VICTIME_ETAIT_TRAITRE", [self.victimeSorciere.capitalize()]])
-					
+
 			self.suivante = self.annoncerAttenteVote
 			self.victimeSorciere = None
 			self.tuer(20, joueur)
@@ -1459,35 +1459,7 @@ class Bot(ircbot.SingleServerIRCBot):
 			self.chasseur = None
 			self.secondeVictime = joueur
 			self.tuer(15, source, False)
-			
-			"""
-			#On l'invite sur les canaux
-			self.connection.invite(irclib.nm_to_n(self.chasseur), self.chanParadis)
-			self.connection.invite(irclib.nm_to_n(self.chasseur), self.chanLoups)
-			
-			#Lui envoyer un message pour lui dire
-			self.connection.execute_delayed(5, self.envoyer, [irclib.nm_to_n(self.chasseur), "MESSAGE_AU_MORT", [self.chanParadis, self.chanLoups]])
-			
-			self.tuer(15, joueur, False)
-			
-			if (self.chasseur == self.amoureux1):
-				self.chasseur = None
-				self.connection.execute_delayed(20, self.tueAmoureux, [self.amoureux2])
-				return
-				
-			if (self.chasseur == self.amoureux2):
-				self.chasseur = None
-				self.connection.execute_delayed(20, self.tueAmoureux, [self.amoureux1])
-				return
-			
-			#On enlève le chasseur maintenant
-			self.chasseur = None
-			
-			#Si personne n'a gagné, on exécute la fonction suivante
-			if(self.verifierVictoire(25) == 0):
-				serv.execute_delayed(25, self.suivante, [serv])
-			"""
-				
+
 	#Tue les absents puis annonce l'attente des votes
 	def annoncerAttenteVote(self, serv):
 		self.pseudosPresents = []
@@ -1615,59 +1587,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		
 		self.maire = self.pseudos[joueurDesigne]
 		serv.execute_delayed(15, self.votesLapidation, [serv])
-	
-	"""
-	def annoncerAttenteVote_2(self, serv):
 		
-		#Si c'est le jour 2, on procède d'abord à l'élection du maire
-		self.debug(u'Début du jour ' + str(self.noJour))
-		
-		if(self.noJour == 2 and not self.maireElu):
-			self.maireElu = True
-			self.demarrerElection(serv)
-			return
-		
-		if(len(self.joueurs) > 5):
-			if(len(self.joueurs)/2 > 5):
-				self.minimumConfirmation = (len(self.joueurs)/2)
-			else:
-				self.minimumConfirmation = 5
-		else:
-			self.minimumConfirmation = len(self.joueurs) - 1
-		
-		#Si l'idiot ne peut plus voter, on enlève son vote
-		if(self.idiot != None and not self.idiotVote):
-			self.minimumConfirmation = self.minimumConfirmation - 1
-		
-		serv.execute_delayed(5, self.envoyer, [self.chanJeu, "MESSAGE_LAPIDATION_1"])
-		serv.execute_delayed(10, self.envoyer, [self.chanJeu, "MESSAGE_LAPIDATION_2", [str(self.minimumConfirmation), self.declencheurs['voter']]])
-		self.joueursDemandant = []
-		serv.execute_delayed(10, self.passerAttenteVote, [serv])
-		
-	#Passe en mode d'attente des votes
-	def passerAttenteVote(self, serv):
-		self.statut = "attenteVote"
-		self.noVote = self.noVote + 1
-		serv.execute_delayed(240, self.debatsTropLongs, [serv, self.noVote])
-		
-	#Passe aux votes au bout d'un moment si ce n'est pas déjà le cas
-	def debatsTropLongs(self, serv, noVote):
-		if(self.statut == "attenteVote" and noVote == self.noVote):
-			self.envoyer(self.chanJeu, "DEBAT_LENTS")
-			self.votesLapidation(serv)
-	
-	#Traiter demande vote
-	def traiterDemandeVote(self, serv, joueur):
-		self.debug(joueur + " veut voter.")
-		#Si le joueur n'a pas déjà demandé, que ce n'est pas l'idiot, ou que c'est l'idiot et qu'il vote
-		if(joueur not in self.joueursDemandant and (self.idiot != joueur or (self.idiot == joueur and self.idiotVote))):
-			self.joueursDemandant.append(joueur)
-		
-		self.debug(len(self.joueursDemandant))
-		if(len(self.joueursDemandant) == self.minimumConfirmation):
-			self.votesLapidation(serv)
-	"""
-	
 	#Passe aux votes
 	def votesLapidation(self, serv):
 		#Si c'est le jour 2, on procède d'abord à l'élection du maire
