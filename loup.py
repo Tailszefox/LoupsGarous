@@ -585,9 +585,9 @@ class Bot(ircbot.SingleServerIRCBot):
 	
 	# Vote pour le chuchotement	
 	def debutVotesChuchotement(self, serv):
-		serv.who(self.chanJeu)
-		self.demarre = True
-		serv.execute_delayed(3, self.devoicerNonJoueurs, [serv])
+		#serv.who(self.chanJeu)
+		#self.demarre = True
+		#serv.execute_delayed(3, self.devoicerNonJoueurs, [serv])
 		
 		self.oui = 0
 		self.non = 0
@@ -619,6 +619,10 @@ class Bot(ircbot.SingleServerIRCBot):
 		#	self.whisper = False
 			
 		#self.debug(str(self.oui) + " " + str(self.non) + " " + str(self.whisper))
+
+		serv.who(self.chanJeu)
+		self.demarre = True
+		serv.execute_delayed(3, self.devoicerNonJoueurs, [serv])
 
 		self.whisper = False
 		
