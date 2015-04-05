@@ -93,3 +93,13 @@ body
 {
 	border: none;
 }
+
+.upToDate
+{
+	font-weight: bold;
+}
+
+.outOfDate
+{
+	color: gray;
+}

@@ -158,27 +158,65 @@ if(isset($pending))
 $dir = new DirectoryIterator('./personnalites/accepted');
 $nb = 0;
 
+$default = simplexml_load_file('./personnalites/default/default.xml');
+$total_default = sizeof($default->repliques->dire);
+
 foreach ($dir as $file)
 {
 	if ($file->isFile() && strtok($file->getFilename(), '_') != $user->data['user_id'])
 	{
-		$all[] = (string) simplexml_load_file('./personnalites/accepted/' . $file->getFilename())->nom;
+		$perso = simplexml_load_file('./personnalites/accepted/' . $file->getFilename());
+
+		$total_perso = sizeof($perso->repliques->dire);
+		$nom = $perso->nom;
+		$pourcent = ($total_perso / $total_default) * 100;
+
+		$all[] = array($nom, $pourcent);
 	}
 }
 
 if(isset($all))
 {
-	sort($all);
+	$minDisabled = 80;
+
+	function sortByPercent($a, $b)
+	{
+		$pa = $a[1];
+		$pb = $b[1];
+
+		if($pa > $pb)
+			return 1;
+		if($pb > $pa)
+			return -1;
+
+		// Égalité, comparaison du nom
+		return -(strcmp($a[0], $b[0]));
+	}
+
+	usort($all, sortByPercent);
+	$all = array_reverse($all);
 	?>
 	<div class="liste">
 	<p class="aide"><strong><em>Aide :</em></strong><br />
-	Voici la liste de toutes les personnalitées acceptées envoyées par les autres membres, pouvant être choisies par le bot. Cette liste vous évitera de créer une personnalité qui existe déjà !</p>
+	Voici la liste de toutes les personnalitées acceptées envoyées par les autres membres, pouvant être choisies par le bot. Cette liste vous évitera de créer une personnalité qui existe déjà !
+	<br /><br />
+	Le pourcentage indique la quantité de phrases traduites par rapport à la personnalité par défaut. Les personnalités qui comportent moins de <?php echo $minDisabled; ?>% de phrases traduites sont désactivées jusqu'à ce qu'elles soient mises à jour.
+	</p>
 		<p class="titre">Personnalités acceptées créées par les autres membres</p>
 		<ul>
 			<?php
-			foreach($all as $nom)
+			foreach($all as $perso)
 			{
-				echo '<li>' . $nom . '</li>';
+				$pourcent = $perso[1];
+
+				if($pourcent == 100)
+					$class = ' class="upToDate"';
+				elseif($pourcent < $minDisabled)
+					$class = ' class="outOfDate"';
+				else
+					$class = '';
+
+				echo '<li'.$class.'>' . $perso[0] . ' <em>('.floor($pourcent).'%)</em></li>';
 			}
 			?>
 		</ul>
