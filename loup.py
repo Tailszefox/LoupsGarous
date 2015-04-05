@@ -79,6 +79,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		self.log = None
 		
 		self.nbPersonnalites = 10
+		self.minDisabled = 80
 		
 		random.seed()
 		
@@ -90,7 +91,31 @@ class Bot(ircbot.SingleServerIRCBot):
 	#Donne une liste de personnalités au hasard parmi celles disponibles
 	def listePersonnalites(self):
 		fichiers = os.listdir('./personnalites/accepted')
-		return random.sample(fichiers, self.nbPersonnalites)
+		random.shuffle(fichiers)
+
+		persos = []
+
+		nom, nbRepliques = self.extraireNomEtRepliques('./personnalites/default/default.xml')
+		nbRepliques = float(nbRepliques)
+
+		nb = 0
+
+		for f in fichiers:
+			nomAlt, nbRepliquesAlt = self.extraireNomEtRepliques('./personnalites/accepted/' + f)
+			pourcent = int(round((nbRepliquesAlt / nbRepliques) * 100))
+
+			if(pourcent >= self.minDisabled):
+				self.debug(u"Ajout de la perso " + str(f) + " avec " + str(pourcent) + "%")
+				persos.append(f)
+				nb += 1
+
+				if(len(persos) >= self.nbPersonnalites):
+					return persos
+
+			else:
+				self.debug(u"Ignore la perso " + str(f) + " avec " + str(pourcent) + "%")
+
+		return persos
 		
 	def extraireNomEtRepliques(self, fichier):
 		document = xml.dom.minidom.parse(fichier)
