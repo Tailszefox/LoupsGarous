@@ -256,7 +256,7 @@
 			<contexte>Le policier veut enfermer la même personne deux fois de suite.</contexte>
 			<variables></variables>
 			<phrases>
-				<phrase>Vous avez déjà enfermé cette personne la nuit dernière ! Laissez-lui un peu de répis et choisissez quelqu'un d'autre cette fois.</phrase>
+				<phrase>Vous avez déjà enfermé cette personne la nuit dernière ! Laissez-lui un peu de répit et choisissez quelqu'un d'autre cette fois.</phrase>
 			</phrases>
 		</dire>
 		<dire>
@@ -429,7 +429,7 @@
 		</dire>
 		<dire>
 			<cle>LOUPS_LENTS</cle>
-			<contexte>Les loups n'ont pas réagit dans le temsp imparti.</contexte>
+			<contexte>Les loups n'ont pas réagit dans le temps imparti.</contexte>
 			<variables></variables>
 			<phrases>
 				<phrase>On dirait que les loups garous n'ont pas réussi à se mettre d'accord. N'y aura-t-il aucune victime cette nuit ?</phrase>
@@ -624,7 +624,7 @@
 			<contexte>Le chasseur n'a pas répondu dans le temps imparti.</contexte>
 			<variables></variables>
 			<phrases>
-				<phrase>Malheureusement, le chasseur n'avait plus assez de force pour se venger. Il mouru ainsi, alors qu'il aurait peut être pu aider le village une dernière fois. Ah, il lui aurait pourtant suffit de répondre un peu plus vite...</phrase>
+				<phrase>Malheureusement, le chasseur n'avait plus assez de force pour se venger. Il mourut ainsi, alors qu'il aurait peut être pu aider le village une dernière fois. Ah, il lui aurait pourtant suffit de répondre un peu plus vite...</phrase>
 			</phrases>
 		</dire>
 		<dire>
@@ -693,7 +693,7 @@
 		</dire>
 		<dire>
 			<cle>LECTURE_CANDIDATURES</cle>
-			<contexte>Le bot va lire les diffférentes candidatures pour le poste de maire.</contexte>
+			<contexte>Le bot va lire les différentes candidatures pour le poste de maire.</contexte>
 			<variables></variables>
 			<phrases>
 				<phrase>Je vais maintenant lire les arguments de chaque personne s'étant présentée au poste du maire. Seront-ils suffisamment convaincants ?</phrase>
@@ -765,7 +765,7 @@
 		</dire>
 		<dire>
 			<cle>SUCCESSEUR_MAIRE</cle>
-			<contexte>Le maire a designé son successeur.</contexte>
+			<contexte>Le maire a désigné son successeur.</contexte>
 			<variables>$1 : Pseudo du nouveau maire</variables>
 			<phrases>
 				<phrase>Le maire est mort, vive le maire ! Désormais, ce sera $1 qui mènera la barque. Avec talent, espérons-le.</phrase>
@@ -992,7 +992,7 @@
 			<contexte>Les messages du mur ont été lus, on passe maintenant à la nuit...</contexte>
 			<variables></variables>
 			<phrases>
-				<phrase>Hé bien, que de messages boulversants...Espérons que les villageois parviendront à trouver le sommeil après tout ça !</phrase>
+				<phrase>Hé bien, que de messages bouleversants...Espérons que les villageois parviendront à trouver le sommeil après tout ça !</phrase>
 			</phrases>
 		</dire>
 		<dire>
@@ -1312,7 +1312,7 @@
 			<contexte>Le bot envoie un message au traitre une fois tous les loups morts, pour lui signaler qu'il est maintenant un loup.</contexte>
 			<variables></variables>
 			<phrases>
-				<phrase>Le dernier loup garou est mort. Quoi que, il en reste encore un...vous ! En tant que traitre, vous êtes maintenant un loup garou, et comme tout loup garou qui se respecte, votre unique but est de vous débarasser de tous les villageois restants...</phrase>
+				<phrase>Le dernier loup garou est mort. Quoi que, il en reste encore un...vous ! En tant que traitre, vous êtes maintenant un loup garou, et comme tout loup garou qui se respecte, votre unique but est de vous débarrasser de tous les villageois restants...</phrase>
 			</phrases>
 		</dire>
 		<dire>
@@ -1344,7 +1344,7 @@
 			<contexte>Il reste un villageois et un ou plusieurs loups. Le villageois perd forcément.</contexte>
 			<variables></variables>
 			<phrases>
-				<phrase>La nuit suivante, le seul villageois restant fut lui aussi dévoré. Les loups garous, très habiles, étaient parvenus à cacher leur identité pendant suffisament longtemps pour se débarasser de tous les villageois. Félicitations, messieurs les loups garous, pour cette belle performance.</phrase>
+				<phrase>La nuit suivante, le seul villageois restant fut lui aussi dévoré. Les loups garous, très habiles, étaient parvenus à cacher leur identité pendant suffisamment longtemps pour se débarrasser de tous les villageois. Félicitations, messieurs les loups garous, pour cette belle performance.</phrase>
 			</phrases>
 		</dire>
 		<dire>
@@ -1352,7 +1352,7 @@
 			<contexte>Il ne reste plus aucun villageois.</contexte>
 			<variables></variables>
 			<phrases>
-				<phrase>Et c'est ainsi que le dernier villageois fut tué. Les loups garous, très habiles, étaient parvenus à cacher leur identité pendant suffisament longtemps pour se débarasser de tous les villageois. Félicitations, messieurs les loups garous, pour cette belle performance.</phrase>
+				<phrase>Et c'est ainsi que le dernier villageois fut tué. Les loups garous, très habiles, étaient parvenus à cacher leur identité pendant suffisamment longtemps pour se débarrasser de tous les villageois. Félicitations, messieurs les loups garous, pour cette belle performance.</phrase>
 			</phrases>
 		</dire>
 		<dire>
