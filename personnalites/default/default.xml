@@ -412,6 +412,14 @@
 			</phrases>
 		</dire>
 		<dire>
+			<cle>LOUPS_QUELQUES_SECONDES</cle>
+			<contexte>Les loups n'ont plus que quelques secondes pour choisir leur victime.</contexte>
+			<variables>$1 : Déclencheur à utiliser pour tuer.</variables>
+			<phrases>
+				<phrase>Messieurs les loups, ils ne vous restent que dix secondes. Dépêchez vous de choisir qui $1 !</phrase>
+			</phrases>
+		</dire>
+		<dire>
 			<cle>CONFIRMATION_LOUPS</cle>
 			<contexte>Les loups ont annoncé leur victime.</contexte>
 			<variables></variables>

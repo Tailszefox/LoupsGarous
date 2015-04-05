@@ -1199,8 +1199,16 @@ class Bot(ircbot.SingleServerIRCBot):
 		if(self.fille != None and self.fille != self.enPrison):
 			serv.execute_delayed(3, self.envoyer, [irclib.nm_to_n(self.fille), "APPEL_FILLE"])
 		serv.execute_delayed(10, self.traiterCanalLoups, [serv]) 
+		serv.execute_delayed(55, self.prevenirLoups, [serv])
 		serv.execute_delayed(70, self.verifierLoups, [serv])
 		
+
+	# On prévient les loups qu'ils doivent se dépêcher
+	def prevenirLoups(self, serv):
+		self.debug(u"Check loups : " + str(self.statut))
+		if(self.victimeLoups == None and self.statut == "traiterCanalLoups"):
+			self.envoyer(self.chanLoups, "LOUPS_QUELQUES_SECONDES", [self.declencheurs['tuerLoups']])
+
 	#Si les loups n'ont pas encore choisi de victime, on zappe
 	def verifierLoups(self, serv):
 		self.debug(u"Check loups : " + str(self.statut))
