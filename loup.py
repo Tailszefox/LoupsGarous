@@ -283,7 +283,12 @@ class Bot(ircbot.SingleServerIRCBot):
 	
 	#Traiter le message reçu
 	def traiterMessage(self, serv, ev):
-		message = ev.arguments()[0].strip().decode('utf-8')
+		try:
+			message = ev.arguments()[0].strip().decode('utf-8')
+		except:
+			message = ""
+			self.debug(u"Cannot decode message...")
+
 		regex = re.compile("\x1f|\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?", re.UNICODE)
 		message = regex.sub("", message)
 		messageNormal = message
@@ -339,7 +344,12 @@ class Bot(ircbot.SingleServerIRCBot):
 	
 	#Traite le message privé reçu
 	def traiterMessagePrive(self, serv, ev):
-		message = ev.arguments()[0].strip().decode('utf-8')
+		try:
+			message = ev.arguments()[0].strip().decode('utf-8')
+		except:
+			message = ""
+			self.debug(u"Cannot decode message...")
+
 		regex = re.compile("\x1f|\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?", re.UNICODE)
 		message = regex.sub("", message)
 		messageNormal = message
