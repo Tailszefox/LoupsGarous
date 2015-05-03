@@ -285,9 +285,8 @@ class Bot(ircbot.SingleServerIRCBot):
 	def traiterMessage(self, serv, ev):
 		try:
 			message = ev.arguments()[0].strip().decode('utf-8')
-		except:
-			message = ""
-			self.debug(u"Cannot decode message...")
+		except UnicodeDecodeError:
+			message = ev.arguments()[0].strip().decode('iso-8859-15')
 
 		regex = re.compile("\x1f|\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?", re.UNICODE)
 		message = regex.sub("", message)
@@ -346,9 +345,8 @@ class Bot(ircbot.SingleServerIRCBot):
 	def traiterMessagePrive(self, serv, ev):
 		try:
 			message = ev.arguments()[0].strip().decode('utf-8')
-		except:
-			message = ""
-			self.debug(u"Cannot decode message...")
+		except UnicodeDecodeError:
+			message = ev.arguments()[0].strip().decode('iso-8859-15')
 
 		regex = re.compile("\x1f|\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?", re.UNICODE)
 		message = regex.sub("", message)
