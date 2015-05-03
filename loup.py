@@ -279,7 +279,10 @@ class Bot(ircbot.SingleServerIRCBot):
 	
 	#Dis l'erreur sur le canal
 	def erreur(self, erreur):
-		self.envoyer(self.chanJeu, "ERREUR", [str(erreur)])
+		if(self.demarre):
+			self.envoyer(self.chanJeu, "ERREUR", [str(erreur)])
+		else:
+			self.envoyer(self.chanJeu, "Erreur : {}".format(str(erreur)))
 	
 	#Traiter le message reçu
 	def traiterMessage(self, serv, ev):
