@@ -53,22 +53,6 @@ class Bot(ircbot.SingleServerIRCBot):
 		self.rolesDefault = {}
 		self.declencheursDefault = {}
 		
-		self.rolesSpeciaux = [
-				# Une apparition
-				self.roleCorbeau,
-				self.roleEnfant,
-				# Deux apparitions
-				self.roleIdiot, self.roleIdiot,
-				self.roleChasseur, self.roleChasseur,
-				# Trois apparitions
-				self.roleAncien, self.roleAncien, self.roleAncien,
-				self.roleSalvateur, self.roleSalvateur, self.roleSalvateur,
-				self.rolePolicier, self.rolePolicier, self.rolePolicier,
-				self.roleFille, self.roleFille, self.roleFille,
-				# Quatre apparitions
-				self.roleSorciere, self.roleSorciere, self.roleSorciere, self.roleSorciere,
-			]
-		
 		self.whisper = False
 		self.whisperProba = [10, 30, 50, 80, 100]
 		
@@ -527,8 +511,24 @@ class Bot(ircbot.SingleServerIRCBot):
 		self.whisperProbaJoueurs = {}
 		
 		self.sprFonctions = [self.spr_memeCamp, self.spr_nombreRoles, self.spr_roleExiste, self.spr_sorcierePseudo, self.spr_loupsPseudo, self.spr_maireSV, self.spr_voyanteLoup, self.spr_estSV]
-		
+
 		#Rôles spéciaux
+		self.rolesSpeciaux = [
+				# Une apparition
+				self.roleCorbeau,
+				self.roleEnfant,
+				# Deux apparitions
+				self.roleIdiot, self.roleIdiot,
+				self.roleChasseur, self.roleChasseur,
+				# Trois apparitions
+				self.roleAncien, self.roleAncien, self.roleAncien,
+				self.roleSalvateur, self.roleSalvateur, self.roleSalvateur,
+				self.rolePolicier, self.rolePolicier, self.rolePolicier,
+				self.roleFille, self.roleFille, self.roleFille,
+				# Quatre apparitions
+				self.roleSorciere, self.roleSorciere, self.roleSorciere, self.roleSorciere,
+			]
+		
 		self.voyante = "non"
 		self.voyanteObserveLoup = False
 		
