@@ -385,7 +385,10 @@ function traiterMort($noeud)
 }
 
 if(!isset($_GET['log']))
+{
 	header('Location: log.php');
+	die("Erreur.");
+}
 
 $logName = $_GET['log'];
 
@@ -398,7 +401,7 @@ $log = @simplexml_load_file('./logs/' . $logName . '.xml');
 
 if($log === false)
 {
-	die('Erreur');
+	die('Erreur.');
 }
 
 $date = $log->date;
