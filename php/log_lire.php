@@ -138,6 +138,7 @@ function traiterAction($noeud)
 		
 		case('enfant'):
 			echo $noeud . ', l\'enfant loup, devient un vrai loup-garou !';
+			$joueurs[vraiPseudo($noeud)]['role'] = 'loup';
 			break;
 		
 		default:
