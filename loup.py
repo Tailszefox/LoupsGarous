@@ -517,6 +517,7 @@ class Bot(ircbot.SingleServerIRCBot):
 				# Une apparition
 				self.roleCorbeau,
 				self.roleEnfant,
+				self.roleCupidon,
 				# Deux apparitions
 				self.roleIdiot, self.roleIdiot,
 				self.roleChasseur, self.roleChasseur,
