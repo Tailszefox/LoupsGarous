@@ -30,7 +30,8 @@ krsort($logs);
 	<body>
 	<div id="header"><p>Parties de loup-garou</p></div>
 	
-	<p><a href="index.php">Retour à l'éditeur de personnalité</a></p>
+	<p>Vous pouvez également accéder <a href="./">à l'éditeur de personnalité</a> ainsi qu'aux <a href="stats.php">statistiques</a>.</p>
+
 	<?php
 	foreach($logs as $jour => $heures)
 	{

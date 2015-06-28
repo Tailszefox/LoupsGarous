@@ -30,7 +30,7 @@ include_once('../is_connected.php');
 	<p class="explication">Cet outil va vous permettre de créer une nouvelle personnalitée pour le bot des Loups-Garous. Une personnalitée, c'est une liste de rôles, de phrases...que dira le bot pendant la partie.<br />
 	À chaque nouvelle partie, le bot choisi une personnalité au hasard parmi celles disponibles.<br />
 	Si c'est la personnalitée que vous avez créée qui est choisie, ce seront vos phrases et vos rôles qui seront utilisés pour jouer&nbsp;!</p>
-	<p class="explication">Vous pouvez également accéder <a href="log.php">aux résumés des dernières parties</a>.</p>
+	<p class="explication">Vous pouvez également accéder <a href="log.php">aux résumés des dernières parties</a> ainsi qu'aux <a href="stats.php">statistiques</a>.</p>
 	<noscript><p class="explication"><strong>Javascript est désactivé ! Pensez à l'activer pour ne pas risquer de perdre votre travail à cause d'une erreur.</strong></p></noscript>
 	<?php 
 	if($_GET['type'] == 'save')
