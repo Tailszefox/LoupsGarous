@@ -163,7 +163,23 @@ foreach($dir as $file)
         $filename = $file->getFilename();
 
         // Ouverture du log
-        $log = simplexml_load_file('./logs/' . $filename);
+        $log = @simplexml_load_file('./logs/' . $filename);
+
+        if($log === false)
+        {
+            $logRaw = file_get_contents('./logs/' . $filename);
+
+            // Retirer les caractères Unicode invalides
+            // http://www.phpwact.org/php/i18n/charsets
+            $logRaw = preg_replace('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', ' ', $logRaw);
+            $log = simplexml_load_string($logRaw);
+
+            // Erreur, on oublie le log et on passe au suivant
+            if($log === false)
+            {
+                continue;
+            }
+        }
 
         // Remplissage du tableau des pseudos pour toutes les années
         foreach($log->joueurs->joueur as $joueur)
