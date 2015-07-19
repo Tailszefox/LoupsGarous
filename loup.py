@@ -2797,7 +2797,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		elif(ev.target().lower() == self.chanJeu.lower()):
 			
 			#S'il s'agit d'un joueur encore en vie, on le voice
-			if (ev.source() in self.joueurs):
+			if (ev.source() in self.joueurs and self.demarre):
 				serv.mode(self.chanJeu, "+v " + irclib.nm_to_n(ev.source()))
 		
 		#Canal des loups
