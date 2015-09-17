@@ -5,7 +5,6 @@ import sys
 import codecs
 import traceback
 import irclib
-import ircbot
 import random
 import os
 import string
@@ -15,7 +14,30 @@ import ipdb
 from datetime import datetime
 import ConfigParser
 
-class Bot(ircbot.SingleServerIRCBot):
+toFile = False
+isDebug = False
+isTest = False
+
+if(len(sys.argv) > 1):
+	for arg in sys.argv:
+		if(arg == '-r' or arg == '--redirect'):
+			toFile = True
+			f = codecs.open('./log.txt', 'w', 'utf-8', 'ignore');
+			sys.stdout = f
+		elif(arg == '-d' or arg == '--debug'):
+			isDebug = True
+		elif(arg == '-t' or arg == '--test'):
+			isTest = True
+
+# On importe notre faux bot lors des tests
+if isTest:
+	import fakebot
+	BotClass = fakebot.FakeBot
+else:
+	import ircbot
+	BotClass = ircbot.SingleServerIRCBot
+
+class Bot(BotClass):
 	
 	##########
 	# Fonction du bot
@@ -69,7 +91,7 @@ class Bot(ircbot.SingleServerIRCBot):
 		
 		self.debug("Test d'encodage : Hé hé hé")
 		
-		ircbot.SingleServerIRCBot.__init__(self, [(serveur, port)], self.pseudo, "Maitre du jeu du loup garou")
+		BotClass.__init__(self, [(serveur, port)], self.pseudo, "Maitre du jeu du loup garou")
 		self.debug(u"Connexion...")
 	
 	#Donne une liste de personnalités au hasard parmi celles disponibles
@@ -2925,18 +2947,6 @@ class Bot(ircbot.SingleServerIRCBot):
 				
 				if(self.traitre == ancienDomaine):
 					self.traitre = nouveauDomaine
-
-toFile = False
-isDebug = False
-
-if(len(sys.argv) > 1):
-	for arg in sys.argv:
-		if(arg == '-r'):
-			toFile = True
-			f = codecs.open('./log.txt', 'w', 'utf-8', 'ignore');
-			sys.stdout = f
-		elif(arg == '-d'):
-			isDebug = True
 
 bot = Bot()
 
