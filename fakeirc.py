@@ -17,7 +17,7 @@ class FakeIrc():
     def __init__(self, server, pseudo, description):
         self.connection = Connection(self)
 
-        print "Initialisé"
+        print u"Initialisé"
 
     def start(self):
         self.connection.demarrerPartie()
@@ -98,8 +98,8 @@ class Connection():
             return
 
         nbJoueurs = random.randint(self.irc.unitI("nombre_joueurs_min"), self.irc.unitI("nombre_joueurs_max"))
-        print "--- Partie {}/{} - {} joueurs".format(self.noPartie, nbParties, nbJoueurs)
-        print "--- Gagnants forcés : {}".format(self.forcerGagnant)
+        print u"--- Partie {}/{} - {} joueurs".format(self.noPartie, nbParties, nbJoueurs)
+        print u"--- Gagnants forcés : {}".format(self.forcerGagnant)
 
         self.joueurs = []
 
@@ -136,7 +136,7 @@ class Connection():
     # 
 
     def privmsg(self, destination, message):
-        print "- BOT - Message pour {}".format(destination)
+        print u"- BOT - Message pour {}".format(destination)
 
         # Message pour un canal
         if(destination.startswith("#")):
@@ -285,13 +285,13 @@ class Connection():
             pass
 
     def join(self, canal):
-        print "- BOT - Rejoint {}".format(canal)
+        print u"- BOT - Rejoint {}".format(canal)
 
     def mode(self, canal, mode):
-        print "- BOT - Mode {} sur {}".format(mode, canal)
+        print u"- BOT - Mode {} sur {}".format(mode, canal)
 
     def invite(self, pseudo, canal):
-        print "- BOT - Invitation de {} sur {}".format(pseudo, canal)
+        print u"- BOT - Invitation de {} sur {}".format(pseudo, canal)
 
         joueur = self.getJoueur(pseudo)
 
@@ -301,7 +301,7 @@ class Connection():
             print u"Le joueur {} ne fait plus partie du jeu".format(pseudo)
 
     def kick(self, canal, pseudo):
-        print "- BOT - Kick de {} du canal {}".format(pseudo, canal)
+        print u"- BOT - Kick de {} du canal {}".format(pseudo, canal)
 
         joueur = self.getJoueur(pseudo)
         joueur.kicke(canal)

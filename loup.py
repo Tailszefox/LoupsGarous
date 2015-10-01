@@ -27,14 +27,14 @@ if(len(sys.argv) > 1):
 			toFile = True
 			f = codecs.open('./log.txt', 'w', 'utf-8', 'ignore');
 			sys.stdout = f
-			print "Redirection activée"
+			print u"Redirection activée"
 		elif(arg == '-d' or arg == '--debug'):
 			isDebug = True
-			print "Mode debug activé"
+			print u"Mode debug activé"
 		elif(arg == '-t' or arg == '--test'):
 			isTest = True
 			isTest_filename = None
-			print "Mode test activé"
+			print u"Mode test activé"
 
 			# On vérifie si l'argument suivant est un nom de fichier
 			try:
@@ -44,7 +44,7 @@ if(len(sys.argv) > 1):
 
 			if(not argNext.startswith("-")):
 				isTest_filename = argNext
-				print "\tFichier de test : {}".format(isTest_filename)
+				print u"\tFichier de test : {}".format(isTest_filename)
 				i += 1
 
 		i += 1
@@ -66,7 +66,7 @@ class Bot(BotParentClass):
 	def __init__(self):
 		config = ConfigParser.ConfigParser()
 		if len(config.read("./prefs.ini")) == 0:
-			print "Impossible de lire la configuration."
+			print u"Impossible de lire la configuration."
 			sys.exit()
 
 		self.pseudo = config.get("prefs", "pseudo")
@@ -77,13 +77,13 @@ class Bot(BotParentClass):
 		serveur = config.get("prefs", "serveur")
 		port = config.getint("prefs", "port")
 		
-		print "Configuration :"
-		print "\tPseudo :", self.pseudo
-		print "\tMot de passe :", "oui" if len(self.mdp) > 0 else "non"
-		print "\tServeur :", serveur + ":" + str(port)
-		print "\tCanal de jeu :", self.chanJeu
-		print "\tCanal des loups : ", self.chanLoups
-		print "\tCanal du paradis : ", self.chanParadis
+		print u"Configuration :"
+		print u"\tPseudo :", self.pseudo
+		print u"\tMot de passe :", "oui" if len(self.mdp) > 0 else "non"
+		print u"\tServeur :", serveur + ":" + str(port)
+		print u"\tCanal de jeu :", self.chanJeu
+		print u"\tCanal des loups : ", self.chanLoups
+		print u"\tCanal du paradis : ", self.chanParadis
 		print
 
 		# Importation de l'unit de test si nécessaire
@@ -284,7 +284,7 @@ class Bot(BotParentClass):
 	def debug(self, message, gras = True):
 		try:
 			if(gras):
-				print "\033[1;37m", message, "\033[0m"
+				print u"\033[1;37m", message, "\033[0m"
 			else:
 				print message
 		except Exception as e :

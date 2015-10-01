@@ -14,9 +14,9 @@ class TestUnit():
         if(chemin is not None):
             self.chargeUnit(chemin)
 
-        print "Variables de test chargées :"
+        print u"Variables de test chargées :"
         for nomVariable in self.variables:
-            print "\t{} = {}".format(nomVariable, self.variables[nomVariable])
+            print u"\t{} = {}".format(nomVariable, self.variables[nomVariable])
 
         print
 
@@ -26,7 +26,7 @@ class TestUnit():
         if(len(unitFichier.read(chemin)) == 0):
             raise Exception("Impossible de lire le fichier de configuration {}".format(chemin))
 
-        print "Fichier de test {} chargé".format(chemin)
+        print u"Fichier de test {} chargé".format(chemin)
 
         for item in unitFichier.items(section = "unit"):
             itemName, itemValue = item
