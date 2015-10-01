@@ -51,7 +51,9 @@ function vraiPseudo($pseudo)
 	foreach($joueurs as $joueur)
 	{
 		if(strcasecmp($pseudo, $joueur) == 0)
-			return strval($joueur);
+		{
+			return '<span class="pseudoJoueur" title="'. role($joueur["role"]). '">'. strval($joueur) .'</span>';
+		}
 	}
 	
 	return strval($pseudo);
@@ -65,7 +67,7 @@ function traiterAction($noeud)
 	{
 		case('cupidon'):
 			$amoureux = explode(';', $noeud);
-			echo 'Cupidon rend ' . $amoureux[0] . ' et ' . $amoureux[1] . ' amoureux !';
+			echo 'Cupidon rend ' . vraiPseudo($amoureux[0]) . ' et ' . vraiPseudo($amoureux[1]) . ' amoureux !';
 			break;
 			
 		case('policier'):
@@ -77,13 +79,13 @@ function traiterAction($noeud)
 			break;
 			
 		case('voyante'):
-			echo 'La voyante observe ' . $noeud . ', ' . role($noeud['role']) . '.';
+			echo 'La voyante observe ' . vraiPseudo($noeud) . ', ' . role($noeud['role']) . '.';
 			if(role($noeud['role']) == 'l\'enfant loup')
 				echo ' Cependant, elle le voit comme un simple villageois.';
 			break;
 			
 		case('salvateur'):
-			echo 'Le salvateur protège ' . $noeud . '.';
+			echo 'Le salvateur protège ' . vraiPseudo($noeud) . '.';
 			break;
 		
 		case('loup'):
@@ -113,7 +115,7 @@ function traiterAction($noeud)
 			if($noeud == '')
 				echo 'Le maire ne parvient pas à choisir de successeur...';
 			else
-				echo $noeud . ' est le nouveau maire !';
+				echo vraiPseudo($noeud) . ' est le nouveau maire !';
 			break;
 				
 		case('traitre'):
@@ -465,6 +467,12 @@ $date = $log->date;
 		{
 			color: #900000;
 		}
+
+		.pseudoJoueur
+		{
+			text-decoration: underline dotted;
+			cursor: default;
+		}
 		</style>
 	</head>
 	<body>
@@ -507,7 +515,7 @@ $date = $log->date;
 	<?php if(isset($log->amoureux))
 	{
 	echo '<p><strong>Amoureux : </strong>' .
-	$log->amoureux[0] . ' et ' . $log->amoureux[1]
+	vraiPseudo($log->amoureux[0]) . ' et ' . vraiPseudo($log->amoureux[1])
 	. '</p>';
 	}
 
