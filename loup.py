@@ -19,25 +19,45 @@ isDebug = False
 isTest = False
 
 if(len(sys.argv) > 1):
-	for arg in sys.argv:
+	i = 0
+	while i < len(sys.argv):
+		arg = sys.argv[i]
+
 		if(arg == '-r' or arg == '--redirect'):
 			toFile = True
 			f = codecs.open('./log.txt', 'w', 'utf-8', 'ignore');
 			sys.stdout = f
+			print "Redirection activée"
 		elif(arg == '-d' or arg == '--debug'):
 			isDebug = True
+			print "Mode debug activé"
 		elif(arg == '-t' or arg == '--test'):
 			isTest = True
+			isTest_filename = None
+			print "Mode test activé"
 
-# On importe notre faux bot lors des tests
+			# On vérifie si l'argument suivant est un nom de fichier
+			try:
+				argNext = sys.argv[i+1]
+			except:
+				break
+
+			if(not argNext.startswith("-")):
+				isTest_filename = argNext
+				print "\tFichier de test : {}".format(isTest_filename)
+				i += 1
+
+		i += 1
+
+# On importe notre faux IRC lors des tests
 if isTest:
-	import fakebot
-	BotClass = fakebot.FakeBot
+	import fakeirc
+	BotParentClass = fakeirc.FakeIrc
 else:
 	import ircbot
-	BotClass = ircbot.SingleServerIRCBot
+	BotParentClass = ircbot.SingleServerIRCBot
 
-class Bot(BotClass):
+class Bot(BotParentClass):
 	
 	##########
 	# Fonction du bot
@@ -65,6 +85,11 @@ class Bot(BotClass):
 		print "\tCanal des loups : ", self.chanLoups
 		print "\tCanal du paradis : ", self.chanParadis
 		print
+
+		# Importation de l'unit de test si nécessaire
+		if(isTest):
+			from testunit import TestUnit
+			self.testUnit = TestUnit(isTest_filename)
 		
 		self.personnalite = None
 		self.joueurs = []
@@ -91,13 +116,16 @@ class Bot(BotClass):
 		
 		self.debug("Test d'encodage : Hé hé hé")
 		
-		BotClass.__init__(self, [(serveur, port)], self.pseudo, "Maitre du jeu du loup garou")
+		BotParentClass.__init__(self, [(serveur, port)], self.pseudo, "Maitre du jeu du loup garou")
 		self.debug(u"Connexion...")
 	
 	#Donne une liste de personnalités au hasard parmi celles disponibles
 	def listePersonnalites(self):
 		fichiers = os.listdir('./personnalites/accepted')
 		random.shuffle(fichiers)
+
+		if(isTest):
+			return []
 
 		persos = []
 
@@ -201,16 +229,20 @@ class Bot(BotClass):
 		elif(cle in self.repliquesDefault):
 			replique = self.repliquesDefault[cle]
 		
-		#Si la replique n'existe pas, on met directement la clé
-		if(replique != None):
+		# Si la replique n'existe pas, on met directement la clé
+		# De même si on est en mode test
+		if(replique is None or isTest):
+			message = cle
+			noVariable = 1
+			for variable in variables:
+				message += " " + variable
+		else:
 			message = replique[random.randint(0, len(replique)-1)]
 			noVariable = 1
 			for variable in variables:
 				message = message.replace("$" + str(noVariable), variable)
 				noVariable = noVariable + 1
 				
-		else:
-			message = cle
 		
 		#Le message n'est pas destiné au service : on rajoute le gras et on change quelques trucs
 		if(gras):
@@ -238,8 +270,8 @@ class Bot(BotClass):
 				if(mp != 'none'):
 					try:
 						self.addLog('chat', message, {'auteur' : self.pseudo, 'mp' : mp, 'destination' : destination}, 'logPartie')
-					except:
-						self.debug(u'Impossible d\'ajouter la réplique au log')
+					except Exception as e:
+						self.debug(u'Impossible d\'ajouter la réplique au log : {}'.format(e))
 			
 			message = chr(2) + message
 			
@@ -307,8 +339,8 @@ class Bot(BotClass):
 		if(self.demarre and ev.target().lower() == self.chanJeu.lower() or ev.target().lower() == self.chanLoups.lower()):
 			try:
 				self.addLog('chat', messageNormal, {'auteur' : irclib.nm_to_n(ev.source()), 'mp' : 'false', 'destination' : ev.target()}, 'logPartie')
-			except:
-				self.debug(u'Impossible d\'ajouter la réplique au log')
+			except Exception as e:
+				self.debug(u'Impossible d\'ajouter la réplique au log : {}'.format(e))
 		
 		# Demande des rôles sur le paradis
 		if(self.demarre and message == '!roles'  and ev.target().lower() == self.chanParadis.lower()):
@@ -367,8 +399,8 @@ class Bot(BotClass):
 		if(self.demarre and ev.source() in self.joueurs):
 			try:
 				self.addLog('chat', messageNormal, {'auteur' : irclib.nm_to_n(ev.source()), 'mp' : 'true', 'destination' : self.pseudo}, 'logPartie')
-			except:
-				self.debug(u'Impossible d\'ajouter la réplique au log')
+			except Exception as e:
+				self.debug(u'Impossible d\'ajouter la réplique au log : {}'.format(e))
 		
 		# Chuchotement
 		if(self.demarre and self.whisper and ev.source() in self.joueurs and (('chuchoter' in self.declencheurs and self.declencheurs['chuchoter'] in message) or ('chuchoter' in self.declencheursDefault and self.declencheursDefault['chuchoter'] in message))):
@@ -467,7 +499,6 @@ class Bot(BotClass):
 
 	#La personnalité a été élue, on peut la charger et la lancer
 	def personnaliteeChoisie(self, serv):
-		
 		#Si personne n'a voté, on choisi par défaut
 		if(len(self.votes) == 0):
 			personnaliteChoisie = 0
@@ -535,22 +566,33 @@ class Bot(BotClass):
 		self.sprFonctions = [self.spr_memeCamp, self.spr_nombreRoles, self.spr_roleExiste, self.spr_sorcierePseudo, self.spr_loupsPseudo, self.spr_maireSV, self.spr_voyanteLoup, self.spr_estSV]
 
 		#Rôles spéciaux
-		self.rolesSpeciaux = [
-				# Une apparition
-				self.roleCorbeau,
-				self.roleEnfant,
-				self.roleCupidon,
-				# Deux apparitions
-				self.roleIdiot, self.roleIdiot,
-				self.roleChasseur, self.roleChasseur,
-				# Trois apparitions
-				self.roleAncien, self.roleAncien, self.roleAncien,
-				self.roleSalvateur, self.roleSalvateur, self.roleSalvateur,
-				self.rolePolicier, self.rolePolicier, self.rolePolicier,
-				self.roleFille, self.roleFille, self.roleFille,
-				# Quatre apparitions
-				self.roleSorciere, self.roleSorciere, self.roleSorciere, self.roleSorciere,
-			]
+		if(isTest and len(self.unitA("roles_presents")) > 0):
+			self.debug("Utilisation de la liste des rôles de l'unité de test")
+			self.rolesSpeciaux = []
+
+			for role in self.unitA("roles_presents"):
+				try:
+					method = getattr(self, "role{}".format(role.title()))
+					self.rolesSpeciaux.append(method)
+				except AttributeError:
+					raise Exception("Le rôle {} n'existe pas".format(role))
+		else:
+			self.rolesSpeciaux = [
+					# Une apparition
+					self.roleCorbeau,
+					self.roleEnfant,
+					self.roleCupidon,
+					# Deux apparitions
+					self.roleIdiot, self.roleIdiot,
+					self.roleChasseur, self.roleChasseur,
+					# Trois apparitions
+					self.roleAncien, self.roleAncien, self.roleAncien,
+					self.roleSalvateur, self.roleSalvateur, self.roleSalvateur,
+					self.rolePolicier, self.rolePolicier, self.rolePolicier,
+					self.roleFille, self.roleFille, self.roleFille,
+					# Quatre apparitions
+					self.roleSorciere, self.roleSorciere, self.roleSorciere, self.roleSorciere,
+				]
 		
 		self.voyante = "non"
 		self.voyanteObserveLoup = False
@@ -723,7 +765,7 @@ class Bot(BotClass):
 				self.sv.append(joueur)
 				self.addLog('joueur', pseudo, {'role' : 'villageois'}, 'joueurs')
 			
-			elif(self.voyante == "non"):
+			elif(self.voyante == "non" and ((not isTest) or self.unitB("roles_voyante"))):
 				self.villageois.append(joueur)
 				self.roleVoyante(joueur)
 			
@@ -802,12 +844,18 @@ class Bot(BotClass):
 		
 		# On donne son tuteur à l'enfant loup
 		if(self.enfant is not None):
+			# Ancien s'il est présent
 			if(self.ancien is not None and self.ancien != "non"):
 				self.tuteur = self.ancien
+			# Sorcière si elle est présente
 			elif(self.sorciere is not None and self.sorciere != "non"):
 				self.tuteur = self.sorciere
-			else:
+			# Voyante si elle est présente
+			elif(self.voyante is not None and self.voyante != "non"):
 				self.tuteur = self.voyante
+			# Dernier recours : villageois au hasard
+			else:
+				self.tuteur = random.choice(self.sv)
 			
 			identite = self.identite(self.tuteur)
 			self.debug("Tuteur : " + self.tuteur + ", Ident tuteur : " + identite)
@@ -820,7 +868,8 @@ class Bot(BotClass):
 		randomTraitre = random.randint(0, 10)
 
 		self.debug(u"Random traitre : " + str(randomTraitre))
-		if(len(self.sv) >= 4 and randomTraitre >= 5):
+		
+		if( (len(self.sv) >= 4 and randomTraitre >= 5) or (isTest and self.unitB("forcer_traitre")) ):
 			self.traitre = random.sample(self.sv, 1)[0]
 			self.debug(u"Traitre : " + str(self.traitre))
 		else:
@@ -1284,7 +1333,8 @@ class Bot(BotClass):
 	#Kick les loups une fois qu'ils ont choisi quelqu'un à tuer
 	def kickerLoups(self, serv):
 		for loup in self.loups:
-			serv.kick(self.chanLoups, irclib.nm_to_n(loup))
+			if(loup != self.enPrison):
+				serv.kick(self.chanLoups, irclib.nm_to_n(loup))
 			
 		if(self.victimeLoups == None):
 			self.envoyer(self.chanJeu, "LOUPS_LENTS")
@@ -1567,8 +1617,8 @@ class Bot(BotClass):
 	#Donne les instructions concernant l'élection du maire
 	def demarrerElection(self, serv):
 		self.statut = "candidaturesMaire"
-		self.envoyer(self.chanJeu, "INSTRUCTIONS_MAIRE")
 		self.messagesCandidats = {}
+		self.envoyer(self.chanJeu, "INSTRUCTIONS_MAIRE")
 		serv.execute_delayed(60, self.verifierCandidats, [serv])
 		
 	#Message pour être candidat
@@ -1876,8 +1926,8 @@ class Bot(BotClass):
 				serv.execute_delayed(attente + 60, self.maireDepartageLent)
 				return
 				
-			serv.execute_delayed(attente, self.envoyer, [self.chanJeu, "PREMIERE_EGALITE"])
 			serv.execute_delayed(attente, self.annoncerEgalite, [serv])
+			serv.execute_delayed(attente, self.envoyer, [self.chanJeu, "PREMIERE_EGALITE"])
 			
 		#Pas d'égalité, ça roule
 		else:
@@ -2039,7 +2089,7 @@ class Bot(BotClass):
 			self.choix_spr = random.sample(self.sprFonctions, 1)[0]
 			#self.choix_spr = random.randint(0, len(self.sprFonctions) - 1)
 			self.debug(u"Choix de la fonction " + str(self.choix_spr))
-			self.connection.execute_delayed(10, self.choix_spr, [serv]) 
+			self.connection.execute_delayed(10, self.choix_spr, [serv])
 			#self.sprFonctions[self.choix_spr](serv)
 		else:
 			self.suivante(serv)
@@ -2408,7 +2458,12 @@ class Bot(BotClass):
 			self.envoyer(self.chanJeu, "ABANDON_PARTIE")
 		else:
 			self.envoyer(self.chanJeu, "FIN")
-			f = open('logs/' + str(datetime.today().strftime('%d_%m_%y_%H_%M_%S')) + '.xml', 'w')
+
+			if(isTest):
+				f = open('./last_game.xml', 'w')
+			else:
+				f = open('logs/' + str(datetime.today().strftime('%d_%m_%y_%H_%M_%S')) + '.xml', 'w')
+
 			try:
 				f.write(self.log.toxml(encoding = "utf-8"))
 			except:
@@ -2426,6 +2481,10 @@ class Bot(BotClass):
 			
 		self.statut = "attente"
 		self.demarre = False
+
+		# Relancer une partie si on est en mode test
+		if(isTest):
+			self.start()
 	
 	# Chuchotement
 	def chuchoter(self, serv, source, message, messageNormal):
@@ -2498,240 +2557,192 @@ class Bot(BotClass):
 	
 	# Deux joueurs dans le même camp
 	def spr_memeCamp(self, serv, source = None, message = None):
-		try:
-			# Demande du premier pseudo
-			if(self.spr_statut == 0):
-				self.envoyer(self.chanJeu, "SPR_MEMECAMP_0")
-				self.spr_statut = 1
-				
-			# Enregistrement du premier pseudo et demande du second	
-			elif(self.spr_statut == 1):
-				if(message in self.pseudos):
-					self.spr_variables.append(message)
-					self.envoyer(self.chanJeu, "SPR_MEMECAMP_1")
-					self.spr_statut = 2
+		# Demande du premier pseudo
+		if(self.spr_statut == 0):
+			self.spr_statut = 1
+			self.envoyer(self.chanJeu, "SPR_MEMECAMP_0")
 			
-			# Donne la réponse
-			elif(self.spr_statut == 2):
-				if(message in self.pseudos and message != self.spr_variables[0]):
-					self.spr_variables.append(message)
+		# Enregistrement du premier pseudo et demande du second	
+		elif(self.spr_statut == 1):
+			if(message in self.pseudos):
+				self.spr_statut = 2
+				self.spr_variables.append(message)
+				self.envoyer(self.chanJeu, "SPR_MEMECAMP_1")
+		
+		# Donne la réponse
+		elif(self.spr_statut == 2):
+			if(message in self.pseudos and message != self.spr_variables[0]):
+				self.spr_statut = 3
+				self.spr_variables.append(message)
+				
+				premier = self.pseudos[self.spr_variables[0]]
+				second = self.pseudos[self.spr_variables[1]]
+				
+				if((premier in self.loups and second in self.loups) or (premier in self.villageois and second in self.villageois)):
+					self.addLog('spr', irclib.nm_to_n(premier) + ';' + irclib.nm_to_n(second), {'type' : 'memecamp', 'resultat' : 'identique'}, 'tour')
+					self.envoyer(self.chanJeu, "SPR_MEMECAMP_2", [irclib.nm_to_n(premier), irclib.nm_to_n(second)])
+				else:
+					self.addLog('spr', irclib.nm_to_n(premier) + ';' + irclib.nm_to_n(second), {'type' : 'memecamp', 'resultat' : 'different'}, 'tour')
+					self.envoyer(self.chanJeu, "SPR_MEMECAMP_3", [irclib.nm_to_n(premier), irclib.nm_to_n(second)])
 					
-					premier = self.pseudos[self.spr_variables[0]]
-					second = self.pseudos[self.spr_variables[1]]
-					
-					if((premier in self.loups and second in self.loups) or (premier in self.villageois and second in self.villageois)):
-						self.addLog('spr', irclib.nm_to_n(premier) + ';' + irclib.nm_to_n(second), {'type' : 'memecamp', 'resultat' : 'identique'}, 'tour')
-						self.envoyer(self.chanJeu, "SPR_MEMECAMP_2", [irclib.nm_to_n(premier), irclib.nm_to_n(second)])
-					else:
-						self.addLog('spr', irclib.nm_to_n(premier) + ';' + irclib.nm_to_n(second), {'type' : 'memecamp', 'resultat' : 'different'}, 'tour')
-						self.envoyer(self.chanJeu, "SPR_MEMECAMP_3", [irclib.nm_to_n(premier), irclib.nm_to_n(second)])
-						
-					self.spr_statut = 3
-					self.spr_terminer(serv)
-		except:
-			self.envoyer(self.chanJeu, u"Séance annulée, problème de connexion avec les morts.")
-			self.debug(u"Erreur spiritisme ! " + str(sys.exc_info()[1]))
-			self.spr_statut = 99
-			self.spr_terminer(serv)
+				self.spr_terminer(serv)
 				
 	# Connaitre le nombre de rôles particuliers restants
 	def spr_nombreRoles(self, serv, source = None, message = None):
-		try:
-			# Demande de la catégorie
-			if(self.spr_statut == 0):
-				self.envoyer(self.chanJeu, "SPR_NOMBREROLES_0")
-				self.spr_statut = 1
-				
-			# Envoi du nombre
-			elif(self.spr_statut == 1):
-				if(message == "1" or message == "2" or message == "3"):
-					self.spr_statut = 2
-					if(message == "1"):
-						self.addLog('spr', str(len(self.loups)), {'type' : 'nombreroles', 'resultat' : 'loup'}, 'tour')
-						self.envoyer(self.chanJeu, "SPR_NOMBREROLES_1", [str(len(self.loups))])
-					elif(message == "2"):
-						self.addLog('spr', str(len(self.sv)), {'type' : 'nombreroles', 'resultat' : 'sv'}, 'tour')
-						self.envoyer(self.chanJeu, "SPR_NOMBREROLES_2", [str(len(self.sv))])
-					elif(message == "3"):
-						nombre = len(self.joueurs) - (len(self.loups) + len(self.sv))
-						self.addLog('spr', str(nombre), {'type' : 'nombreroles', 'resultat' : 'speciaux'}, 'tour')
-						self.envoyer(self.chanJeu, "SPR_NOMBREROLES_3", [str(nombre)])
-					self.spr_terminer(serv)
-		except:
-			self.envoyer(self.chanJeu, u"Séance annulée, problème de connexion avec les morts.")
-			self.debug(u"Erreur spiritisme ! " + str(sys.exc_info()[1]))
-			self.spr_statut = 99
-			self.spr_terminer(serv)
+		# Demande de la catégorie
+		if(self.spr_statut == 0):
+			self.spr_statut = 1
+			self.envoyer(self.chanJeu, "SPR_NOMBREROLES_0")
+			
+		# Envoi du nombre
+		elif(self.spr_statut == 1):
+			if(message == "1" or message == "2" or message == "3"):
+				self.spr_statut = 2
+				if(message == "1"):
+					self.addLog('spr', str(len(self.loups)), {'type' : 'nombreroles', 'resultat' : 'loup'}, 'tour')
+					self.envoyer(self.chanJeu, "SPR_NOMBREROLES_1", [str(len(self.loups))])
+				elif(message == "2"):
+					self.addLog('spr', str(len(self.sv)), {'type' : 'nombreroles', 'resultat' : 'sv'}, 'tour')
+					self.envoyer(self.chanJeu, "SPR_NOMBREROLES_2", [str(len(self.sv))])
+				elif(message == "3"):
+					nombre = len(self.joueurs) - (len(self.loups) + len(self.sv))
+					self.addLog('spr', str(nombre), {'type' : 'nombreroles', 'resultat' : 'speciaux'}, 'tour')
+					self.envoyer(self.chanJeu, "SPR_NOMBREROLES_3", [str(nombre)])
+				self.spr_terminer(serv)
 								
 	# Savoir si un rôle existe
 	def spr_roleExiste(self, serv, source = None, message = None):
-		try:
-			# Demande du rôle
-			if(self.spr_statut == 0):
-				self.envoyer(self.chanJeu, "SPR_ROLEEXISTE_0")
-				self.spr_statut = 1
+		# Demande du rôle
+		if(self.spr_statut == 0):
+			self.spr_statut = 1
+			self.envoyer(self.chanJeu, "SPR_ROLEEXISTE_0")
+			
+		# Envoi du rôle
+		elif(self.spr_statut == 1):
+			if(message == "1" or message == "2" or message == "3" or message == "4"):
+				self.spr_statut = 2
 				
-			# Envoi du rôle
-			elif(self.spr_statut == 1):
-				if(message == "1" or message == "2" or message == "3" or message == "4"):
-					self.spr_statut = 2
+				if(message == "1"):
+					role = self.fille
+					index = "fille"
+				elif(message == "2"):
+					role = self.ancien
+					index = "ancien"
+				elif(message == "3"):
+					role = self.chasseur
+					index = "chasseur"
+				elif(message == "4"):
+					role = self.idiot
+					index = "idiot"
+				
+				if(index in self.roles):
+					roleDemande = self.roles[index]
+				else:
+					roleDemande = self.rolesDefault[index]
+				
+				if(not role):
+					self.addLog('spr', 'non', {'type' : 'roleexiste', 'resultat' : index}, 'tour')
+					self.envoyer(self.chanJeu, "SPR_ROLEEXISTE_1", [roleDemande])
+				else:
+					self.addLog('spr', 'oui', {'type' : 'roleexiste', 'resultat' : index}, 'tour')
+					self.envoyer(self.chanJeu, "SPR_ROLEEXISTE_2", [roleDemande])
 					
-					if(message == "1"):
-						role = self.fille
-						index = "fille"
-					elif(message == "2"):
-						role = self.ancien
-						index = "ancien"
-					elif(message == "3"):
-						role = self.chasseur
-						index = "chasseur"
-					elif(message == "4"):
-						role = self.idiot
-						index = "idiot"
-					
-					if(index in self.roles):
-						roleDemande = self.roles[index]
-					else:
-						roleDemande = self.rolesDefault[index]
-					
-					if(not role):
-						self.addLog('spr', 'non', {'type' : 'roleexiste', 'resultat' : index}, 'tour')
-						self.envoyer(self.chanJeu, "SPR_ROLEEXISTE_1", [roleDemande])
-					else:
-						self.addLog('spr', 'oui', {'type' : 'roleexiste', 'resultat' : index}, 'tour')
-						self.envoyer(self.chanJeu, "SPR_ROLEEXISTE_2", [roleDemande])
-						
-					self.spr_terminer(serv)
-						
-		except:
-			self.envoyer(self.chanJeu, u"Séance annulée, problème de connexion avec les morts.")
-			self.debug(u"Erreur spiritisme ! " + str(sys.exc_info()[1]))
-			self.spr_statut = 99
-			self.spr_terminer(serv)
+				self.spr_terminer(serv)
 			
 	# Savoir si la sorcière a un pseudo entre A et M
 	def spr_sorcierePseudo(self, serv, source = None, message = None):
-		try:
-			if(self.spr_statut == 0):
-				self.spr_statut = 1
+		if(self.spr_statut == 0):
+			self.spr_statut = 1
+			
+			if(not self.sorciere or self.sorciere == "non"):
+				self.addLog('spr', 'aucune', {'type' : 'sorcierepseudo'}, 'tour')
+				self.envoyer(self.chanJeu, "SPR_PSEUDOSORCIERE_0")
+			elif(irclib.nm_to_n(self.sorciere).lower() <= 'm'):
+				self.addLog('spr', 'oui', {'type' : 'sorcierepseudo'}, 'tour')
+				self.envoyer(self.chanJeu, "SPR_PSEUDOSORCIERE_1")
+			else:
+				self.addLog('spr', 'non', {'type' : 'sorcierepseudo'}, 'tour')
+				self.envoyer(self.chanJeu, "SPR_PSEUDOSORCIERE_2")
 				
-				if(not self.sorciere or self.sorciere == "non"):
-					self.addLog('spr', 'aucune', {'type' : 'sorcierepseudo'}, 'tour')
-					self.envoyer(self.chanJeu, "SPR_PSEUDOSORCIERE_0")
-				elif(irclib.nm_to_n(self.sorciere).lower() <= 'm'):
-					self.addLog('spr', 'oui', {'type' : 'sorcierepseudo'}, 'tour')
-					self.envoyer(self.chanJeu, "SPR_PSEUDOSORCIERE_1")
-				else:
-					self.addLog('spr', 'non', {'type' : 'sorcierepseudo'}, 'tour')
-					self.envoyer(self.chanJeu, "SPR_PSEUDOSORCIERE_2")
-					
-				self.spr_terminer(serv)
-		except:
-			self.envoyer(self.chanJeu, u"Séance annulée, problème de connexion avec les morts.")
-			self.debug(u"Erreur spiritisme ! " + str(sys.exc_info()[1]))
-			self.spr_statut = 99
 			self.spr_terminer(serv)
 	
 	# Savoir si les loups ont un pseudo entre A et M
 	def spr_loupsPseudo(self, serv, source = None, message = None):
-		try:
-			if(self.spr_statut == 0):
-				self.spr_statut = 1
-				entre = False
+		if(self.spr_statut == 0):
+			self.spr_statut = 1
+			entre = False
+			
+			for loup in self.loups:
+				if(irclib.nm_to_n(loup).lower()[0] <= 'm'):
+					entre = True
+			
+			if(entre):
+				self.addLog('spr', 'oui', {'type' : 'loupsPseudo'}, 'tour')
+				self.envoyer(self.chanJeu, "SPR_LOUPSPSEUDO_0")
+			else:
+				self.addLog('spr', 'non', {'type' : 'loupsPseudo'}, 'tour')
+				self.envoyer(self.chanJeu, "SPR_LOUPSPSEUDO_1")
 				
-				for loup in self.loups:
-					if(irclib.nm_to_n(loup).lower()[0] <= 'm'):
-						entre = True
-				
-				if(entre):
-					self.addLog('spr', 'oui', {'type' : 'loupsPseudo'}, 'tour')
-					self.envoyer(self.chanJeu, "SPR_LOUPSPSEUDO_0")
-				else:
-					self.addLog('spr', 'non', {'type' : 'loupsPseudo'}, 'tour')
-					self.envoyer(self.chanJeu, "SPR_LOUPSPSEUDO_1")
-					
-				self.spr_terminer(serv)
-		except:
-			self.envoyer(self.chanJeu, u"Séance annulée, problème de connexion avec les morts.")
-			self.debug(u"Erreur spiritisme ! " + str(sys.exc_info()[1]))
-			self.spr_statut = 99
 			self.spr_terminer(serv)
 	
 	# Savoir si le maire est simple villageois
 	def spr_maireSV(self, serv, source = None, message = None):
-		try:
-			if(self.spr_statut == 0):
-				self.spr_statut = 1
+		if(self.spr_statut == 0):
+			self.spr_statut = 1
+			
+			if(not self.maire):
+				self.addLog('spr', 'aucun', {'type' : 'mairesv'}, 'tour')
+				self.envoyer(self.chanJeu, "SPR_MAIRESV_0")
+			elif(self.maire in self.sv):
+				self.addLog('spr', 'oui', {'type' : 'mairesv'}, 'tour')
+				self.envoyer(self.chanJeu, "SPR_MAIRESV_1")
+			else:
+				self.addLog('spr', 'non', {'type' : 'mairesv'}, 'tour')
+				self.envoyer(self.chanJeu, "SPR_MAIRESV_2")
 				
-				if(not self.maire):
-					self.addLog('spr', 'aucun', {'type' : 'mairesv'}, 'tour')
-					self.envoyer(self.chanJeu, "SPR_MAIRESV_0")
-				elif(self.maire in self.sv):
-					self.addLog('spr', 'oui', {'type' : 'mairesv'}, 'tour')
-					self.envoyer(self.chanJeu, "SPR_MAIRESV_1")
-				else:
-					self.addLog('spr', 'non', {'type' : 'mairesv'}, 'tour')
-					self.envoyer(self.chanJeu, "SPR_MAIRESV_2")
-					
-				self.spr_terminer(serv)
-		except:
-			self.envoyer(self.chanJeu, u"Séance annulée, problème de connexion avec les morts.")
-			self.debug(u"Erreur spiritisme ! " + str(sys.exc_info()[1]))
-			self.spr_statut = 99
 			self.spr_terminer(serv)
 			
 	# Savoir si la voyante a déjà vu un LG
 	def spr_voyanteLoup(self, serv, source = None, message = None):
-		try:
-			if(self.spr_statut == 0):
-				self.spr_statut = 1
+		if(self.spr_statut == 0):
+			self.spr_statut = 1
+			
+			if(self.voyanteObserveLoup):
+				self.addLog('spr', 'oui', {'type' : 'voyanteloup'}, 'tour')
+				self.envoyer(self.chanJeu, "SPR_VOYANTELOUP_0")
+			else:
+				self.addLog('spr', 'non', {'type' : 'voyanteloup'}, 'tour')
+				self.envoyer(self.chanJeu, "SPR_VOYANTELOUP_1")
 				
-				if(self.voyanteObserveLoup):
-					self.addLog('spr', 'oui', {'type' : 'voyanteloup'}, 'tour')
-					self.envoyer(self.chanJeu, "SPR_VOYANTELOUP_0")
-				else:
-					self.addLog('spr', 'non', {'type' : 'voyanteloup'}, 'tour')
-					self.envoyer(self.chanJeu, "SPR_VOYANTELOUP_1")
-					
-				self.spr_terminer(serv)
-		except:
-			self.envoyer(self.chanJeu, u"Séance annulée, problème de connexion avec les morts.")
-			self.debug(u"Erreur spiritisme ! " + str(sys.exc_info()[1]))
-			self.spr_statut = 99
 			self.spr_terminer(serv)
-	
+
 	# Savoir si quelqu'un est un SV
 	def spr_estSV(self, serv, source = None, message = None):
-		try:
-			# Demande du pseudo
-			if(self.spr_statut == 0):
-				self.envoyer(self.chanJeu, "SPR_ESTSV_0")
-				self.spr_statut = 1
-			
-			# Donne la réponse
-			elif(self.spr_statut == 1):
-				if(message in self.pseudos):
+		# Demande du pseudo
+		if(self.spr_statut == 0):
+			self.spr_statut = 1
+			self.envoyer(self.chanJeu, "SPR_ESTSV_0")
+		
+		# Donne la réponse
+		elif(self.spr_statut == 1):
+			if(message in self.pseudos):
+				self.spr_statut = 2
+				
+				joueur = self.pseudos[message]
+				
+				if(joueur in self.sv):
+					self.addLog('spr', irclib.nm_to_n(joueur), {'type' : 'estSV', 'resultat': 'oui'}, 'tour')
+					self.envoyer(self.chanJeu, "SPR_ESTSV_1", [irclib.nm_to_n(joueur)])
+				else:
+					self.addLog('spr', irclib.nm_to_n(joueur), {'type' : 'estSV', 'resultat': 'non'}, 'tour')
+					self.envoyer(self.chanJeu, "SPR_ESTSV_2", [irclib.nm_to_n(joueur)])
 					
-					joueur = self.pseudos[message]
-					
-					if(joueur in self.sv):
-						self.addLog('spr', irclib.nm_to_n(joueur), {'type' : 'estSV', 'resultat': 'oui'}, 'tour')
-						self.envoyer(self.chanJeu, "SPR_ESTSV_1", [irclib.nm_to_n(joueur)])
-					else:
-						self.addLog('spr', irclib.nm_to_n(joueur), {'type' : 'estSV', 'resultat': 'non'}, 'tour')
-						self.envoyer(self.chanJeu, "SPR_ESTSV_2", [irclib.nm_to_n(joueur)])
-						
-					self.spr_statut = 2
-					self.spr_terminer(serv)
-		except:
-			self.envoyer(self.chanJeu, u"Séance annulée, problème de connexion avec les morts.")
-			self.debug(u"Erreur spiritisme ! " + str(sys.exc_info()[1]))
-			self.spr_statut = 99
-			self.spr_terminer(serv)
+				self.spr_terminer(serv)
 	
 	# Termine le spiritisme et passe à la suite
 	def spr_terminer(self, serv):
 		self.sprFonctions.remove(self.choix_spr)
+
 		self.connection.execute_delayed(15, self.envoyer, [self.chanJeu, "SPR_TERMINE"])
 		self.connection.execute_delayed(20, self.suivante, [self.connection])
 	
@@ -2781,8 +2792,8 @@ class Bot(BotClass):
 	def on_privnotice(self, serv, ev):
 		try:
 			self.debug(irclib.nm_to_n(ev.source()) + " >>> " + ev.arguments()[0])
-		except:
-			self.debug(u"Notice inconnue")
+		except Exception as e:
+			self.debug(u"Erreur de réception de notice : {}".format(e))
 			
 		# Si c'est un knock
 		notice = ev.arguments()[0].split()
@@ -2838,16 +2849,13 @@ class Bot(BotClass):
 	
 	# Quelqu'un sur le paradis demande les rôles
 	def envoyerRolesAutresJoueurs(self, source):
-		try:
-			listeRoles = ""
+		listeRoles = ""
+	
+		for joueur in self.joueurs:
+			pseudo = irclib.nm_to_n(joueur)
+			listeRoles += pseudo + ' : ' + self.identite(joueur) + ". "
 		
-			for joueur in self.joueurs:
-				pseudo = irclib.nm_to_n(joueur)
-				listeRoles += pseudo + ' : ' + self.identite(joueur) + ". "
-			
-			self.envoyer(irclib.nm_to_n(source), listeRoles)
-		except:
-			self.debug(u"Erreur envoyerRolesAutresJoueurs")
+		self.envoyer(irclib.nm_to_n(source), listeRoles)
 	
 	#Un joueur a changé de nick. Si on est en jeu, on doit le changer partout
 	def on_nick(self, serv, ev):
@@ -2958,7 +2966,7 @@ except KeyboardInterrupt:
 		sys.stdout = sys.__stdout__
 		f.close()
 	bot.connection.disconnect("Le maitre du jeu se retire...")
-        bot.connection.close()
+	bot.connection.close()
 except:
 	if(toFile):
 		sys.stdout = sys.__stdout__
@@ -2967,4 +2975,4 @@ except:
 	print(sys.exc_info()[1])
 	traceback.print_exc()
 	bot.connection.disconnect(u"Le maitre du jeu se retire après avoir planté...")
-        bot.connection.close()
+	bot.connection.close()

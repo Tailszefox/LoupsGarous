@@ -1,0 +1,80 @@
+[unit]
+
+# Le nombre de joueur est choisi au hasard à chaque partie entre ces deux limites
+nombre_joueurs_min = 8
+nombre_joueurs_max = 12
+
+# Nombre de parties qui seront simulées
+nombre_parties = 1
+
+# Liste des rôles attribués en priorité (sauf la voyante)
+# <vide>                La distribution des rôles suivra les règles habituelles
+# voyante, cupidon, ... Seuls les rôles indiqués seront attribués
+roles_presents = 
+
+# Permet de désactiver la voyante complètement
+# True  La voyante fera partie du jeu comme d'habitude
+# False La voyante ne sera pas attribuée du tout
+roles_voyante = True
+
+# Tente de faire gagner le camp désigné
+# <vide>                            Pas de changements
+# villageois/loups/amoureux/nul     Camp qui doit gagner en priorité
+forcer_gagnant = 
+
+# Contrôle l'apparition du traître
+# True  Le traître apparaîtra forcément
+# False Le traître apparaîtra selon les règles habituelles
+forcer_traitre = False
+
+# Si Cupidon est en jeu, le force à unir un villageois et un loup
+# True  Les amoureux seront forcément un villageois et un loup
+# False Les amoureux peuvent être du même camp
+forcer_amour_villageois_loup = False
+
+# Pourcentage de chance qu'un joueur ne vote pas
+# 0     Les joueurs voteront toujours
+# n     Les joueurs auront n% de chance de ne pas voter
+# 100   Les joueurs ne voteront jamais
+pourcentage_non_vote = 10
+
+# Pourcentage de chance qu'un villageois soit forcé de voter contre un loup
+# 0     Les villageois ne seront jamais forcés
+# n     Les villageois auront (n * tour)% de chance d'être forcés
+# 100   Les villageois voteront toujours contre un loup
+pourcentage_villageois_vote_loup = 8
+
+# Pourcentage de chance qu'un loup puisse voter contre un autre loup
+# 0     Les loups ne voteront jamais contre un autre loup
+# n     Les loups auront (n * tour)% de chance d'être autorisés à voter contre un loup
+# 100   Les loups auront toujours la possibilité de voter contre un loup
+pourcentage_loup_vote_loup = 5
+
+# Pourcentage de chance que la sorcière utilise sa potion de vie
+# n     La sorcière aura (n * tour)% de chance d'utiliser sa potion de vie
+pourcentage_sorciere_vie = 20
+
+# Indique si la sorcière se sauve si elle a été attaquée par les loups
+# True  La sorcière se sauvera toujours si elle a été attaquée (et quelle a gardé sa potion de vie)
+# False La sorcière suivra le pourcentage indiquée au dessus
+sorciere_vie_toujours_self = True
+
+# Pourcentage de chance que la sorcière utilise sa potion de mort
+# n     La sorcière aura (n * tour)% de chance d'utiliser sa potion de vie
+pourcentage_sorciere_mort = 5
+
+# Pourcentage de chance que le corbeau attribue des votes
+# n     Le corbeau aura (n * tour)% de chance d'agir
+pourcentage_corbeau = 10
+
+# Pourcentage de chance qu'un joueur se présente en tant que maire
+# n     Le joueur aura n% de chance de se présenter
+pourcentage_maire = 25
+
+# Pourcentage de chance qu'un villageois laisse un message lors des murs murs
+# n     Le villageois aura n% de chance d'envoyer un message
+pourcentage_murs = 50
+
+# Pourcentage de chance qu'un joueur quitte la partie en cours de jeu
+# n     Le joueur aura n% de chance de quitter la partie
+pourcentage_absence = 2
