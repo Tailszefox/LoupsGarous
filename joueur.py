@@ -229,6 +229,13 @@ class Joueur():
         if(self.irc.connection.forcerGagnant == "amoureux" and self.irc.amoureux1 is not None and self.autreAmoureux is None):
             return
 
+        # On vote directement contre l'ange si il doit gagner
+        if(self.irc.connection.forcerGagnant == "ange" and self.irc.ange is not None):
+            for j in self.getJoueurs():
+                if("ange" in j.role):
+                    self.messageChan("!tuer {}".format(j.pseudo))
+                    return
+
         joueurs = self.getJoueursRandom()
 
         # Le joueur peut ne pas voter

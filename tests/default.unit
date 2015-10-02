@@ -2,7 +2,7 @@
 
 # Le nombre de joueur est choisi au hasard à chaque partie entre ces deux limites
 nombre_joueurs_min = 8
-nombre_joueurs_max = 12
+nombre_joueurs_max = 16
 
 # Nombre de parties qui seront simulées
 nombre_parties = 1
@@ -13,8 +13,12 @@ utiliser_personnalite = True
 
 # Liste des rôles attribués en priorité (sauf la voyante)
 # <vide>                La distribution des rôles suivra les règles habituelles
-# voyante, cupidon, ... Seuls les rôles indiqués seront attribués
+# voyante, cupidon, ... Les rôles indiqués seront attribués en priorité
 roles_presents = 
+
+# True  Les rôles autre que ceux de roles_presents peuvent apparaître
+# False Seuls les roles_presents seront attribués
+autoriser_autres_roles = True
 
 # Permet de désactiver la voyante complètement
 # True  La voyante fera partie du jeu comme d'habitude
@@ -22,8 +26,8 @@ roles_presents =
 roles_voyante = True
 
 # Tente de faire gagner le camp désigné
-# <vide>                            Pas de changements
-# villageois/loups/amoureux/nul     Camp qui doit gagner en priorité
+# <vide>                                Pas de changements
+# villageois/loups/amoureux/ange/nul    Camp qui doit gagner en priorité
 forcer_gagnant = 
 
 # Contrôle l'apparition du traître

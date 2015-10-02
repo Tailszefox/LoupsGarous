@@ -26,6 +26,9 @@ function role($role)
 			
 		case 'cupidon':
 			return 'Cupidon';
+
+		case 'ange':
+			return 'l\'ange';
 			
 		case 'fille':
 			return 'la petite fille';
@@ -582,6 +585,21 @@ $date = $log->date;
 			
 		case 'personne':
 			echo 'La partie se termine sur un match nul !';
+			break;
+
+		case 'ange':
+			echo 'L\'ange a été tué par les villageois...et remporte la partie !';
+
+			foreach($joueurs as $joueur)
+			{
+				if($joueur['role'] != 'ange')
+					unset($joueurs[strval($joueur)]);
+			}
+
+			break;
+
+		default:
+			echo 'Je ne sais pas qui a gagné...';
 			break;
 	}
 	?>

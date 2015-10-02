@@ -568,6 +568,24 @@ class Bot(BotParentClass):
 		self.sprFonctions = [self.spr_memeCamp, self.spr_nombreRoles, self.spr_roleExiste, self.spr_sorcierePseudo, self.spr_loupsPseudo, self.spr_maireSV, self.spr_voyanteLoup, self.spr_estSV]
 
 		#Rôles spéciaux
+		self.rolesSpeciauxDefault = [
+				# Une apparition
+				self.roleCorbeau,
+				self.roleEnfant,
+				self.roleCupidon,
+				self.roleAnge,
+				# Deux apparitions
+				self.roleIdiot, self.roleIdiot,
+				self.roleChasseur, self.roleChasseur,
+				# Trois apparitions
+				self.roleAncien, self.roleAncien, self.roleAncien,
+				self.roleSalvateur, self.roleSalvateur, self.roleSalvateur,
+				self.rolePolicier, self.rolePolicier, self.rolePolicier,
+				self.roleFille, self.roleFille, self.roleFille,
+				# Quatre apparitions
+				self.roleSorciere, self.roleSorciere, self.roleSorciere, self.roleSorciere,
+			]
+
 		if(isTest and len(self.unitA("roles_presents")) > 0):
 			self.debug("Utilisation de la liste des rôles de l'unité de test")
 			self.rolesSpeciaux = []
@@ -579,22 +597,7 @@ class Bot(BotParentClass):
 				except AttributeError:
 					raise Exception("Le rôle {} n'existe pas".format(role))
 		else:
-			self.rolesSpeciaux = [
-					# Une apparition
-					self.roleCorbeau,
-					self.roleEnfant,
-					self.roleCupidon,
-					# Deux apparitions
-					self.roleIdiot, self.roleIdiot,
-					self.roleChasseur, self.roleChasseur,
-					# Trois apparitions
-					self.roleAncien, self.roleAncien, self.roleAncien,
-					self.roleSalvateur, self.roleSalvateur, self.roleSalvateur,
-					self.rolePolicier, self.rolePolicier, self.rolePolicier,
-					self.roleFille, self.roleFille, self.roleFille,
-					# Quatre apparitions
-					self.roleSorciere, self.roleSorciere, self.roleSorciere, self.roleSorciere,
-				]
+			self.rolesSpeciaux = self.rolesSpeciauxDefault[:]
 		
 		self.voyante = "non"
 		self.voyanteObserveLoup = False
@@ -614,6 +617,8 @@ class Bot(BotParentClass):
 		self.cupidon = None
 		self.amoureux1 = None
 		self.amoureux2 = None
+
+		self.ange = None
 		
 		self.sorciere = "non"
 		self.sauvetageSorciere = None
@@ -749,6 +754,7 @@ class Bot(BotParentClass):
 		
 		random.shuffle(self.joueurs)
 		random.shuffle(self.rolesSpeciaux)
+		random.shuffle(self.rolesSpeciauxDefault)
 		
 		self.addLog('joueurs')
 		
@@ -781,9 +787,16 @@ class Bot(BotParentClass):
 
 				# On retire le rôle de la liste
 				self.rolesSpeciaux[:] = [role for role in self.rolesSpeciaux if role != roleSpecialActuel]
+				if(isTest and len(self.unitA("roles_presents")) > 0 and self.unitB("autoriser_autres_roles")):
+					self.rolesSpeciauxDefault[:] = [role for role in self.rolesSpeciauxDefault if role != roleSpecialActuel]
 
 				self.debug(u'Rôles spéciaux restants :' + str(self.rolesSpeciaux))
-				
+
+				if(isTest and len(self.rolesSpeciaux) == 0 and len(self.rolesSpeciauxDefault) > 0 and len(self.unitA("roles_presents")) > 0 and self.unitB("autoriser_autres_roles")):
+					self.debug(u'Utilisation des autres rôles')
+					self.rolesSpeciaux = self.rolesSpeciauxDefault[:]
+
+				# En test, on ajoute les autres rôles si demandé
 			else:
 				self.villageois.append(joueur)
 				self.sv.append(joueur)
@@ -820,6 +833,10 @@ class Bot(BotParentClass):
 	def roleCupidon(self, joueur):
 		self.cupidon = joueur
 		self.addLog('joueur', irclib.nm_to_n(joueur), {'role' : 'cupidon'}, 'joueurs')
+
+	def roleAnge(self, joueur):
+		self.ange = joueur
+		self.addLog('joueur', irclib.nm_to_n(joueur), {'role' : 'ange'}, 'joueurs')
 				
 	def roleFille(self, joueur):
 		self.fille = joueur
@@ -935,6 +952,12 @@ class Bot(BotParentClass):
 				return self.roles["cupidon"]
 			else:
 				return self.rolesDefault["cupidon"]
+
+		elif(joueur == self.ange):
+			if("ange" in self.roles):
+				return self.roles["ange"]
+			else:
+				return self.rolesDefault["ange"]
 			
 		elif(joueur == self.salvateur):
 			if("salvateur" in self.roles):
@@ -1006,6 +1029,9 @@ class Bot(BotParentClass):
 		
 		elif(joueur == self.cupidon):
 			return "cupidon"
+
+		elif(joueur == self.ange):
+			return "ange"
 			
 		elif(joueur == self.salvateur):
 			return "salvateur"
@@ -1969,6 +1995,17 @@ class Bot(BotParentClass):
 		
 		serv.execute_delayed(0, self.envoyer, [self.chanJeu, "JOUEUR_DESIGNE_1", [joueurDesigne.capitalize()]])           
 		serv.execute_delayed(5, self.envoyer, [self.chanJeu, "JOUEUR_DESIGNE_2", [joueurDesigne.capitalize()]])
+
+		# Au premier tour, on vérifie si c'est l'ange; si oui, il gagne
+		if(self.pseudos[joueurDesigne] == self.ange):
+			serv.execute_delayed(10, self.envoyer, [self.chanJeu, "JOUEUR_DESIGNE_ETAIT_ANGE", [joueurDesigne.capitalize()]])
+			self.connection.execute_delayed(15, self.finir, [self.connection])
+			self.addLog('gagnant', 'ange')
+			return
+		# Autrement, si l'ange est encore en jeu, on le retire
+		elif(self.ange is not None):
+			self.sv.append(self.ange)
+			self.ange = None
 		
 		if(self.pseudos[joueurDesigne] == self.idiot):
 			serv.execute_delayed(10, self.envoyer, [self.chanJeu, "JOUEUR_DESIGNE_ETAIT_IDIOT_1", [joueurDesigne.capitalize()]])
@@ -2169,6 +2206,9 @@ class Bot(BotParentClass):
 			elif(joueur == self.enfant):
 				self.enfant = None
 				self.tuteur = None
+
+			elif(joueur == self.ange):
+				self.ange = None
 				
 			if(joueur == self.traitre):
 				self.traitre = None
@@ -2280,6 +2320,9 @@ class Bot(BotParentClass):
 						
 					elif(joueur == self.cupidon):
 						self.cupidon = None
+
+					elif(joueur == self.ange):
+						self.ange = None
 						
 					elif(joueur == self.sorciere):
 						self.sorciere = None
@@ -2912,6 +2955,9 @@ class Bot(BotParentClass):
 					
 				if(self.cupidon == ancienDomaine):
 					self.cupidon = nouveauDomaine
+
+				if(self.ange == ancienDomaine):
+					self.ange = nouveauDomaine
 					
 				if(self.sorciere == ancienDomaine):
 					self.sorciere = nouveauDomaine

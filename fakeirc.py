@@ -126,6 +126,8 @@ class Connection():
             campGagnant = "amoureux"
         elif("MATCH_NUL" in message):
             campGagnant = "nul"
+        elif("JOUEUR_DESIGNE_ETAIT_ANGE" in message):
+            campGagnant = "ange"
 
         try:
             self.victoires[campGagnant] += 1
@@ -149,7 +151,7 @@ class Connection():
 
             # Les loups peuvent tuer
             elif("INSTRUCTIONS_LOUPS" in message):
-                if(self.forcerGagnant == "villageois"):
+                if(self.forcerGagnant == "villageois" or (self.irc.ange is not None and self.forcerGagnant == "ange")):
                     return
 
                 loupsPresents = []
@@ -225,7 +227,7 @@ class Connection():
                 self.getJoueur(message[17:]).meurt()
 
             # Fin de la partie
-            elif("VICTOIRE_" in message or "MATCH_NUL" in message):
+            elif("VICTOIRE_" in message or "MATCH_NUL" in message or "JOUEUR_DESIGNE_ETAIT_ANGE" in message):
                 self.ajouterVictoire(message)
 
         # Message pour un joueur
