@@ -792,11 +792,11 @@ class Bot(BotParentClass):
 
 				self.debug(u'Rôles spéciaux restants :' + str(self.rolesSpeciaux))
 
+				# En test, on ajoute les autres rôles si demandé
 				if(isTest and len(self.rolesSpeciaux) == 0 and len(self.rolesSpeciauxDefault) > 0 and len(self.unitA("roles_presents")) > 0 and self.unitB("autoriser_autres_roles")):
 					self.debug(u'Utilisation des autres rôles')
 					self.rolesSpeciaux = self.rolesSpeciauxDefault[:]
 
-				# En test, on ajoute les autres rôles si demandé
 			else:
 				self.villageois.append(joueur)
 				self.sv.append(joueur)
