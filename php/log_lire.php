@@ -354,12 +354,12 @@ function traiterMort($noeud)
 	{
 		case('nuit'):
 			echo vraiPseudo($noeud) . ', '.role($noeud['role']).', meurt pendant la nuit.';
-			unset($joueurs[vraiPseudo($noeud)]);
+			retirerJoueur($noeud);
 			break;
 			
 		case('chasseur'):
 			echo 'Le chasseur décide de tuer ' . vraiPseudo($noeud) . ', qui était '.role($noeud['role']). '.';
-			unset($joueurs[vraiPseudo($noeud)]);
+			retirerJoueur($noeud);
 			break;
 			
 		case('idiot'):
@@ -368,7 +368,7 @@ function traiterMort($noeud)
 			
 		case('lapidation'):
 			echo vraiPseudo($noeud) . ', '.role($noeud['role']).', se fait lapider par les villageois.';
-			unset($joueurs[vraiPseudo($noeud)]);
+			retirerJoueur($noeud);
 			break;
 			
 		case('ancien'):
@@ -377,16 +377,28 @@ function traiterMort($noeud)
 			
 		case('amoureux'):
 			echo vraiPseudo($noeud) . ', ' . role($noeud['role']) . ', suit son amour dans la mort.';
-			unset($joueurs[vraiPseudo($noeud)]);
+			retirerJoueur($noeud);
 			break;
 			
 		case('absent'):
 			echo vraiPseudo($noeud) . ', ' . role($noeud['role']) . ', meurt suite à une crise cardiaque.';
-			unset($joueurs[vraiPseudo($noeud)]);
+			retirerJoueur($noeud);
 			break;
 		
 		default:
 			echo 'Personne n\'est mort cette nuit !';
+	}
+}
+
+function retirerJoueur($noeud)
+{
+	global $joueurs;
+	$pseudoRetirer = strval($noeud);
+
+	foreach ($joueurs as $pseudo => $joueur)
+	{
+		if(strcasecmp($pseudoRetirer, $pseudo) == 0)
+			unset($joueurs[$pseudo]);
 	}
 }
 
