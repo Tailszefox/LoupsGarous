@@ -7,6 +7,10 @@ nombre_joueurs_max = 12
 # Nombre de parties qui seront simulées
 nombre_parties = 1
 
+# True  La personnalité par défaut sera utilisée
+# False Le bot ne parlera qu'en utilisant les clés
+utiliser_personnalite = True
+
 # Liste des rôles attribués en priorité (sauf la voyante)
 # <vide>                La distribution des rôles suivra les règles habituelles
 # voyante, cupidon, ... Seuls les rôles indiqués seront attribués

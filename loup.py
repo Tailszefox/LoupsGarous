@@ -220,7 +220,7 @@ class Bot(BotParentClass):
 		return [repliques, roles, declencheurs]
 	
 	#Envoie le message en utilisant la personnalité
-	def envoyer(self, destination, cle, variables = [], gras = True):
+	def envoyer(self, destination, cle, variables = [], gras = True, raw = False):
 		replique = None
 		
 		if(cle in self.repliques):
@@ -229,9 +229,8 @@ class Bot(BotParentClass):
 		elif(cle in self.repliquesDefault):
 			replique = self.repliquesDefault[cle]
 		
-		# Si la replique n'existe pas, on met directement la clé
-		# De même si on est en mode test
-		if(replique is None or isTest):
+		# Si la replique n'existe pas, ou si on le demande, on met directement la clé
+		if(replique is None or raw or (isTest and not self.unitB("utiliser_personnalite"))):
 			message = cle
 			noVariable = 1
 			for variable in variables:
@@ -242,7 +241,10 @@ class Bot(BotParentClass):
 			for variable in variables:
 				message = message.replace("$" + str(noVariable), variable)
 				noVariable = noVariable + 1
-				
+
+			# Dans le cas d'un test, on doit aussi envoyer la clé
+			if(isTest):
+				self.envoyer(destination, cle, variables, gras, raw = True)
 		
 		#Le message n'est pas destiné au service : on rajoute le gras et on change quelques trucs
 		if(gras):
