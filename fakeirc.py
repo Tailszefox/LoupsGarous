@@ -11,6 +11,7 @@ import functools
 import threading
 import string
 import ipdb
+import traceback
 import sys
 
 class FakeIrc():
@@ -351,5 +352,7 @@ class Delay(threading.Thread):
             self.toRun()
         except Exception as e:
             # Toute exception dans un thread fait quitter immédiatement
-            print u"Exception dans thread : {}".format(e)
+            print u"Exception dans thread"
+            print(sys.exc_info()[1])
+            traceback.print_exc()
             sys.exit()
