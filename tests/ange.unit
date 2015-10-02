@@ -1,0 +1,8 @@
+[unit]
+
+nombre_joueurs_min = 8
+nombre_joueurs_max = 16
+#nombre_parties = 10
+
+roles_presents = ange
+#forcer_gagnant = ange
