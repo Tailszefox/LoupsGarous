@@ -77,6 +77,9 @@ function formatRole($role, $nb)
         case 'ange':
             return ngettext('ange', 'anges', $nb);
 
+        case 'maitre':
+            return ngettext('maître-chanteur', 'maîtres-chanteurs', $nb);
+
         default:
             return ngettext('rôle inconnu', 'rôles inconnus', $nb);
     }
