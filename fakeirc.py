@@ -215,8 +215,13 @@ class Connection():
               
             # Spiritisme
             elif("SPR_" in message):
+                for j in joueurs:
+                    if(j.estVoice):
+                        joueurDire = j
+                        break
+
                 if("SPR_ROLEEXISTE_0" in message):
-                    self.joueurs[0].messageChan(str(random.randint(1, 4)))
+                    joueurDire.messageChan(str(random.randint(1, 4)))
                 elif("SPR_MEMECAMP_" in message or "SPR_ESTSV_0" in message):
                     while True:
                         j1 = random.sample(self.joueurs, 1)[0].pseudo
@@ -225,10 +230,10 @@ class Connection():
                         if(j1 != j2):
                             break
 
-                    self.joueurs[0].messageChan(j1)
-                    self.joueurs[0].messageChan(j2)
+                    joueurDire.messageChan(j1)
+                    joueurDire.messageChan(j2)
                 elif("SPR_NOMBREROLES_0" in message):
-                    self.joueurs[0].messageChan(str(random.randint(1, 3)))
+                    joueurDire.messageChan(str(random.randint(1, 3)))
 
             # Un joueur est mort suite à une crise cardiaque
             elif("CRISE_CARDIAQUE " in message):
