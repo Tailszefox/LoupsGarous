@@ -172,6 +172,13 @@ class Connection():
                 if(len(loupsPresents) > 0):
                     random.choice(loupsPresents).loupTuer()
 
+            # Appel du maître chanteur
+            elif("APPEL_MAITRE" in message):
+                for j in self.joueurs:
+                    if(j.roleSecondaire is not None and j.roleSecondaire == "le maître-chanteur"):
+                        j.maitreDemande()
+                        return
+
             # Les candidats au poste de maire peuvent se présenter
             elif("INSTRUCTIONS_MAIRE" in message):
                 for j in self.joueurs:
@@ -236,8 +243,12 @@ class Connection():
             joueur = self.getJoueur(destination)
 
             # Attribution du rôle
-            if("DONNER_ROLE" in message):
+            if("DONNER_ROLE " in message):
                 joueur.attribuerRole(message[12:])
+
+            # Attribution du rôle secondaire
+            if("DONNER_ROLE_SUPPLEMENTAIRE " in message):
+                joueur.attribuerRoleSecondaire(message[27:])
 
             # Appel Cupidon
             if("DEMANDE_CUPIDON_" in message):

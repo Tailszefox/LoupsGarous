@@ -41,6 +41,9 @@ function role($role)
 			
 		case 'corbeau':
 			return 'le corbeau';
+
+		case 'maitre':
+			return 'le maître-chanteur';
 			
 		case 'enfant':
 			return 'l\'enfant loup';
@@ -144,6 +147,10 @@ function traiterAction($noeud)
 		case('enfant'):
 			echo $noeud . ', l\'enfant loup, devient un vrai loup-garou !';
 			$joueurs[vraiPseudo($noeud)]['role'] = 'loup';
+			break;
+
+		case('chantage'):
+			echo 'Le maître-chanteur décide de menacer ' . vraiPseudo($noeud) . '.';
 			break;
 		
 		default:
@@ -590,7 +597,7 @@ $date = $log->date;
 			
 			foreach($joueurs as $joueur)
 			{
-				if($joueur['role'] != 'loup')
+				if($joueur['role'] != 'loup' && $joueur['role'] != 'maitre')
 					unset($joueurs[strval($joueur)]);
 			}
 			

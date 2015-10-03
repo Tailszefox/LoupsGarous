@@ -11,6 +11,7 @@ class Joueur():
         self.irc = irc
         self.pseudo = pseudo
         self.role = None
+        self.roleSecondaire = None
         self.estLoup = False
         self.estVoice = False
         self.precedent = None
@@ -71,10 +72,17 @@ class Joueur():
             self.irc.sendEvent("join", self.pseudo, canal)
 
     def attribuerRole(self, message):
-        self.role = message
+        self.role = message.strip()
 
         if("un loup garou" in message):
             self.estLoup = True
+
+        self.messageChan("Je suis {} - Loup : {}".format(self.role, self.estLoup))
+
+    def attribuerRoleSecondaire(self, message):
+        self.roleSecondaire = message.strip()
+
+        self.messageChan("J'ai un rôle secondaire : {}".format(self.roleSecondaire))
 
     def kicke(self, canal):
         try:
@@ -121,6 +129,10 @@ class Joueur():
 
             self.messageChanLoup("!tuer {}".format(j.pseudo))
             break
+
+    def maitreDemande(self):
+        joueurs = self.getJoueursRandom()
+        self.messageChanLoup("{}".format(joueurs[0].pseudo))
 
     def cupidonDemande(self):
         joueurs = self.getJoueursRandom()

@@ -366,7 +366,7 @@ class Bot(BotParentClass):
 		elif('roles' in self.declencheurs and self.declencheurs['roles'] in message and ev.target().lower() == self.chanJeu.lower()):
 			self.equivalencesRoles(serv, ev.source())
 		#Message des loups sur qui ils veulent tuer
-		elif(self.statut == "traiterCanalLoups" and ev.target().lower() == self.chanLoups.lower()):
+		elif("traiterCanalLoups" in self.statut and ev.target().lower() == self.chanLoups.lower()):
 			self.traiterMessageLoups(serv, ev.source(), message, messageNormal)
 		#Message de demande de vote
 		#elif(self.statut == "attenteVote" and self.declencheurs['voter'] in message):
@@ -577,6 +577,7 @@ class Bot(BotParentClass):
 				# Deux apparitions
 				self.roleIdiot, self.roleIdiot,
 				self.roleChasseur, self.roleChasseur,
+				self.roleMaitre, self.roleMaitre,
 				# Trois apparitions
 				self.roleAncien, self.roleAncien, self.roleAncien,
 				self.roleSalvateur, self.roleSalvateur, self.roleSalvateur,
@@ -585,6 +586,9 @@ class Bot(BotParentClass):
 				# Quatre apparitions
 				self.roleSorciere, self.roleSorciere, self.roleSorciere, self.roleSorciere,
 			]
+
+		# Précise quels rôles spéciaux sont aussi des loups
+		self.rolesSpeciauxLoups = [self.roleMaitre]
 
 		if(isTest and len(self.unitA("roles_presents")) > 0):
 			self.debug("Utilisation de la liste des rôles de l'unité de test")
@@ -637,6 +641,9 @@ class Bot(BotParentClass):
 		
 		self.enfant = None
 		self.tuteur = None
+
+		self.maitre = None
+		self.chantage = None
 		
 		self.maire = None
 		self.maireElu = False
@@ -781,9 +788,24 @@ class Bot(BotParentClass):
 			elif(len(self.rolesSpeciaux) > 0):
 				roleSpecialActuel = self.rolesSpeciaux[0]
 				self.debug(u'Attribution rôle spécial : ' + str(roleSpecialActuel))
-				self.villageois.append(joueur)
-				roleSpecialActuel = self.rolesSpeciaux[0]
-				roleSpecialActuel(joueur)
+
+				# Si le rôle spécial est un rôle de loup, il est attribué à un loup
+				# Dans ce cas, le joueur ici devient un SV
+				if(roleSpecialActuel in self.rolesSpeciauxLoups):
+					randomLoup = random.choice(self.loups)
+					roleSpecialActuel(randomLoup)
+
+					identite = self.identite(randomLoup)
+					serv.execute_delayed(attente, self.envoyer, [irclib.nm_to_n(randomLoup), "DONNER_ROLE_SUPPLEMENTAIRE", [identite]])
+					attente = attente + 1
+
+					self.villageois.append(joueur)
+					self.sv.append(joueur)
+					self.addLog('joueur', pseudo, {'role' : 'villageois'}, 'joueurs')
+				else:
+					self.villageois.append(joueur)
+					roleSpecialActuel = self.rolesSpeciaux[0]
+					roleSpecialActuel(joueur)
 
 				# On retire le rôle de la liste
 				self.rolesSpeciaux[:] = [role for role in self.rolesSpeciaux if role != roleSpecialActuel]
@@ -857,6 +879,10 @@ class Bot(BotParentClass):
 	def roleEnfant(self, joueur):
 		self.enfant = joueur
 		self.addLog('joueur', irclib.nm_to_n(joueur), {'role' : 'enfant'}, 'joueurs')
+
+	def roleMaitre(self, joueur):
+		self.maitre = joueur
+		self.addLog('joueur', irclib.nm_to_n(joueur), {'role' : 'maitre'}, 'joueurs')
 	
 	#Demande à tous les joueurs s'ils ont reçu leur rôle
 	def verifierRolesRecus(self, serv):
@@ -1000,6 +1026,18 @@ class Bot(BotParentClass):
 				return self.roles["enfant"]
 			else:
 				return self.rolesDefault["enfant"]
+
+		if(joueur == self.maitre):
+			if("maitre" in self.roles):
+				return self.roles["maitre"]
+			else:
+				return self.rolesDefault["maitre"]
+
+		elif(joueur in self.loups):
+			if("loup" in self.roles):
+				return self.roles["loup"]
+			else:
+				return self.rolesDefault["loup"]
 				
 		elif(joueur in self.villageois):
 			if("sv" in self.roles):
@@ -1047,6 +1085,12 @@ class Bot(BotParentClass):
 			
 		elif(joueur == self.enfant):
 			return "enfant"
+
+		elif(joueur == self.maitre):
+			return "maitre"
+
+		elif(joueur in self.loups):
+			return "loup"
 				
 		elif(joueur in self.villageois):
 			return "villageois"
@@ -1212,8 +1256,9 @@ class Bot(BotParentClass):
 		else:
 			identite = self.identite(self.pseudos[message])
 			identiteBrute = self.identiteBrute(self.pseudos[message])
+			identitieesLoups = ["loup", "maitre"]
 			
-			if(identiteBrute == "loup"):
+			if(identiteBrute in identitieesLoups):
 				self.voyanteObserveLoup = True
 			elif(identiteBrute == "enfant"):
 				if("sv" in self.roles):
@@ -1290,9 +1335,10 @@ class Bot(BotParentClass):
 			self.connection.mode(self.chanJeu, " -v " + irclib.nm_to_n(joueur))
 			
 		self.envoyer(self.chanJeu, "APPEL_LOUPS", [self.chanLoups])
-		self.loupsSurCanal = 0
+		self.loupsSurCanal = []
 		self.victimeLoups = None
 		self.aParlerLoup = False
+		self.chantage = None
 		
 		for loup in self.loups :
 			if(loup != self.enPrison):
@@ -1314,14 +1360,14 @@ class Bot(BotParentClass):
 	#Si les loups n'ont pas encore choisi de victime, on zappe
 	def verifierLoups(self, serv):
 		self.debug(u"Check loups : " + str(self.statut))
-		if(self.victimeLoups == None and self.statut == "traiterCanalLoups"):
+		if("traiterCanalLoups" in self.statut):
 			self.statut = "attaqueLoup"
 			self.kickerLoups(serv)
 	
 	#Gueule s'il manque des loups
 	def traiterCanalLoups(self, serv):
 		self.statut = "traiterCanalLoups"
-		if(self.loupsSurCanal < len(self.loups)):
+		if(len(self.loupsSurCanal) < len(self.loups)):
 			self.envoyer(self.chanLoups, "MANQUE_DES_LOUPS")
 		
 		#if(not self.aParlerLoup):
@@ -1337,7 +1383,16 @@ class Bot(BotParentClass):
 				messageFille = '<LG> ' + messageNormal
 				self.envoyer(irclib.nm_to_n(self.fille), messageFille)
 		
-		if(messageSplit[0] == self.declencheurs['tuerLoups'] and len(messageSplit) > 1):
+		# Phase du maître chanteur : on regarde s'il a dit un pseudo
+		if(self.statut == "traiterCanalLoups_maitre" and self.maitre == source):
+			if(message in self.pseudos):
+				self.chantage = message
+				self.envoyer(self.chanLoups, "CONFIRMATION_MAITRE", [self.chantage.capitalize()])
+				serv.execute_delayed(5, self.kickerLoups, [serv])
+				self.statut = "attaqueLoup"
+
+		# Phase de sélection de victime des loups
+		elif(self.statut == "traiterCanalLoups" and messageSplit[0] == self.declencheurs['tuerLoups'] and len(messageSplit) > 1):
 			pseudo = messageSplit[1]
 			if(pseudo == self.pseudo.lower()):
 				self.envoyer(self.chanLoups, "TUER_PRESENTATEUR")
@@ -1346,8 +1401,17 @@ class Bot(BotParentClass):
 			elif(self.victimeLoups == None):
 				self.victimeLoups = pseudo
 				self.envoyer(self.chanLoups, "CONFIRMATION_LOUPS")
-				self.statut = "attaqueLoup"
-				serv.execute_delayed(5, self.kickerLoups, [serv])
+				self.appelMaitre(serv)
+
+	# Demande au maître chanteur de choisir une victime
+	def appelMaitre(self, serv):
+		# Pas de maitre chanteur, ou maitre chanteur pas sur le canal
+		if(self.maitre is None or self.maitre not in self.loupsSurCanal):
+			serv.execute_delayed(5, self.kickerLoups, [serv])
+			self.statut = "attaqueLoup"
+		else:
+			self.statut = "traiterCanalLoups_maitre"
+			self.envoyer(self.chanLoups, "APPEL_MAITRE")
 	
 	#Kick les loups une fois qu'ils ont choisi quelqu'un à tuer
 	def kickerLoups(self, serv):
@@ -1363,7 +1427,11 @@ class Bot(BotParentClass):
 			self.addLog('action', self.victimeLoups, {'type' : 'loup'}, 'tour')
 		
 		for joueur in self.joueurs:
-			self.connection.mode(self.chanJeu, " +v " + irclib.nm_to_n(joueur))
+			if(self.chantage is not None and self.chantage.lower() == irclib.nm_to_n(joueur).lower()):
+				self.addLog('action', self.chantage, {'type': 'chantage'}, 'tour')
+				self.envoyer(self.chanJeu, "VICTIME_CHANTAGE", [irclib.nm_to_n(self.chantage)])
+			else:
+				self.connection.mode(self.chanJeu, " +v " + irclib.nm_to_n(joueur))
 		
 		self.sauvetageSorciere = None
 		self.victimeSorciere = None
@@ -1538,6 +1606,9 @@ class Bot(BotParentClass):
 				
 			if(joueur in self.loups):
 				serv.execute_delayed(25, self.envoyer, [self.chanJeu, "VICTIME_LOUPS_ETAIT_LOUP", [self.victimeLoups.capitalize()]])
+
+				if(self.identiteBrute(joueur) != "loup"):
+					serv.execute_delayed(27, self.envoyer, [self.chanJeu, "JOUEUR_ETAIT_LOUP_ROLE_SUPPLEMENTAIRE", [self.victimeLoups.capitalize(), identite]])
 			else:
 				serv.execute_delayed(25, self.envoyer, [self.chanJeu, "VICTIME_LOUPS_ETAIT_VILLAGEOIS", [self.victimeLoups.capitalize(), identite]])
 
@@ -1565,6 +1636,8 @@ class Bot(BotParentClass):
 				
 			if(joueur in self.loups):
 				serv.execute_delayed(25, self.envoyer, [self.chanJeu, "VICTIME_LOUPS_ETAIT_LOUP", [self.victimeSorciere.capitalize()]])
+				if(self.identiteBrute(joueur) != "loup"):
+					serv.execute_delayed(27, self.envoyer, [self.chanJeu, "JOUEUR_ETAIT_LOUP_ROLE_SUPPLEMENTAIRE", [self.victimeSorciere.capitalize(), identite]])
 			else:
 				serv.execute_delayed(25, self.envoyer, [self.chanJeu, "VICTIME_LOUPS_ETAIT_VILLAGEOIS", [self.victimeSorciere.capitalize(), identite]])
 
@@ -1613,6 +1686,8 @@ class Bot(BotParentClass):
 			
 			if(joueur in self.loups):
 				serv.execute_delayed(10, self.envoyer, [self.chanJeu, "VICTIME_CHASSEUR_ETAIT_LOUP", [pseudo.capitalize()]])
+				if(self.identiteBrute(joueur) != "loup"):
+					serv.execute_delayed(12, self.envoyer, [self.chanJeu, "JOUEUR_ETAIT_LOUP_ROLE_SUPPLEMENTAIRE", [pseudo.capitalize(), identite]])
 			else:
 				serv.execute_delayed(10, self.envoyer, [self.chanJeu, "VICTIME_CHASSEUR_ETAIT_VILLAGEOIS", [pseudo.capitalize()  ,identite]])
 
@@ -2013,6 +2088,9 @@ class Bot(BotParentClass):
 			self.idiotVote = False
 		elif(self.pseudos[joueurDesigne] in self.loups):
 			serv.execute_delayed(10, self.envoyer, [self.chanJeu, "JOUEUR_DESIGNE_ETAIT_LOUP", [joueurDesigne.capitalize()]])
+			if(self.identiteBrute(self.pseudos[joueurDesigne]) != "loup"):
+				serv.execute_delayed(12, self.envoyer, [self.chanJeu, "JOUEUR_ETAIT_LOUP_ROLE_SUPPLEMENTAIRE", [joueurDesigne.capitalize(), identite]])
+
 			self.addLog('action', joueurDesigne.capitalize(), {'type' : 'mort', 'typeMort' : 'lapidation', 'role' : self.identiteBrute(self.pseudos[joueurDesigne])}, 'tour')
 		else:
 			serv.execute_delayed(10, self.envoyer, [self.chanJeu, "JOUEUR_DESIGNE_ETAIT_VILLAGEOIS", [joueurDesigne.capitalize(), identite]])
@@ -2158,9 +2236,11 @@ class Bot(BotParentClass):
 		self.joueurs.remove(joueur)
 		
 		#Retire le joueur de la bonne liste en fonction de son rôle
-		
 		if(joueur in self.loups):
 			self.loups.remove(joueur)
+
+			if(joueur == self.maitre):
+				self.maitre = None
 		else:
 			self.villageois.remove(joueur)
 			
@@ -2252,6 +2332,8 @@ class Bot(BotParentClass):
 		identite = self.identite(amoureux)
 		if(amoureux in self.loups):
 			self.connection.execute_delayed(5, self.envoyer, [self.chanJeu, "AMOUREUX_ETAIT_LOUP", [irclib.nm_to_n(amoureux).capitalize()]])
+			if(self.identiteBrute(amoureux) != "loup"):
+				self.connection.execute_delayed(7, self.envoyer, [self.chanJeu, "JOUEUR_ETAIT_LOUP_ROLE_SUPPLEMENTAIRE", [irclib.nm_to_n(amoureux).capitalize(), identite]])
 			
 		else:
 			self.connection.execute_delayed(5, self.envoyer, [self.chanJeu, "AMOUREUX_ETAIT_VILLAGEOIS", [irclib.nm_to_n(amoureux).capitalize(), identite]])
@@ -2288,7 +2370,13 @@ class Bot(BotParentClass):
 				
 				if(joueur in self.loups):
 					serv.execute_delayed(attente + 10, self.envoyer, [self.chanJeu, "CRISE_CARDIAQUE_LOUP", [irclib.nm_to_n(joueur)]])
+					if(self.identiteBrute(joueur) != "loup"):
+						serv.execute_delayed(attente + 12, self.envoyer, [self.chanJeu, "JOUEUR_ETAIT_LOUP_ROLE_SUPPLEMENTAIRE", [irclib.nm_to_n(joueur), identite]])
+
 					self.loups.remove(joueur)
+
+					if(joueur == self.maitre):
+						self.maitre = None
 				else:
 					serv.execute_delayed(attente + 10, self.envoyer, [self.chanJeu, "CRISE_CARDIAQUE_VILLAGEOIS", [irclib.nm_to_n(joueur), identite]])
 					self.villageois.remove(joueur)
@@ -2875,10 +2963,10 @@ class Bot(BotParentClass):
 			#S'il s'agit bien d'un loup (et non d'un mort)
 			if(ev.source() in self.loups):
 				serv.mode(self.chanLoups, "+v " + irclib.nm_to_n(ev.source()))
-				self.loupsSurCanal = self.loupsSurCanal + 1
+				self.loupsSurCanal.append(ev.source())
 				
 				#Si c'est le premier loup sur le canal
-				if(self.loupsSurCanal == 1):
+				if(len(self.loupsSurCanal) == 1):
 					self.aParlerLoup = True
 					self.statut = "traiterCanalLoups"
 					serv.execute_delayed(5, self.envoyer, [self.chanLoups, "INSTRUCTIONS_LOUPS", [self.declencheurs['tuerLoups']]])
