@@ -336,7 +336,7 @@ class Bot(BotParentClass):
 		messageNormal = message
 		message = message.lower()
 		
-		self.debug(u"(" + ev.target() + ") <" + irclib.nm_to_n(ev.source()) + "> " + messageNormal, False)
+		self.debug(u"(" + ev.target() + ") ["+ self.statut +"] <" + irclib.nm_to_n(ev.source()) + "> " + messageNormal, False)
 		
 		if(self.demarre and ev.target().lower() == self.chanJeu.lower() or ev.target().lower() == self.chanLoups.lower()):
 			try:
@@ -929,13 +929,7 @@ class Bot(BotParentClass):
 	
 	#Retourne le rôle d'un joueur à partir de son domaine
 	def identite(self, joueur):
-		if(joueur in self.loups):
-			if("loup" in self.roles):
-				return self.roles["loup"]
-			else:
-				return self.rolesDefault["loup"]
-				
-		elif(joueur == self.voyante):
+		if(joueur == self.voyante):
 			if("voyante" in self.roles):
 				return self.roles["voyante"]
 			else:
@@ -1018,10 +1012,7 @@ class Bot(BotParentClass):
 	
 	# Retourne le rôle brut d'un joueur à partir de son domaine	
 	def identiteBrute(self, joueur):
-		if(joueur in self.loups):
-			return "loup"
-				
-		elif(joueur == self.voyante):
+		if(joueur == self.voyante):
 			return "voyante"
 				
 		elif(joueur == self.chasseur):

@@ -74,6 +74,9 @@ function formatRole($role, $nb)
         case 'enfant':
             return ngettext('enfant loup', 'enfants loups', $nb);
 
+        case 'ange':
+            return ngettext('ange', 'anges', $nb);
+
         default:
             return ngettext('rôle inconnu', 'rôles inconnus', $nb);
     }
@@ -510,6 +513,18 @@ foreach($dir as $file)
                         increment($joueursDefaites, $pseudo);
                 }
                 $victoiresAmoureux++;
+                break;
+
+            case 'ange':
+                foreach($participantsPartieInit as $pseudo => $role)
+                {
+                    if($role != 'ange')
+                        increment($joueursVictoires, $pseudo);
+                    else
+                        increment($joueursDefaites, $pseudo);
+                }
+
+                $victoiresAnge++;
                 break;
                 
             case 'personne':

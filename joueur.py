@@ -12,6 +12,7 @@ class Joueur():
         self.pseudo = pseudo
         self.role = None
         self.estLoup = False
+        self.estVoice = False
         self.precedent = None
         self.sePresenteMaire = False
         self.autreAmoureux = None
@@ -50,6 +51,10 @@ class Joueur():
     # Messages
 
     def messageChan(self, message):
+        if(not self.estVoice and self.irc.demarre):
+            print "- {} n'est pas voice et ne peut donc pas dire : \"{}\"".format(self.pseudo, message)
+            return
+
         self.irc.sendEvent("pubmsg", self.pseudo, "#placeduvillage", message)
 
     def messageChanLoup(self, message):
@@ -91,6 +96,14 @@ class Joueur():
         print u"- {} - Est mort".format(self.pseudo)
         self.getJoueurs().remove(self)
 
+    def donnerVoice(self):
+        print u"- {} - Voicé".format(self.pseudo)
+        self.estVoice = True
+
+    def enleverVoice(self):
+        print u"- {} - Dévoicé".format(self.pseudo)
+        self.estVoice = False
+
     # Agissements Jeu
 
     def loupTuer(self):
@@ -119,9 +132,10 @@ class Joueur():
         # et, si demandé, est dans un autre camp
         else:
             for j in joueurs:
-                if(j.pseudo == self.irc.amoureux1):
+                if(j.pseudo == self.irc.amoureux1[:self.irc.amoureux1.find("!")]):
                     continue
-                if(self.irc.unitB("forcer_amour_villageois_loup") and self.estLoup == j.estLoup):
+                if(self.irc.unitB("forcer_amour_villageois_loup") and self.irc.connection.getJoueur(self.irc.amoureux1[:self.irc.amoureux1.find("!")]).estLoup == j.estLoup):
+                    print u"- Cupidon - {} est dans le camp du premier amoureux".format(j.pseudo)
                     continue
 
                 joueurChoisi = j.pseudo

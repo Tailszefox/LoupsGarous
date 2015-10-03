@@ -165,7 +165,7 @@ function traiterVotes($noeud)
 			
 			echo '<li style="clear: both;"><div style="width: 300px; float: left;"><strong>Votant</strong></div><div><strong>Vote</strong></div></li>';
 			foreach($noeud->vote as $vote)
-				echo '<li style="clear: both;"><div style="width: 300px; float: left;">' . strtok($vote, '!') . '</div><div>' . vraiPseudo($vote['pour']) . '</div></li>';
+				echo '<li style="clear: both;"><div style="width: 300px; float: left;">' . vraiPseudo(strtok($vote, '!')) . '</div><div>' . vraiPseudo($vote['pour']) . '</div></li>';
 			
 			echo '</ul>';
 		}
@@ -210,7 +210,7 @@ function traiterVotes($noeud)
 				else
 					$votant = strtok($vote, '!');
 					
-				echo '<li style="clear: both;"><div style="width: 300px; float: left;">' . $votant . '</div><div>' . vraiPseudo($vote['vote']) . '</div></li>';
+				echo '<li style="clear: both;"><div style="width: 300px; float: left;">' . vraiPseudo($votant) . '</div><div>' . vraiPseudo($vote['vote']) . '</div></li>';
 			}
 			
 			echo '</ul>';
@@ -496,7 +496,7 @@ $date = $log->date;
 	<p><a href="log.php">Retour aux autres parties</a></p>
 	
 	<p><strong>Personnalité : </strong><?php echo $log->personnalite; ?></p>
-	<p><strong>Joueurs :</strong>
+	<p><strong>Joueurs :</strong></p>
 		<ul>
 		<?php
 		
@@ -509,7 +509,13 @@ $date = $log->date;
 		
 		$joueurs = array();
 		
+		// Évite les doublons
 		foreach($log->joueurs->joueur as $joueur)
+		{
+			$tempJoueurs[strval($joueur)] = $joueur;
+		}
+
+		foreach($tempJoueurs as $joueur)
 		{
 			$joueurs[strval($joueur)] = $joueur;
 			
@@ -525,8 +531,7 @@ $date = $log->date;
 		}
 		?>
 		</ul>
-		<div style="clear: both;"></div>
-	</p>
+	<div style="clear: both;"></div>
 	<?php if(isset($log->amoureux))
 	{
 	echo '<p><strong>Amoureux : </strong>' .

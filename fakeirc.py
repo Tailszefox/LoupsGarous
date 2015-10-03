@@ -84,6 +84,7 @@ class Connection():
             if(j.pseudo.lower() == pseudo.lower()):
                 return j
 
+        print "Joueur {} non trouvé".format(pseudo)
         return None
 
     def demarrerPartie(self):
@@ -292,6 +293,18 @@ class Connection():
 
     def mode(self, canal, mode):
         print u"- BOT - Mode {} sur {}".format(mode, canal)
+
+        if(("+v" in mode or "-v" in mode) and canal.lower() == "#placeduvillage"):
+            voice, pseudo = mode.split()
+            print u"- BOT - Voice {} sur {}".format(voice, pseudo)
+
+            joueur = self.getJoueur(pseudo)
+
+            if(joueur is not None):
+                if("+v" in voice):
+                    self.getJoueur(pseudo).donnerVoice()
+                elif("-v" in voice):
+                    self.getJoueur(pseudo).enleverVoice()
 
     def invite(self, pseudo, canal):
         print u"- BOT - Invitation de {} sur {}".format(pseudo, canal)
