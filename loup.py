@@ -2301,6 +2301,9 @@ class Bot(BotParentClass):
 		
 		if(joueur == self.victimeCorbeau):
 			self.victimeCorbeau = None
+
+		if(joueur == self.chantage):
+			self.chantage = None
 		
 		if (self.amoureux1 != None):
 			self.debug(u"Amoureux1 : " + str(irclib.nm_to_n(self.amoureux1)))
