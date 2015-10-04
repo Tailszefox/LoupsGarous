@@ -1917,6 +1917,10 @@ class Bot(BotParentClass):
 						if(not self.idiotVote):
 							self.debug(u"Idiot ne vote pas")
 							total -= 1
+
+						if(self.chantage is not None):
+							self.debug(u"Joueur menacé ne vote pas")
+							total -= 1
 							
 						majorite = round(total / 2) + 1
 						actuel = self.votes.values().count(pseudo)
