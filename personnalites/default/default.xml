@@ -9,11 +9,13 @@
 		<role nom="idiot">l'idiot du village</role>
 		<role nom="ancien">l'ancien</role>
 		<role nom="cupidon">Cupidon</role>
+		<role nom="ange">l'ange</role>
 		<role nom="sorciere">la sorcière</role>
 		<role nom="fille">la petite fille</role>
 		<role nom="policier">le policier</role>
 		<role nom="corbeau">le corbeau</role>
 		<role nom="enfant">l'enfant loup</role>
+		<role nom="maitre">le maître-chanteur</role>
 		<role nom="sv">un simple villageois</role>
 	</roles>
 	<declencheurs>
@@ -89,6 +91,14 @@
 			<variables>$1 : Rôle du joueur.</variables>
 			<phrases>
 				<phrase>Voici votre rôle dans le jeu : vous êtes $1.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>DONNER_ROLE_SUPPLEMENTAIRE</cle>
+			<contexte>Rôle secondaire donné au joueur par message privé.</contexte>
+			<variables>$1 : Rôle secondaire du joueur.</variables>
+			<phrases>
+				<phrase>Oh, et vous êtes aussi $1 !</phrase>
 			</phrases>
 		</dire>
 		<dire>
@@ -416,7 +426,7 @@
 			<contexte>Les loups n'ont plus que quelques secondes pour choisir leur victime.</contexte>
 			<variables>$1 : Déclencheur à utiliser pour tuer.</variables>
 			<phrases>
-				<phrase>Messieurs les loups, ils ne vous restent que dix secondes. Dépêchez vous de choisir qui $1 !</phrase>
+				<phrase>Messieurs les loups, il ne vous reste que dix secondes. Dépêchez vous de choisir qui $1 !</phrase>
 			</phrases>
 		</dire>
 		<dire>
@@ -425,6 +435,22 @@
 			<variables></variables>
 			<phrases>
 				<phrase>Très bien, ce sera donc cette personne qui sera tuée. À plus tard. Du moins, j'espère pour vous...</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>APPEL_MAITRE</cle>
+			<contexte>Demande au maître-chanteur de choisir une victime sur le canal des loups.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Oh, j'allais oublier ! Monsieur le maître-chanteur, qui allez vous faire chanter ? Donnez-moi juste son pseudo, et souvenez-vous : cela peut être n'importe qui.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>CONFIRMATION_MAITRE</cle>
+			<contexte>Confirme au maître-chanteur sa victime.</contexte>
+			<variables>$1 : Victime du maître chanteur</variables>
+			<phrases>
+				<phrase>Pauvre $1, je n'aimerais pas être à sa place. Mais bref, vous ne l'entendrez pas cette fois, c'est sûr.</phrase>
 			</phrases>
 		</dire>
 		<dire>
@@ -537,6 +563,14 @@
 			<variables></variables>
 			<phrases>
 				<phrase>Le jour se lève sur un village en apparence tranquille.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>VICTIME_CHANTAGE</cle>
+			<contexte>Informe les villageois qu'une personne ne parlera pas aujourd'hui (car elle est victime de chantage, mais chut)</contexte>
+			<variables>$1 : Victime du chantage</variables>
+			<phrases>
+				<phrase>Tiens, c'est étrange, $1 reste en retrait. D'aussi loin, on ne risque pas de l'entendre participer aux débats...</phrase>
 			</phrases>
 		</dire>
 		<dire>
@@ -908,6 +942,14 @@
 			</phrases>
 		</dire>
 		<dire>
+			<cle>JOUEUR_ETAIT_LOUP_ROLE_SUPPLEMENTAIRE</cle>
+			<contexte>Le loup qui vient de mourir possédait un rôle secondaire.</contexte>
+			<variables>$1 : Pseudo du loup, $2 : Rôle secondaire du loup</variables>
+			<phrases>
+				<phrase>D'ailleurs, $1 était plus qu'un loup : c'était $2 ! Deux bonnes nouvelles pour le prix d'une.</phrase>
+			</phrases>
+		</dire>
+		<dire>
 			<cle>JOUEUR_DESIGNE_ETAIT_VILLAGEOIS</cle>
 			<contexte>Le joueur que le village a tué n'était qu'un autre villageois...</contexte>
 			<variables>$1 : Pseudo du joueur désigné. $2 : Rôle du joueur désigné.</variables>
@@ -929,6 +971,14 @@
 			<variables>$1 : Pseudo de l'idiot. Précisez bien qu'il ne peut plus voter.</variables>
 			<phrases>
 				<phrase>Cependant, les villageois décidèrent aussi que, puisque $1 était l'idiot du village, il n'aurait désormais plus le droit de voter. Qui sait, stupide comme il est, il pourrait carrément désigner une personne de confiance comme loup.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>JOUEUR_DESIGNE_ETAIT_ANGE</cle>
+			<contexte>Le village a tué l'ange au premier tour : il a gagné !</contexte>
+			<variables>$1 : Pseudo de l'ange.</variables>
+			<phrases>
+				<phrase>Et...C'est ainsi que $1 a gagné la partie ! Oui, amis villageois, vous venez de tuer l'ange, vous avez donc tous perdu. La prochaine fois, réfléchissez un peu plus longtemps avant de voter au hasard. Bref, $1, félicitations !</phrase>
 			</phrases>
 		</dire>
 		<dire>
