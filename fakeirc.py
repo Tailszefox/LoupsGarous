@@ -215,7 +215,7 @@ class Connection():
               
             # Spiritisme
             elif("SPR_" in message):
-                for j in joueurs:
+                for j in self.joueurs:
                     if(j.estVoice):
                         joueurDire = j
                         break
