@@ -1429,7 +1429,7 @@ class Bot(BotParentClass):
 		for joueur in self.joueurs:
 			if(self.chantage is not None and self.chantage.lower() == irclib.nm_to_n(joueur).lower()):
 				self.addLog('action', self.chantage, {'type': 'chantage'}, 'tour')
-				self.envoyer(self.chanJeu, "VICTIME_CHANTAGE", [irclib.nm_to_n(self.chantage)])
+				self.envoyer(self.chanJeu, "VICTIME_CHANTAGE", [self.chantage.capitalize()])
 			else:
 				self.connection.mode(self.chanJeu, " +v " + irclib.nm_to_n(joueur))
 		
