@@ -150,6 +150,10 @@ class Connection():
                 for j in self.joueurs:
                     j.messageChan("!participer")
 
+            # Les joueurs peuvent demander les équivalences
+            if("DIRE_EQUIVALENCES_ROLES" in message):
+                self.joueurs[0].messageChan("!roles")
+
             # Les loups peuvent tuer
             elif("INSTRUCTIONS_LOUPS" in message):
                 if(self.forcerGagnant == "villageois" or (self.irc.ange is not None and self.forcerGagnant == "ange")):
