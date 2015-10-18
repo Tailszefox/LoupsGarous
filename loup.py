@@ -573,11 +573,11 @@ class Bot(BotParentClass):
 				self.roleCorbeau,
 				self.roleEnfant,
 				self.roleCupidon,
-				self.roleAnge,
 				# Deux apparitions
 				self.roleIdiot, self.roleIdiot,
 				self.roleChasseur, self.roleChasseur,
 				self.roleMaitre, self.roleMaitre,
+				self.roleAnge, self.roleAnge,
 				# Trois apparitions
 				self.roleAncien, self.roleAncien, self.roleAncien,
 				self.roleSalvateur, self.roleSalvateur, self.roleSalvateur,
