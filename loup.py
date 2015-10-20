@@ -2384,6 +2384,10 @@ class Bot(BotParentClass):
 
 					if(joueur == self.maitre):
 						self.maitre = None
+
+					if (joueur == self.amoureux1 or joueur == self.amoureux2):
+						self.amoureux1 = None
+						self.amoureux2 = None
 				else:
 					serv.execute_delayed(attente + 10, self.envoyer, [self.chanJeu, "CRISE_CARDIAQUE_VILLAGEOIS", [irclib.nm_to_n(joueur), identite]])
 					self.villageois.remove(joueur)
