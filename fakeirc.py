@@ -63,6 +63,7 @@ class Connection():
         self.irc = irc
         self.noPartie = 0
         self.victoires = {}
+        self.totalRoles = {}
         self.listeMots = list(open('/usr/share/dict/french'))
 
         forcerGagnant = self.irc.unit("forcer_gagnant")
@@ -97,6 +98,11 @@ class Connection():
 
             for camp in self.victoires:
                 print u"---- {} : {}".format(camp, self.victoires[camp])
+
+            print u"--- Rôles :"
+            for role in self.totalRoles:
+                print "---- {} : {}".format(role, self.totalRoles[role])
+
             return
 
         nbJoueurs = random.randint(self.irc.unitI("nombre_joueurs_min"), self.irc.unitI("nombre_joueurs_max"))
@@ -253,7 +259,14 @@ class Connection():
 
             # Attribution du rôle
             if("DONNER_ROLE " in message):
-                joueur.attribuerRole(message[12:])
+                role = message[12:]
+
+                try:
+                    self.totalRoles[role] += 1
+                except KeyError:
+                    self.totalRoles[role] = 1
+
+                joueur.attribuerRole(role)
 
             # Attribution du rôle secondaire
             if("DONNER_ROLE_SUPPLEMENTAIRE " in message):
