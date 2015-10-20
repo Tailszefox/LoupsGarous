@@ -3,3 +3,4 @@
 nombre_joueurs_min = 8
 nombre_joueurs_max = 24
 nombre_parties = 100
+utiliser_personnalite = False
