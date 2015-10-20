@@ -2527,13 +2527,18 @@ class Bot(BotParentClass):
 				retour = 0
 					
 		#Plus aucun villageois
-		elif(len(self.villageois) == 0 and (self.victimeSorciere == None or self.victimeSorciere not in self.pseudos)):
-			self.connection.execute_delayed(attente+10, self.envoyer, [self.chanJeu, "VICTOIRE_LOUPS_ZERO_VILLAGEOIS"])
-			self.connection.execute_delayed(attente+20, self.finir, [self.connection])
-			
-			self.addLog('gagnant', 'loups_0')
-			
-			retour = 1
+		elif(len(self.villageois) == 0):
+			# La victime de la sorcière n'a pas encore été tuée
+			if (self.victimeSorciere is not None and self.victimeSorciere in self.pseudos):
+				self.debug(u'Victime sorcière {} encore présente'.format(self.victimeSorciere))
+				retour = 0
+			else:
+				self.connection.execute_delayed(attente+10, self.envoyer, [self.chanJeu, "VICTOIRE_LOUPS_ZERO_VILLAGEOIS"])
+				self.connection.execute_delayed(attente+20, self.finir, [self.connection])
+				
+				self.addLog('gagnant', 'loups_0')
+				
+				retour = 1
 			
 		#Un seul villageois et plusieurs loups
 		elif(len(self.villageois) == 1 and len(self.loups) > 1):
@@ -2543,6 +2548,10 @@ class Bot(BotParentClass):
 					(self.amoureux1 not in self.loups and self.amoureux2 in self.loups)):
 			
 				self.debug(u'Les amoureux sont encore en vie')
+				retour = 0
+			# La victime de la sorcière n'a pas encore été tuée
+			elif (self.victimeSorciere is not None and self.victimeSorciere in self.pseudos):
+				self.debug(u'Victime sorcière {} encore présente'.format(self.victimeSorciere))
 				retour = 0
 			else:
 				self.connection.execute_delayed(attente+10, self.envoyer, [self.chanJeu, "VICTOIRE_LOUPS_UN_VILLAGEOIS"])
@@ -2560,8 +2569,13 @@ class Bot(BotParentClass):
 				self.addLog('gagnant', 'amoureux')
 				
 				retour = 1
+
+			# La victime de la sorcière n'a pas encore été tuée
+			elif (self.victimeSorciere is not None and self.victimeSorciere in self.pseudos):
+				self.debug(u'Victime sorcière {} encore présente'.format(self.victimeSorciere))
+				retour = 0
 				
-			# Conditions spéciales (maire, sorcière, chasseur)
+			# Autre conditions spéciales (maire, sorcière, chasseur)
 			elif (self.chasseur != None or (self.sorciere != None and self.sorciere != "non" and self.potionMort) or (self.maire != None and self.maire in self.villageois)):
 				self.debug(u"Condition speciale")
 				self.debug(u"Chasseur : " + str(self.chasseur))

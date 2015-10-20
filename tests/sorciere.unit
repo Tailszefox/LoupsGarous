@@ -1,0 +1,12 @@
+[unit]
+
+nombre_joueurs_min = 4
+nombre_joueurs_max = 4
+nombre_parties = 20
+
+utiliser_personnalite = False
+roles_presents = sorciere
+autoriser_autres_roles = False
+roles_voyante = False
+pourcentage_sorciere_mort = 50
+pourcentage_villageois_vote_loup = 0
