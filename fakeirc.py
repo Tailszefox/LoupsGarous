@@ -270,6 +270,13 @@ class Connection():
 
             # Attribution du rôle secondaire
             if("DONNER_ROLE_SUPPLEMENTAIRE " in message):
+                role = message[27:]
+
+                try:
+                    self.totalRoles[role] += 1
+                except KeyError:
+                    self.totalRoles[role] = 1
+
                 joueur.attribuerRoleSecondaire(message[27:])
 
             # Appel Cupidon
