@@ -71,6 +71,13 @@ class Joueur():
             self.canaux.append(canal)
             self.irc.sendEvent("join", self.pseudo, canal)
 
+    def quitterCanal(self, canal):
+        try:
+            self.canaux.remove(canal)
+            print u"- {} - A quitté {}".format(self.pseudo, canal)
+        except:
+            raise Exception(u"Le joueur {} n'est pas sur le canal {}".format(self.pseudo, canal))
+
     def attribuerRole(self, message):
         self.role = message.strip()
 

@@ -366,7 +366,10 @@ class Connection():
         #ipdb.set_trace()
         if(canal.lower() == "#placeduvillage"):
             for j in self.joueurs:
-                if(not j.vaQuitterPartie):
+                if(j.vaQuitterPartie and "#placeduvillage" in j.canaux):
+                    j.quitterCanal("#placeduvillage")
+
+                if("#placeduvillage" in j.canaux):
                     self.irc.sendEvent("whoreply", "", "Maitredujeu", ["", "", "", "", j.pseudo])
 
     def disconnect(self, message):
