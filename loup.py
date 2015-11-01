@@ -2979,7 +2979,7 @@ class Bot(BotParentClass):
 		elif(ev.target().lower() == self.chanJeu.lower()):
 			
 			#S'il s'agit d'un joueur encore en vie, on le voice
-			if (ev.source() in self.joueurs and self.demarre):
+			if (ev.source() in self.joueurs and (self.demarre or self.statut == "appelJoueurs")):
 				serv.mode(self.chanJeu, "+v " + irclib.nm_to_n(ev.source()))
 		
 		#Canal des loups
