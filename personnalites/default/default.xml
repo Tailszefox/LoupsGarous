@@ -846,6 +846,22 @@
 			</phrases>
 		</dire>
 		<dire>
+			<cle>LAPIDATION_UNE_MINUTE_GAGNANT_ACTUEL</cle>
+			<contexte>Indique aux joueurs qui est le gagnant actuel de la lapidation.</contexte>
+			<variables>$1 : Joueur ayant le plus de votes pour l'instant</variables>
+			<phrases>
+				<phrase>Pour l'instant, $1 a le malheur d'avoir le plus de votes. Si vous voulez changer son sort, c'est le moment.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>LAPIDATION_UNE_MINUTE_EGALITE</cle>
+			<contexte>Indique aux joueurs que, pour l'instant, il y a une égalité à la lapidation.</contexte>
+			<variables></variables>
+			<phrases>
+				<phrase>Pour l'instant, nous avons une égalité. Si vous voulez la briser, c'est votre dernière chance.</phrase>
+			</phrases>
+		</dire>
+		<dire>
 			<cle>PAS_ASSEZ_VOTES</cle>
 			<contexte>Le bot n'a pas reçu un seul vote pour lapider quelqu'un !</contexte>
 			<variables></variables>

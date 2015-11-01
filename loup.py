@@ -1939,6 +1939,23 @@ class Bot(BotParentClass):
 			return
 		
 		self.envoyer(self.chanJeu, "LAPIDATION_UNE_MINUTE")
+
+		self.debug(u"Votes actuels :")
+		self.debug(self.votes)
+
+		if(len(self.votes) > 0):
+			# Recherche du ou des gagnats actuels
+			maxVotes = max(map(self.votes.values().count, set(self.votes.values())))
+			maxJoueurs = [j for j in set(self.votes.values()) if self.votes.values().count(j) == maxVotes]
+
+			self.debug(u"Résultats actuels : {} avec {}".format(maxJoueurs, maxVotes))
+
+			# Égalité
+			if(len(maxJoueurs) > 1):
+				self.envoyer(self.chanJeu, "LAPIDATION_UNE_MINUTE_EGALITE")
+			else:
+				self.envoyer(self.chanJeu, "LAPIDATION_UNE_MINUTE_GAGNANT_ACTUEL", [maxJoueurs[0].capitalize()])
+
 	
 	def faireLapidation(self, serv, nbAppels, noVote):
 		self.debug(u"FaireLapidation : " + self.statut + " " + str(noVote) + " " + str(self.noVote))
