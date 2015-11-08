@@ -2721,38 +2721,24 @@ class Bot(BotParentClass):
 	#############
 	# SPIRITISME
 	
-	# Deux joueurs dans le même camp
+	# Deux joueurs au hasard dans le même camp
 	def spr_memeCamp(self, serv, source = None, message = None):
-		# Demande du premier pseudo
 		if(self.spr_statut == 0):
 			self.spr_statut = 1
-			self.envoyer(self.chanJeu, "SPR_MEMECAMP_0")
 			
-		# Enregistrement du premier pseudo et demande du second	
-		elif(self.spr_statut == 1):
-			if(message in self.pseudos):
-				self.spr_statut = 2
-				self.spr_variables.append(message)
-				self.envoyer(self.chanJeu, "SPR_MEMECAMP_1")
-		
-		# Donne la réponse
-		elif(self.spr_statut == 2):
-			if(message in self.pseudos and message != self.spr_variables[0]):
-				self.spr_statut = 3
-				self.spr_variables.append(message)
+			premier, second = random.sample(self.pseudos.values(), 2)
+			
+			self.debug("spr_memeCamp: {} ({}) et {} ({})".format(premier, self.identiteBrute(premier), second, self.identiteBrute(second)))
+			
+			if((premier in self.loups and second in self.loups) or (premier in self.villageois and second in self.villageois)):
+				self.addLog('spr', irclib.nm_to_n(premier) + ';' + irclib.nm_to_n(second), {'type' : 'memecamp', 'resultat' : 'identique'}, 'tour')
+				self.envoyer(self.chanJeu, "SPR_MEMECAMPHASARD_0", [irclib.nm_to_n(premier), irclib.nm_to_n(second)])
+			else:
+				self.addLog('spr', irclib.nm_to_n(premier) + ';' + irclib.nm_to_n(second), {'type' : 'memecamp', 'resultat' : 'different'}, 'tour')
+				self.envoyer(self.chanJeu, "SPR_MEMECAMPHASARD_1", [irclib.nm_to_n(premier), irclib.nm_to_n(second)])
 				
-				premier = self.pseudos[self.spr_variables[0]]
-				second = self.pseudos[self.spr_variables[1]]
-				
-				if((premier in self.loups and second in self.loups) or (premier in self.villageois and second in self.villageois)):
-					self.addLog('spr', irclib.nm_to_n(premier) + ';' + irclib.nm_to_n(second), {'type' : 'memecamp', 'resultat' : 'identique'}, 'tour')
-					self.envoyer(self.chanJeu, "SPR_MEMECAMP_2", [irclib.nm_to_n(premier), irclib.nm_to_n(second)])
-				else:
-					self.addLog('spr', irclib.nm_to_n(premier) + ';' + irclib.nm_to_n(second), {'type' : 'memecamp', 'resultat' : 'different'}, 'tour')
-					self.envoyer(self.chanJeu, "SPR_MEMECAMP_3", [irclib.nm_to_n(premier), irclib.nm_to_n(second)])
-					
-				self.spr_terminer(serv)
-				
+			self.spr_terminer(serv)
+			
 	# Connaitre le nombre de rôles particuliers restants
 	def spr_nombreRoles(self, serv, source = None, message = None):
 		# Demande de la catégorie

@@ -1070,32 +1070,16 @@
 			</phrases>
 		</dire>
 		<dire>
-			<cle>SPR_MEMECAMP_0</cle>
-			<contexte>Séance de spiritisme - Deux joueurs dans le même camp - Demande du premier pseudo</contexte>
-			<variables></variables>
-			<phrases>
-				<phrase>Les morts vous pouvoir nous dire si deux personnes sont dans le même camp...Donnons leur le nom de la première personne.</phrase>
-			</phrases>
-		</dire>
-		<dire>
-			<cle>SPR_MEMECAMP_1</cle>
-			<contexte>Demande du second pseudo</contexte>
-			<variables></variables>
-			<phrases>
-				<phrase>Oui, je vois...Donnons leur maintenant le nom de la seconde personne.</phrase>
-			</phrases>
-		</dire>
-		<dire>
-			<cle>SPR_MEMECAMP_2</cle>
-			<contexte>Les deux joueurs demandés sont dans le même camp</contexte>
+			<cle>SPR_MEMECAMPHASARD_0</cle>
+			<contexte>Les morts indiquent que deux joueurs pris au hasard sont dans le même camp</contexte>
 			<variables>$1 : Pseudo du premier joueur, $2 : Pseudo du second joueur</variables>
 			<phrases>
 				<phrase>Les morts me disent que $1 et $2 sont dans le même camp. Ils ne peuvent malheureusement pas me dire lequel...</phrase>
 			</phrases>
 		</dire>
 		<dire>
-			<cle>SPR_MEMECAMP_3</cle>
-			<contexte>Les deux joueurs demandés ne sont pas dans le même camp</contexte>
+			<cle>SPR_MEMECAMPHASARD_1</cle>
+			<contexte>Les morts indiquent que deux joueurs pris au hasard ne sont pas dans le même camp</contexte>
 			<variables>$1 : Pseudo du premier joueur, $2 : Pseudo du second joueur</variables>
 			<phrases>
 				<phrase>Les morts me disent que $1 et $2 ne sont pas dans le même camp ! Duquel se méfier, à présent...?</phrase>
