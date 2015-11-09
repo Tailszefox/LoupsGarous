@@ -65,6 +65,21 @@ function vraiPseudo($pseudo)
 	return strval($pseudo);
 }
 
+function vraiPseudoRaw($pseudo)
+{
+	global $joueurs;
+	
+	foreach($joueurs as $joueur)
+	{
+		if(strcasecmp($pseudo, $joueur) == 0)
+		{
+			return strval($joueur);
+		}
+	}
+	
+	return strval($pseudo);
+}
+
 function traiterAction($noeud)
 {
 	global $joueurs;
@@ -126,7 +141,7 @@ function traiterAction($noeud)
 				
 		case('traitre'):
 			echo $noeud . ' est un traitre...et devient maintenant un loup-garou !';
-			$joueurs[vraiPseudo($noeud)]['role'] = 'loup';
+			$joueurs[vraiPseudoRaw($noeud)]['role'] = 'loup';
 			break;
 			
 		case('chuchotement'):
@@ -146,7 +161,7 @@ function traiterAction($noeud)
 		
 		case('enfant'):
 			echo $noeud . ', l\'enfant loup, devient un vrai loup-garou !';
-			$joueurs[vraiPseudo($noeud)]['role'] = 'loup';
+			$joueurs[vraiPseudoRaw($noeud)]['role'] = 'loup';
 			break;
 
 		case('chantage'):
@@ -636,7 +651,7 @@ $date = $log->date;
 		$survivants = '';
 		
 		foreach($joueurs as $joueur)
-			$survivants .= $joueur . ', ';
+			$survivants .= strval($joueur) . ', ';
 		
 		echo substr($survivants, 0, -2);
 	}
