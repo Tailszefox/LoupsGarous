@@ -627,68 +627,68 @@ $date = $log->date;
 			break;
 	}
 	?>
-	 </h2>
-	 
-	 <p><strong>Survivants :</strong><br :>
-	 <?php
-	 if(sizeof($joueurs) > 0)
-	 {
-		 $survivants = '';
-		 
-		 foreach($joueurs as $joueur)
-			 $survivants .= $joueur . ', ';
-		 
-		 echo substr($survivants, 0, -2);
-	 }
-	 else
-	 {
-		 echo 'Personne !';
-	 }
-	 ?>
-	 </p>
-	 
-	 <?php
-	 
-	 if(isset($log->logPartie))
-	 {
-		 echo '<h2>Log de la partie</h2>';
-		 
-		 echo '<p><span class="placeduvillage">Message sur le canal de jeu</span> - <span class="loupsgarous">Message sur le canal des loups-garous</span> - <span class="mp">Message privé</span></p>';
-		 
-		 echo '<div id="chat">';
-		 
-		 foreach($log->logPartie->chat as $chat)
-		 {
-			 $texte = str_replace('<', '&lt;', str_replace('>', '&gt;', strval($chat)));
-			 
-			 if($chat['mp'] == 'true')
-				 echo '<span class="mp">(De &lt;<strong>'.$chat['auteur'].'&gt;</strong> à &lt;<strong>'.$chat['destination'].'</strong>&gt;) ' . $texte . '</span><br />';
-			 else
-			 {
-				 if(strcasecmp($chat['destination'], '#Placeduvillage') == 0)
-				 {
-					 $destination = '#PlaceDuVillage';
-					 $classe = 'placeduvillage';
-				 }
-				 elseif(strcasecmp($chat['destination'], '#LoupsGarous') == 0)
-				 {
-					 $destination = '#LoupsGarous';
-					 $classe = 'loupsgarous';
-				 }
-				 
-				 if($chat['auteur'] == 'MaitreDuJeu')
-					  echo '<span class="'.$classe.'">&lt;<strong>'.$chat['auteur'].'</strong>&gt; <strong>' . $texte . '</strong></span><br />';
+	</h2>
+	
+	<p><strong>Survivants :</strong><br :>
+	<?php
+	if(sizeof($joueurs) > 0)
+	{
+		$survivants = '';
+		
+		foreach($joueurs as $joueur)
+			$survivants .= $joueur . ', ';
+		
+		echo substr($survivants, 0, -2);
+	}
+	else
+	{
+		echo 'Personne !';
+	}
+	?>
+	</p>
+	
+	<?php
+	
+	if(isset($log->logPartie))
+	{
+		echo '<h2>Log de la partie</h2>';
+		
+		echo '<p><span class="placeduvillage">Message sur le canal de jeu</span> - <span class="loupsgarous">Message sur le canal des loups-garous</span> - <span class="mp">Message privé</span></p>';
+		
+		echo '<div id="chat">';
+		
+		foreach($log->logPartie->chat as $chat)
+		{
+			$texte = str_replace('<', '&lt;', str_replace('>', '&gt;', strval($chat)));
+			
+			if($chat['mp'] == 'true')
+				echo '<span class="mp">(De &lt;<strong>'.$chat['auteur'].'&gt;</strong> à &lt;<strong>'.$chat['destination'].'</strong>&gt;) ' . $texte . '</span><br />';
+			else
+			{
+				if(strcasecmp($chat['destination'], '#Placeduvillage') == 0)
+				{
+					$destination = '#PlaceDuVillage';
+					$classe = 'placeduvillage';
+				}
+				elseif(strcasecmp($chat['destination'], '#LoupsGarous') == 0)
+				{
+					$destination = '#LoupsGarous';
+					$classe = 'loupsgarous';
+				}
+				
+				if($chat['auteur'] == 'MaitreDuJeu')
+					 echo '<span class="'.$classe.'">&lt;<strong>'.$chat['auteur'].'</strong>&gt; <strong>' . $texte . '</strong></span><br />';
 				else
-				 	echo '<span class="'.$classe.'">&lt;<strong>'.$chat['auteur'].'</strong>&gt; ' . $texte . '</span><br />';
-			 }
-		 }
-		 
-		 echo '</div>';
-	 }
-	 
-	 ?>
-	 
-	 <p><a href="log.php">Retour aux autres parties</a></p>
-	 
+					echo '<span class="'.$classe.'">&lt;<strong>'.$chat['auteur'].'</strong>&gt; ' . $texte . '</span><br />';
+			}
+		}
+		
+		echo '</div>';
+	}
+	
+	?>
+	
+	<p><a href="log.php">Retour aux autres parties</a></p>
+	
 	</body>
 </html>
