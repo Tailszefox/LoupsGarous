@@ -124,9 +124,6 @@ class Bot(BotParentClass):
 		fichiers = os.listdir('./personnalites/accepted')
 		random.shuffle(fichiers)
 
-		if(isTest):
-			return []
-
 		persos = []
 
 		nom, nbRepliques = self.extraireNomEtRepliques('./personnalites/default/default.xml')
