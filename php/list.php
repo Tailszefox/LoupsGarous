@@ -53,7 +53,7 @@ if(isset($accepted))
 			{
 				$xml = simplexml_load_file('./personnalites/accepted/' . $user->data['user_id'] . '_' . $fichier . '.xml');
 				$total = sizeof($xml->repliques->dire);
-				if ($total < $total_default)
+				if ($total != $total_default)
 					$update = ' - <span class="update">MISE À JOUR NÉCESSAIRE</span>';
 				else
 					$update = '';
@@ -170,6 +170,10 @@ foreach ($dir as $file)
 		$total_perso = sizeof($perso->repliques->dire);
 		$nom = $perso->nom;
 		$pourcent = ($total_perso / $total_default) * 100;
+
+		// Si ça dépasse 100%, il y a des phrases obsolètes
+		if($pourcent > 100)
+			$pourcent = 99;
 
 		$all[] = array($nom, $pourcent);
 	}

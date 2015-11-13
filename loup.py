@@ -135,6 +135,10 @@ class Bot(BotParentClass):
 			nomAlt, nbRepliquesAlt = self.extraireNomEtRepliques('./personnalites/accepted/' + f)
 			pourcent = int(round((nbRepliquesAlt / nbRepliques) * 100))
 
+			# Si supérieur à 100%, la perso possède des phrases obsolètes
+			if(pourcent > 100):
+				pourcent = 99
+
 			if(pourcent >= self.minDisabled):
 				self.debug(u"Ajout de la perso " + str(f) + " avec " + str(pourcent) + "%")
 				persos.append(f)
