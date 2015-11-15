@@ -684,11 +684,11 @@ class Bot(BotParentClass):
 				serv.execute_delayed(30, self.verifierSuffisant, [serv, nbAppels + 1])
 		#Assez de joueurs
 		else:
-			if(len(self.joueurs) < 6):
+			if(len(self.joueurs) <= 6):
 				self.maxLoups = 1
-			elif(len(self.joueurs) >= 6 and len(self.joueurs) < 11):
+			elif(len(self.joueurs) >= 7 and len(self.joueurs) <= 11):
 				self.maxLoups = 2
-			elif(len(self.joueurs) >= 11 and len(self.joueurs) < 16):
+			elif(len(self.joueurs) >= 12 and len(self.joueurs) <= 16):
 				self.maxLoups = 3
 			else:
 				self.maxLoups = len(self.joueurs)/5
