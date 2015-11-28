@@ -11,6 +11,7 @@ import string
 import re
 import xml.dom.minidom
 import ipdb
+import copy
 from datetime import datetime
 import ConfigParser
 
@@ -1946,8 +1947,16 @@ class Bot(BotParentClass):
 
 		if(len(self.votes) > 0):
 			# Recherche du ou des gagnats actuels
-			maxVotes = max(map(self.votes.values().count, set(self.votes.values())))
-			maxJoueurs = [j for j in set(self.votes.values()) if self.votes.values().count(j) == maxVotes]
+			copieVotes = copy.deepcopy(self.votes)
+			if(self.victimeCorbeau is not None):
+				copieVotes["corbeau1"] = irclib.nm_to_n(self.victimeCorbeau).lower()
+				copieVotes["corbeau2"] = irclib.nm_to_n(self.victimeCorbeau).lower()
+
+				self.debug(u"Votes actuels après le corbeau :")
+				self.debug(copieVotes)
+
+			maxVotes = max(map(copieVotes.values().count, set(copieVotes.values())))
+			maxJoueurs = [j for j in set(copieVotes.values()) if copieVotes.values().count(j) == maxVotes]
 
 			self.debug(u"Résultats actuels : {} avec {}".format(maxJoueurs, maxVotes))
 
