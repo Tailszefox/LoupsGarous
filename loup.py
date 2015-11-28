@@ -2607,12 +2607,12 @@ class Bot(BotParentClass):
 				retour = 0
 				
 			# Autre conditions spéciales (maire, sorcière, chasseur)
-			elif (self.chasseur != None or (self.sorciere != None and self.sorciere != "non" and self.potionMort) or (self.maire != None and self.maire in self.villageois)):
-				self.debug(u"Condition speciale")
-				self.debug(u"Chasseur : " + str(self.chasseur))
-				self.debug(u"Sorciere : " + str(self.sorciere) + " " + str(self.potionMort))
-				self.debug(u"Maire : " + str(self.maire) + " " + str(self.maire in self.villageois))
-				retour = 0
+			# elif (self.chasseur != None or (self.sorciere != None and self.sorciere != "non" and self.potionMort) or (self.maire != None and self.maire in self.villageois)):
+			# 	self.debug(u"Condition speciale")
+			# 	self.debug(u"Chasseur : " + str(self.chasseur))
+			# 	self.debug(u"Sorciere : " + str(self.sorciere) + " " + str(self.potionMort))
+			# 	self.debug(u"Maire : " + str(self.maire) + " " + str(self.maire in self.villageois))
+			# 	retour = 0
 				
 			#Victoire normale
 			else:
