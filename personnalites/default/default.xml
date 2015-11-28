@@ -438,11 +438,11 @@
 			</phrases>
 		</dire>
 		<dire>
-			<cle>APPEL_MAITRE</cle>
+			<cle>APPEL_MAITRE_PSEUDO</cle>
 			<contexte>Demande au maître-chanteur de choisir une victime sur le canal des loups.</contexte>
-			<variables></variables>
+			<variables>$1 : Pseudo du maitre-chanteur</variables>
 			<phrases>
-				<phrase>Oh, j'allais oublier ! Monsieur le maître-chanteur, qui allez vous faire chanter ? Donnez-moi juste son pseudo, et souvenez-vous : cela peut être n'importe qui.</phrase>
+				<phrase>Oh, j'allais oublier ! $1, qui allez vous faire chanter ? Donnez-moi juste son pseudo, et souvenez-vous : cela peut être n'importe qui.</phrase>
 			</phrases>
 		</dire>
 		<dire>

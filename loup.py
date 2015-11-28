@@ -1412,7 +1412,7 @@ class Bot(BotParentClass):
 			self.statut = "attaqueLoup"
 		else:
 			self.statut = "traiterCanalLoups_maitre"
-			self.envoyer(self.chanLoups, "APPEL_MAITRE")
+			self.envoyer(self.chanLoups, "APPEL_MAITRE_PSEUDO", [irclib.nm_to_n(self.maitre)])
 	
 	#Kick les loups une fois qu'ils ont choisi quelqu'un à tuer
 	def kickerLoups(self, serv):
