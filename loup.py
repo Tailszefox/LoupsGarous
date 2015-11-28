@@ -2810,7 +2810,7 @@ class Bot(BotParentClass):
 			if(not self.sorciere or self.sorciere == "non"):
 				self.addLog('spr', 'aucune', {'type' : 'sorcierepseudo'}, 'tour')
 				self.envoyer(self.chanJeu, "SPR_PSEUDOSORCIERE_0")
-			elif(irclib.nm_to_n(self.sorciere).lower() <= 'm'):
+			elif(irclib.nm_to_n(self.sorciere).lower()[0] <= 'm'):
 				self.addLog('spr', 'oui', {'type' : 'sorcierepseudo'}, 'tour')
 				self.envoyer(self.chanJeu, "SPR_PSEUDOSORCIERE_1")
 			else:
