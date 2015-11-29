@@ -2739,8 +2739,13 @@ class Bot(BotParentClass):
 			premier, second = random.sample(self.pseudos.values(), 2)
 			
 			self.debug("spr_memeCamp: {} ({}) et {} ({})".format(premier, self.identiteBrute(premier), second, self.identiteBrute(second)))
+			self.debug("spr_memeCamp: amoureux - {} et {}".format(self.amoureux1, self.amoureux2))
 			
-			if((premier in self.loups and second in self.loups) or (premier in self.villageois and second in self.villageois)):
+			if(		(premier in self.loups and second in self.loups)
+				or	(premier in self.villageois and second in self.villageois)
+				or	(premier == self.amoureux1 and second == self.amoureux2)
+				or	(premier == self.amoureux2 and second == self.amoureux1)
+				):
 				self.addLog('spr', irclib.nm_to_n(premier) + ';' + irclib.nm_to_n(second), {'type' : 'memecamp', 'resultat' : 'identique'}, 'tour')
 				self.envoyer(self.chanJeu, "SPR_MEMECAMPHASARD_0", [irclib.nm_to_n(premier), irclib.nm_to_n(second)])
 			else:
