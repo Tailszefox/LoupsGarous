@@ -3,7 +3,7 @@
 
 # Ces classes sont destinées à tester le bot, en simulant un serveur IRC
 
-from joueur import Joueur
+from fakejoueur import FakeJoueur
 
 from time import sleep
 import random
@@ -120,7 +120,7 @@ class Connection():
                 if(self.getJoueur(nomAleatoire) is None):
                     break
 
-            self.joueurs.append(Joueur(self.irc, "{}".format(nomAleatoire)))
+            self.joueurs.append(FakeJoueur(self.irc, "{}".format(nomAleatoire)))
 
         self.joueurs[0].messageChan("!jouer")
 

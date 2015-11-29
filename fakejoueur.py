@@ -6,7 +6,7 @@
 import random
 from copy import copy
 
-class Joueur():
+class FakeJoueur():
     def __init__(self, irc, pseudo):
         self.irc = irc
         self.pseudo = pseudo
