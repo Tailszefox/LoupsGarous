@@ -114,6 +114,7 @@ $joueursVotesTotal = array();
 $victoiresVillageois = 0;
 $victoiresLoups = 0;
 $victoiresAmoureux = 0;
+$victoiresAnge = 0;
 $victoiresPersonne = 0;
 
 $personnalites = array();
@@ -637,6 +638,11 @@ foreach($dir as $file)
             if($victoiresAmoureux > 0) { ?>
                 <li><?php printf("%d " . ngettext("victoire", "victoires", $victoiresAmoureux) . " des amoureux, soit %s des parties",
                             $victoiresAmoureux, pourcentage($victoiresAmoureux, $totalParties)); ?></li>
+            <?php }
+
+            if($victoiresAnge > 0) { ?>
+                <li><?php printf("%d " . ngettext("victoire", "victoires", $victoiresAnge) . " de l'ange, soit %s des parties",
+                            $victoiresAnge, pourcentage($victoiresAnge, $totalParties)); ?></li>
             <?php }
 
             if($victoiresPersonne > 0) { ?>
