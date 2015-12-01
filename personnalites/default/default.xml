@@ -24,9 +24,9 @@
 		<declencheur nom="roles" contexte="Recevoir la liste des rôles">!roles</declencheur>
 		<declencheur nom="tuerLoups" contexte="Meurtre d'un joueur par les loups">!tuer</declencheur>
 		<declencheur nom="voterMaire" contexte="Voter pour quelqu'un au poste de maire">!voter</declencheur>
-		<declencheur nom="voter" contexte="Arrêter les débats et commencer les votes">!voter</declencheur>
+		<declencheur nom="voter" contexte="(Inutilisé) Arrêter les débats et commencer les votes">!voter</declencheur>
 		<declencheur nom="tuerLapidation" contexte="Lapidation d'un joueur">!tuer</declencheur>
-		<declencheur nom="chuchoter" contexte="Envoyer un message à un autre joueur">!chuchoter</declencheur>
+		<declencheur nom="chuchoter" contexte="(Inutiilisé) Envoyer un message à un autre joueur">!chuchoter</declencheur>
 	</declencheurs>
 	<repliques>
 		<dire>
