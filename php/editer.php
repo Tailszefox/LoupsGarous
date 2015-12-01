@@ -95,7 +95,7 @@ include('../is_connected.php');
 	<strong>La phrase d'exemple</strong> est là uniquement pour vous donner un exemple de phrase en rapport avec la situation. Elle vous permet aussi de voir comment vous devez utiliser les variables. C'est dans le <strong>champ de texte en dessous</strong> que vous devez taper ce que le bot dira.<br />
 	Enfin, le bouton <strong>Ajouter une autre ligne</strong> fait apparaitre un nouveau champ de texte. Si vous mettez plusieurs lignes pour une même réplique, le bot en choisisera une au hasard à chaque fois qu'il l'a dira. Ainsi, si vous avez deux phrases pour appeler la voyante, le bot dira un coup la première, un coup la deuxième. Plus vous créez de phrases pour une même réplique, plus votre personnalitée sera originale et moins elle sera lassante !</p>
 		<p class="titre">Répliques</p>
-		<noscript><p>Javascript est désactivé ! Vous ne pourrez pas ajoiuter de phrases supplémentaires tant qu'il ne sera pas activé.</p></noscript>
+		<noscript><p>Javascript est désactivé ! Vous ne pourrez pas ajouter de phrases supplémentaires tant qu'il ne sera pas activé.</p></noscript>
 		<?php
 		foreach($default->repliques->dire as $replique)
 		{
