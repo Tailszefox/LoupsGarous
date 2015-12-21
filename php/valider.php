@@ -113,7 +113,7 @@ else
 		else
 		{
 			rename('./personnalites/'.$user->data['user_id'].'_'.$_GET['id'].'.xml', './personnalites/pending/'.$user->data['user_id'].'_'.$_GET['id'].'.xml');
-			$message = 'Le membre ' . $user->data['username'] . ' demande la validation de '.$_POST['nom'].'. Voir http://mariouniversalis.fr/loups/editer.php?type=admin&id='.$user->data['user_id'].'_'.$_GET['id'].'.xml';
+			$message = 'Le membre ' . $user->data['username'] . ' demande la validation de '.$_POST['nom'].'. Voir https://www.mariouniversalis.fr/loups/editer.php?type=admin&id='.$user->data['user_id'].'_'.$_GET['id'].'.xml';
 			mail('tails@tailszefox.no-ip.com', 'Nouvelle personnalité', $message);
 			header('Location: index.php?type=submit');
 		}
