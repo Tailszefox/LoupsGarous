@@ -11,8 +11,9 @@ $alias = array(
     "bowser64"              => "agent",
     "destructoid"           => "agent",
 
-    "bestluigi"             => "sarthy",
-    "sarthur"               => "sarthy",
+    "bestluigi"             => "goupi",
+    "sarthur"               => "goupi",
+    "sarthy"		    => "goupi",
 
     "kirby-jaune"           => "darphal",
     "super___amy"           => "darphal",
