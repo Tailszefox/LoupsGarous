@@ -866,7 +866,7 @@
 			<contexte>Le bot n'a pas reçu un seul vote pour lapider quelqu'un !</contexte>
 			<variables></variables>
 			<phrases>
-				<phrase>Hé bien, personne ne souhaite voter ? Nous ne pouvons pas continuer tant que je n'ai pas reçu au moins un vote.</phrase>
+				<phrase>Hé bien, personne ne souhaite voter ? Si je ne reçois aucun vote, il n'y aura pas de lapidation aujourd'hui.</phrase>
 			</phrases>
 		</dire>
 		<dire>
