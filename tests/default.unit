@@ -11,6 +11,11 @@ nombre_parties = 1
 # False Le bot ne parlera qu'en utilisant les clés
 utiliser_personnalite = True
 
+# Utilise le fichier indiqué comme personnalité
+# <vide>                            Utilisation de la personnalitée par défaut
+# personnalites/accepted/[...].xml  Utilisation du fichier indiqué
+utiliser_personnalite_fichier = 
+
 # Liste des rôles attribués en priorité (sauf la voyante)
 # <vide>                La distribution des rôles suivra les règles habituelles
 # voyante, cupidon, ... Les rôles indiqués seront attribués en priorité
