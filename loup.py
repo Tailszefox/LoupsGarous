@@ -1357,7 +1357,7 @@ class Bot(BotParentClass):
 		
 		if(self.fille != None and self.fille != self.enPrison):
 			serv.execute_delayed(3, self.envoyer, [irclib.nm_to_n(self.fille), "APPEL_FILLE"])
-		serv.execute_delayed(10, self.traiterCanalLoups, [serv]) 
+		serv.execute_delayed(20, self.traiterCanalLoups, [serv])
 		serv.execute_delayed(55, self.prevenirLoups, [serv])
 		serv.execute_delayed(70, self.verifierLoups, [serv])
 		
@@ -1375,16 +1375,16 @@ class Bot(BotParentClass):
 			self.statut = "attaqueLoup"
 			self.kickerLoups(serv)
 	
-	#Gueule s'il manque des loups
+	# Prévient s'il manque des loups, et passe à la phase des loups si ce n'est pas déjà le cas
 	def traiterCanalLoups(self, serv):
-		self.statut = "traiterCanalLoups"
 		if(len(self.loupsSurCanal) < len(self.loups)):
 			self.envoyer(self.chanLoups, "MANQUE_DES_LOUPS")
-		
-		#if(not self.aParlerLoup):
-		#	self.envoyer(self.chanLoups, "INSTRUCTIONS_LOUPS", [self.declencheurs['tuerLoups']])
-		#	self.debug(u"A parlé aux loups")
-	
+
+		# Si on a déjà parlé aux loups, pas la peine de changer de phase
+		if(not self.aParlerLoup):
+			self.debug("Passage forcé en mode traiterCanalLoups")
+			self.statut = "traiterCanalLoups"
+
 	#Traite les messages de mort des loups
 	def traiterMessageLoups(self, serv, source, message, messageNormal):
 		messageSplit = message.split(" ", 1)
