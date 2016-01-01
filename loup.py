@@ -238,7 +238,7 @@ class Bot(BotParentClass):
 			for variable in variables:
 				message += " " + variable
 		else:
-			message = replique[random.randint(0, len(replique)-1)]
+			message = random.sample(replique, 1)[0]
 			noVariable = 1
 			for variable in variables:
 				message = message.replace("$" + str(noVariable), variable)
