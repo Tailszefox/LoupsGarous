@@ -280,7 +280,7 @@ class Bot(BotParentClass):
 			message = chr(2) + message
 			
 			
-		self.debug(u"(" + destination + ") <" + self.pseudo + "> " + message)
+		self.debug(u"(" + destination + ") ["+ self.statut +"] <" + self.pseudo + "> " + message)
 		
 		self.connection.privmsg(destination, message.encode("utf-8", "ignore"))
 
