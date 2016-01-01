@@ -533,21 +533,30 @@ class Bot(BotParentClass):
 		self.rolesDefault = chargement[1]
 		self.declencheursDefault = chargement[2]
 		
-		#Charge la personnalité choisie
-		self.debug(u"Personnalite " + str(personnaliteChoisie) + " choisie")
-		#chargement = self.chargerRepliques("./personnalites/default/default.xml")
-		if(self.tableauPersonnalitesVote[personnaliteChoisie] == 'default.xml'):
-			chargement = self.chargerRepliques("./personnalites/default/default.xml")
+		# Charge la perso définie dans l'unit de test
+		if(isTest and len(self.unit("utiliser_personnalite_fichier")) != 0):
+			chargement = self.chargerRepliques(self.unit("utiliser_personnalite_fichier"))
+
+			# On utilise les répliques mais on garde les déclencheurs et rôles par défaut
+			self.repliques = chargement[0]
+			self.roles = self.rolesDefault
+			self.declencheurs = self.declencheursDefault
+		#Charge la personnalité choisie par les votes
 		else:
-			chargement = self.chargerRepliques('./personnalites/accepted/' + self.tableauPersonnalitesVote[personnaliteChoisie])
-		self.repliques = chargement[0]
-		self.roles = chargement[1]
-		self.declencheurs = chargement[2]
-		
-		#Si le déclencheur n'existe pas dans la personnalité, on la prend dans celle par défaut
-		for decl in self.declencheursDefault:
-			if(decl not in self.declencheurs):
-				self.declencheurs[decl] = self.declencheursDefault[decl]
+			self.debug(u"Personnalite " + str(personnaliteChoisie) + " choisie")
+			#chargement = self.chargerRepliques("./personnalites/default/default.xml")
+			if(self.tableauPersonnalitesVote[personnaliteChoisie] == 'default.xml'):
+				chargement = self.chargerRepliques("./personnalites/default/default.xml")
+			else:
+				chargement = self.chargerRepliques('./personnalites/accepted/' + self.tableauPersonnalitesVote[personnaliteChoisie])
+			self.repliques = chargement[0]
+			self.roles = chargement[1]
+			self.declencheurs = chargement[2]
+			
+			#Si le déclencheur n'existe pas dans la personnalité, on la prend dans celle par défaut
+			for decl in self.declencheursDefault:
+				if(decl not in self.declencheurs):
+					self.declencheurs[decl] = self.declencheursDefault[decl]
 		
 		self.envoyer(self.chanJeu, u"Bien, les votes sont terminés. Veuillez donc applaudir bien fort..." + self.personnalite + " !")
 		self.addLog('personnalite', self.personnalite)
