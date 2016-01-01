@@ -1418,16 +1418,15 @@ class Bot(BotParentClass):
 	def appelMaitre(self, serv):
 		# Pas de maitre chanteur, ou maitre chanteur pas sur le canal
 		if(self.maitre is None or self.maitre not in self.loupsSurCanal):
-			serv.execute_delayed(5, self.kickerLoups, [serv])
 			self.statut = "attaqueLoup"
+			serv.execute_delayed(5, self.kickerLoups, [serv])
 		else:
 			self.statut = "traiterCanalLoups_maitre"
 			self.envoyer(self.chanLoups, "APPEL_MAITRE_PSEUDO", [irclib.nm_to_n(self.maitre)])
 	
 	#Kick les loups une fois qu'ils ont choisi quelqu'un à tuer
 	def kickerLoups(self, serv):
-		for loup in self.loups:
-			if(loup != self.enPrison):
+		for loup in self.loupsSurCanal:
 				serv.kick(self.chanLoups, irclib.nm_to_n(loup))
 			
 		if(self.victimeLoups == None):
