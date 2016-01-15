@@ -1,3 +1,6 @@
+# Fichier de configuration
+prefs.ini
+
 # Logs des parties
 /logs/*
 
