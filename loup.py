@@ -10,13 +10,11 @@ import os
 import string
 import re
 import xml.dom.minidom
-import ipdb
 import copy
 from datetime import datetime
 import ConfigParser
 
 toFile = False
-isDebug = False
 isTest = False
 
 if(len(sys.argv) > 1):
@@ -29,9 +27,6 @@ if(len(sys.argv) > 1):
 			f = codecs.open('./log.txt', 'w', 'utf-8', 'ignore');
 			sys.stdout = f
 			print u"Redirection activée"
-		elif(arg == '-d' or arg == '--debug'):
-			isDebug = True
-			print u"Mode debug activé"
 		elif(arg == '-t' or arg == '--test'):
 			isTest = True
 			isTest_filename = None
@@ -448,10 +443,6 @@ class Bot(BotParentClass):
 
 	#Démarre le jeu en envoyant les premières instructions
 	def demarrerJeu(self, serv):
-		
-		if(isDebug):
-			ipdb.set_trace()
-
 		self.log = xml.dom.minidom.parseString("<log></log>")
 		self.addLog('date', datetime.today().strftime("%d/%m/%y %H:%M:%S"))
 		self.addLog('logPartie')
