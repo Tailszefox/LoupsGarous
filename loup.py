@@ -65,7 +65,7 @@ class Bot(BotParentClass):
 	def __init__(self):
 		config = ConfigParser.ConfigParser()
 		if len(config.read("./prefs.ini")) == 0:
-			print u"Impossible de lire la configuration."
+			print u"Impossible de lire la configuration. Si le fichier n'existe pas, copiez prefs.example.ini et renommez-le \"prefs.ini\"."
 			sys.exit()
 
 		self.pseudo = config.get("prefs", "pseudo")
