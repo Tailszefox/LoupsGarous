@@ -175,7 +175,7 @@ foreach ($dir as $file)
 		if($pourcent > 100)
 			$pourcent = 99;
 
-		$all[] = array($nom, $pourcent);
+		$all[] = array($nom, $pourcent, $file->getFilename());
 	}
 }
 
@@ -207,7 +207,7 @@ if(isset($all))
 	Le pourcentage indique la quantité de phrases traduites par rapport à la personnalité par défaut. Les personnalités qui comportent moins de <?php echo $minDisabled; ?>% de phrases traduites sont désactivées jusqu'à ce qu'elles soient mises à jour.
 	</p>
 		<p class="titre">Personnalités acceptées créées par les autres membres</p>
-		<ul>
+		<ul id="acceptedList">
 			<?php
 			foreach($all as $perso)
 			{
@@ -220,7 +220,7 @@ if(isset($all))
 				else
 					$class = '';
 
-				echo '<li'.$class.'>' . $perso[0] . ' <em>('.floor($pourcent).'%)</em></li>';
+				echo '<li'.$class.'><a href="./display.php/'. $perso[2] .'">' . $perso[0] . '</a> <em>('.floor($pourcent).'%)</em></li>';
 			}
 			?>
 		</ul>

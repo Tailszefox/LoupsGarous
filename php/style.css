@@ -103,3 +103,8 @@ body
 {
 	color: gray;
 }
+
+#acceptedList a
+{
+	color: inherit;
+}
