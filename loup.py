@@ -120,7 +120,11 @@ class Bot(BotParentClass):
 	
 	#Donne une liste de personnalités au hasard parmi celles disponibles
 	def listePersonnalites(self):
-		fichiers = os.listdir('./personnalites/accepted')
+		try:
+			fichiers = os.listdir('./personnalites/accepted')
+		except:
+			fichiers = []
+			
 		random.shuffle(fichiers)
 
 		persos = []
