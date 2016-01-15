@@ -20,7 +20,7 @@ isDebug = False
 isTest = False
 
 if(len(sys.argv) > 1):
-	i = 0
+	i = 1
 	while i < len(sys.argv):
 		arg = sys.argv[i]
 
@@ -47,6 +47,9 @@ if(len(sys.argv) > 1):
 				isTest_filename = argNext
 				print u"\tFichier de test : {}".format(isTest_filename)
 				i += 1
+
+		else:
+			raise Exception(u"Option {} inconnue".format(arg))
 
 		i += 1
 
