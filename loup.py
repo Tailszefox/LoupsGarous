@@ -3030,6 +3030,14 @@ class Bot(BotParentClass):
 					self.statut = "traiterCanalLoups"
 					serv.execute_delayed(5, self.envoyer, [self.chanLoups, "INSTRUCTIONS_LOUPS", [self.declencheurs['tuerLoups']]])
 	
+	# Un joueur a quitté un canal
+	def on_part(self, serv, ev):
+		self.debug("{} a quitté {}".format(ev.source(), ev.target()))
+
+	# Un joueur a quitté IRC
+	def on_quit(self, serv, ev):
+		self.debug("{} a quitté IRC".format(ev.source()))
+
 	#Un joueur a changé de nick. Si on est en jeu, on doit le changer partout
 	def on_nick(self, serv, ev):
 		if(self.statut != "attente"):
