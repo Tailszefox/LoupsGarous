@@ -2733,6 +2733,16 @@ class Bot(BotParentClass):
 					self.whisperProbaJoueurs[source] += 1
 					
 			self.debug(u"New chance : " + str(self.whisperProbaJoueurs[source]))
+
+	# Quelqu'un sur le paradis demande les rôles
+	def envoyerRolesAutresJoueurs(self, source):
+		listeRoles = ""
+		
+		for joueur in self.joueurs:
+			pseudo = irclib.nm_to_n(joueur)
+			listeRoles += pseudo + ' : ' + self.identite(joueur) + ". "
+			
+		self.envoyer(irclib.nm_to_n(source), listeRoles)
 	
 	#############
 	# SPIRITISME
@@ -3019,16 +3029,6 @@ class Bot(BotParentClass):
 					self.aParlerLoup = True
 					self.statut = "traiterCanalLoups"
 					serv.execute_delayed(5, self.envoyer, [self.chanLoups, "INSTRUCTIONS_LOUPS", [self.declencheurs['tuerLoups']]])
-	
-	# Quelqu'un sur le paradis demande les rôles
-	def envoyerRolesAutresJoueurs(self, source):
-		listeRoles = ""
-	
-		for joueur in self.joueurs:
-			pseudo = irclib.nm_to_n(joueur)
-			listeRoles += pseudo + ' : ' + self.identite(joueur) + ". "
-		
-		self.envoyer(irclib.nm_to_n(source), listeRoles)
 	
 	#Un joueur a changé de nick. Si on est en jeu, on doit le changer partout
 	def on_nick(self, serv, ev):
