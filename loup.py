@@ -1951,7 +1951,7 @@ class Bot(BotParentClass):
 		self.debug(u"Votes actuels :")
 		self.debug(self.votes)
 
-		if(len(self.votes) > 0):
+		if(len(self.votes) > 0 or self.victimeCorbeau is not None):
 			# Recherche du ou des gagnats actuels
 			copieVotes = copy.deepcopy(self.votes)
 			if(self.victimeCorbeau is not None):
