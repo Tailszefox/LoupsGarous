@@ -2052,7 +2052,7 @@ class Bot(BotParentClass):
 		#Égalité. Si pas de maire, on refait un autre, sinon c'est lui qui choisit
 		elif(self.egalite):
 			if(self.maire != None):
-				self.statut = "maireDepartage"
+				serv.execute_delayed(attente, self.maireDepartage)
 				serv.execute_delayed(attente, self.envoyer, [self.chanJeu, "MAIRE_DEPARTAGE", [irclib.nm_to_n(self.maire).capitalize()]])
 				serv.execute_delayed(attente + 60, self.maireDepartageLent)
 				return
@@ -2074,6 +2074,10 @@ class Bot(BotParentClass):
 		self.votes = {}
 		serv.execute_delayed(30, self.faireLapidation, [serv, 0, self.noVote])
 	
+	# Passe en mode d'attente de la décision du maire
+	def maireDepartage(self):
+		self.statut = "maireDepartage"
+
 	#Si le maire est trop lent, on zappe
 	def maireDepartageLent(self):
 		serv = self.connection
