@@ -3021,14 +3021,21 @@ class Bot(BotParentClass):
 			
 			#S'il s'agit bien d'un loup (et non d'un mort)
 			if(ev.source() in self.loups):
-				serv.mode(self.chanLoups, "+v " + irclib.nm_to_n(ev.source()))
-				self.loupsSurCanal.append(ev.source())
-				
-				#Si c'est le premier loup sur le canal
-				if(len(self.loupsSurCanal) == 1):
-					self.aParlerLoup = True
-					self.statut = "traiterCanalLoups"
-					serv.execute_delayed(5, self.envoyer, [self.chanLoups, "INSTRUCTIONS_LOUPS", [self.declencheurs['tuerLoups']]])
+				# On vérifie d'abord qu'on est bien en phase des loups
+				if("appelLoups" in self.statut or "traiterCanalLoups" in self.statut):
+					serv.mode(self.chanLoups, "+v " + irclib.nm_to_n(ev.source()))
+					self.loupsSurCanal.append(ev.source())
+					
+					#Si c'est le premier loup sur le canal
+					if(len(self.loupsSurCanal) == 1):
+						self.aParlerLoup = True
+						self.statut = "traiterCanalLoups"
+						serv.execute_delayed(5, self.envoyer, [self.chanLoups, "INSTRUCTIONS_LOUPS", [self.declencheurs['tuerLoups']]])
+
+				# La phase des loups est terminée, le joueur n'a rien à faire là
+				else:
+					self.debug("Le loup {} est arrivé dans le canal à la phase {}, kické.".format(irclib.nm_to_n(ev.source()), self.statut))
+					serv.kick(self.chanLoups, irclib.nm_to_n(ev.source()))
 	
 	# Un joueur a quitté un canal
 	def on_part(self, serv, ev):
