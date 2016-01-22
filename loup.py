@@ -3038,6 +3038,10 @@ class Bot(BotParentClass):
 	def on_quit(self, serv, ev):
 		self.debug("{} a quitté IRC".format(ev.source()))
 
+	# Un joueur a été kické
+	def on_kick(self, serv, ev):
+		self.debug("{} a été kické de {}".format(ev.arguments()[0], ev.target()))
+
 	#Un joueur a changé de nick. Si on est en jeu, on doit le changer partout
 	def on_nick(self, serv, ev):
 		if(self.statut != "attente"):
