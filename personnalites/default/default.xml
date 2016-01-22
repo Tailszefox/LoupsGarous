@@ -24,8 +24,9 @@
 		<declencheur nom="roles" contexte="Recevoir la liste des rôles">!roles</declencheur>
 		<declencheur nom="tuerLoups" contexte="Meurtre d'un joueur par les loups">!tuer</declencheur>
 		<declencheur nom="voterMaire" contexte="Voter pour quelqu'un au poste de maire">!voter</declencheur>
-		<declencheur nom="voter" contexte="(Inutilisé) Arrêter les débats et commencer les votes">!voter</declencheur>
 		<declencheur nom="tuerLapidation" contexte="Lapidation d'un joueur">!tuer</declencheur>
+		<declencheur nom="voterBlanc" contexte="Voter blanc lors de la lapidation">!blanc</declencheur>
+		<declencheur nom="voter" contexte="(Inutilisé) Arrêter les débats et commencer les votes">!voter</declencheur>
 		<declencheur nom="chuchoter" contexte="(Inutiilisé) Envoyer un message à un autre joueur">!chuchoter</declencheur>
 	</declencheurs>
 	<repliques>
@@ -827,6 +828,14 @@
 			<variables>$1 : Déclencheur pour lapider.</variables>
 			<phrases>
 				<phrase>Vous avez plusieurs minutes pour discuter. À tout moment, vous pouvez voter contre quelqu'un en disant $1 suivi du pseudo de la personne à lapider. Les votes s'arrêteront plus tôt si tout le monde a voté ou que la majorité absolue est atteinte.</phrase>
+			</phrases>
+		</dire>
+		<dire>
+			<cle>COMMENT_LAPIDER_BLANC</cle>
+			<contexte>Indique le déclencheur utilisé pour voter blanc</contexte>
+			<variables>$1 : Déclencheur pour voter blanc.</variables>
+			<phrases>
+				<phrase>Si vous voulez voter blanc, dites simplement $1. Cela permettra d'accélerer la phase de vote et de passer plus rapidement aux résultats.</phrase>
 			</phrases>
 		</dire>
 		<dire>

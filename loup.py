@@ -1874,6 +1874,7 @@ class Bot(BotParentClass):
 		
 		self.envoyer(self.chanJeu, "MESSAGE_LAPIDATION_1")
 		serv.execute_delayed(5, self.envoyer, [self.chanJeu, "COMMENT_LAPIDER", [self.declencheurs['tuerLapidation']]])
+		serv.execute_delayed(7, self.envoyer, [self.chanJeu, "COMMENT_LAPIDER_BLANC", [self.declencheurs['voterBlanc']]])
 		
 		if(self.victimeCorbeau is not None):
 			serv.execute_delayed(10, self.envoyer, [self.chanJeu, "VOTES_CORBEAU", [irclib.nm_to_n(self.victimeCorbeau)]])
@@ -1937,8 +1938,40 @@ class Bot(BotParentClass):
 						
 						# Si tout le monde a voté ou majorité absolue
 						if(len(self.votes) == total or actuel >= majorite):
+							self.debug(u"Tous les joueurs ont voté ou la majorité a été atteinte")
 							self.lapidation(self.connection, 0)
-	
+
+		# Le joueur vote blanc
+		elif(messageSplit[0] == self.declencheurs['voterBlanc']):
+			self.debug(u"Vote blanc de {}".format(joueur))
+			self.votes[joueur] = None
+
+			#Si c'est le maire et qu'il y a encore dix joueurs, il a deux votes
+			if(joueur == self.maire and len(self.joueurs) >= 10):
+				self.votes[joueur + "_maire"] = None
+
+			self.debug(self.votes)
+
+			if(self.maire is not None and len(self.joueurs) >= 10):
+				total = len(self.joueurs) + 1
+			else:
+				total = len(self.joueurs)
+				
+			if(not self.idiotVote):
+				self.debug(u"Idiot ne vote pas")
+				total -= 1
+
+			if(self.chantage is not None):
+				self.debug(u"Joueur menacé ne vote pas")
+				total -= 1
+
+			self.debug(u"Total : " + str(total) + u", Voté : " + str(len(self.votes)))
+
+			# Si tout le monde a voté, on passe aux résultats
+			if(len(self.votes) == total):
+				self.debug(u"Tous les joueurs ont voté")
+				self.lapidation(self.connection, 0)
+
 	# Avertit qu'il ne reste qu'une minute
 	def avertissementLapidation(self, serv, noVote):
 		self.debug(u"Avertissement : " + self.statut + " " + str(noVote) + " " + str(self.noVote))
@@ -1951,9 +1984,20 @@ class Bot(BotParentClass):
 		self.debug(u"Votes actuels :")
 		self.debug(self.votes)
 
-		if(len(self.votes) > 0 or self.victimeCorbeau is not None):
+		copieVotes = {}
+
+		# On retire les votes blancs
+		for vote in self.votes:
+			if(self.votes[vote] is not None):
+				copieVotes[vote] = self.votes[vote]
+			else:
+				self.debug("Vote blanc de {} ignoré".format(vote))
+
+		self.debug(u"Votes actuels (sans blancs) :")
+		self.debug(copieVotes)
+
+		if(len(copieVotes) > 0 or self.victimeCorbeau is not None):
 			# Recherche du ou des gagnats actuels
-			copieVotes = copy.deepcopy(self.votes)
 			if(self.victimeCorbeau is not None):
 				copieVotes["corbeau1"] = irclib.nm_to_n(self.victimeCorbeau).lower()
 				copieVotes["corbeau2"] = irclib.nm_to_n(self.victimeCorbeau).lower()
@@ -1983,25 +2027,40 @@ class Bot(BotParentClass):
 
 	#Vérifie les votes et lapide le...gagnant
 	def lapidation(self, serv, nbAppels):
-		
+		self.statut = "lapidationTerminee"
+
 		self.debug("Victime corbeau : " + str(self.victimeCorbeau))
 		if(self.victimeCorbeau is not None):
 			self.votes["corbeau1"] = irclib.nm_to_n(self.victimeCorbeau).lower()
 			self.votes["corbeau2"] = irclib.nm_to_n(self.victimeCorbeau).lower()
 			self.debug(self.votes)
 			self.victimeCorbeau = None
-		
-		#Personne n'a voté ?
+
+		self.debug(self.votes)
+		copieVotes = {}
+
+		# Vérifie si tous les votes sont blancs et les supprime
+		toutBlanc = True
+		for vote in self.votes:
+			if(self.votes[vote] is not None):
+				toutBlanc = False
+				copieVotes[vote] = self.votes[vote]
+
+		self.debug("Tout blanc : {}".format(toutBlanc))
+		self.votes = copieVotes
+		self.debug(self.votes)
+
+		#Personne n'a voté, ou tous les votes sont blancs
 		if(len(self.votes) == 0):
-			if (nbAppels == 1):
+			# On passe à la suite si tous les votes sont blancs ou si personne n'a voté lors de l'égalité
+			if (nbAppels == 1 or toutBlanc):
 				self.egalite = True
 				self.doubleEgalite = True
 			else:
 				self.envoyer(self.chanJeu, "PAS_ASSEZ_VOTES")
 				serv.execute_delayed(20, self.faireLapidation, [serv, nbAppels + 1, self.noVote])
 				return 0
-		
-		self.statut = "lapidationTerminee"
+
 		self.envoyer(self.chanJeu, "VOTES_TERMINES_1")
 		serv.execute_delayed(5, self.envoyer, [self.chanJeu, "VOTES_TERMINES_2"])
 		

@@ -256,10 +256,13 @@ class FakeJoueur():
 
     def voteLapidation(self, egalite = False, declencheur = True):
         if(self.irc.connection.forcerGagnant == "villageois" and self.estLoup):
+            self.voterBlanc()
             return
         if(self.irc.connection.forcerGagnant == "loups" and not self.estLoup):
+            self.voterBlanc()
             return
         if(self.irc.connection.forcerGagnant == "amoureux" and self.irc.amoureux1 is not None and self.autreAmoureux is None):
+            self.voterBlanc()
             return
 
         # On vote directement contre l'ange si il doit gagner
@@ -274,6 +277,7 @@ class FakeJoueur():
         # Le joueur peut ne pas voter
         if(random.randint(0, 100) < self.irc.unitI("pourcentage_non_vote")):
             self.messageChan("Je ne vote pas")
+            self.voterBlanc()
             return
 
         # Chance pour un villageois de voter contre un loup
@@ -318,9 +322,20 @@ class FakeJoueur():
 
                 if(declencheur):
                     self.messageChan("!tuer {}".format(j.pseudo))
+                    return
                 else:
                     self.messageChan("{}".format(j.pseudo))
+                    return
                 break
+
+        # Si on est arrivé ici, c'est que le joueur ne va pas voter
+        self.messageChan("Je n'ai personne contre qui voter.")
+        self.voterBlanc()
+
+    def voterBlanc(self):
+        # Les joueurs ont 50% de chance de dire "!blanc" quand ils ne votent pas
+        if(random.randint(0, 100) > 50):
+            self.messageChan("!blanc")
 
     def mettreMessageMurs(self):
         if(random.randint(0, 100) <= self.irc.unitI("pourcentage_murs")):

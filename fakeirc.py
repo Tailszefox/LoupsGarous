@@ -204,7 +204,7 @@ class Connection():
                     j.voteMaire()
 
             # Les villageois peuvent lapider
-            elif("COMMENT_LAPIDER" in message):
+            elif("COMMENT_LAPIDER " in message):
                 for j in self.joueurs:
                     j.voteLapidation()
 
