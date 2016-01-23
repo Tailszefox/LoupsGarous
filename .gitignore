@@ -2,10 +2,10 @@
 prefs.ini
 
 # Logs des parties
-/logs/*
+/logs/*.xml
 
 # Personalités validés
-/personnalites/accepted/*
+/personnalites/accepted/*.xml
 
 # Backups
 *.bak
