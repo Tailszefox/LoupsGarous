@@ -232,7 +232,12 @@ function traiterVotes($noeud)
 				else
 					$votant = strtok($vote, '!');
 					
-				echo '<li style="clear: both;"><div style="width: 300px; float: left;">' . vraiPseudo($votant) . '</div><div>' . vraiPseudo($vote['vote']) . '</div></li>';
+				if(! empty($vote['vote']))
+					$voteContre = vraiPseudo($vote['vote']);
+				else
+					$voteContre = "<i>Blanc</i>";
+
+				echo '<li style="clear: both;"><div style="width: 300px; float: left;">' . vraiPseudo($votant) . '</div><div>' . $voteContre . '</div></li>';
 			}
 			
 			echo '</ul>';

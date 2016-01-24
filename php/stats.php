@@ -109,6 +109,7 @@ $joueursRoleSimple = array();
 $pseudos = array();
 
 $joueursVotesContreLoups = array();
+$joueursVotesBlanc = array();
 $joueursVotesTotal = array();
 
 $victoiresVillageois = 0;
@@ -303,15 +304,22 @@ foreach($dir as $file)
             {
                 $votant = strtolower(strtok(strval($vote), '!'));
 
-                // On ignore les votes des loups et les votes corbeaux
-                if($votant != "corbeau1" && $votant != "corbeau2" && $participantsPartie[$votant] != "loup")
+                // On ignore les votes corbeaux
+                if($votant != "corbeau1" && $votant != "corbeau2")
                 {
                     $votePour = strval($vote->attributes()->vote);
 
-                    increment($joueursVotesTotal, $votant);
+                    if(empty($votePour))
+                    {
+                        increment($joueursVotesBlanc, $votant);
+                    }
+                    else if($participantsPartie[$votant] != "loup")
+                    {
+                        increment($joueursVotesTotal, $votant);
 
-                    if($participantsPartie[$votePour] == "loup")
-                        increment($joueursVotesContreLoups, $votant);
+                        if($participantsPartie[$votePour] == "loup")
+                            increment($joueursVotesContreLoups, $votant);
+                    }
                 }
             }
         }
@@ -1273,7 +1281,33 @@ foreach($dir as $file)
 
         <?php
         }
+        
+        if(!empty($joueursVotesBlanc))
+        {
         ?>
+
+        <div>
+        <h2><a href="#joueurs_indecis" id="joueurs_indecis">Indécis</a></h2>
+
+        <ol>
+            <?php
+            asort($joueursVotesBlanc,  SORT_NUMERIC);
+            $i = 0;
+
+            foreach (array_reverse($joueursVotesBlanc, true) as $pseudo => $nbVotesBlancs)
+            {
+                printf("<li><strong>%s</strong> a voté blanc %d fois</li>", $pseudos[$pseudo], $joueursVotesBlanc[$pseudo]);
+            }
+            ?>
+        </ol>
+        </div>
+
+        <?php
+        }
+        ?>
+
+        </div>
+        <div class="flex">
 
         <div>
         <h2><a href="#joueurs_maires" id="joueurs_maires">Maires</a></h2>

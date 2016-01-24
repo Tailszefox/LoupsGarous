@@ -2045,6 +2045,9 @@ class Bot(BotParentClass):
 			if(self.votes[vote] is not None):
 				toutBlanc = False
 				copieVotes[vote] = self.votes[vote]
+			# Ajoute le vote blanc au log
+			else:
+				self.addLog('votant', vote, {'vote' : ''}, 'votes')
 
 		self.debug("Tout blanc : {}".format(toutBlanc))
 		self.votes = copieVotes
