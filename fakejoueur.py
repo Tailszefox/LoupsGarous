@@ -61,6 +61,9 @@ class FakeJoueur():
     def messageChanLoup(self, message):
         self.irc.sendEvent("pubmsg", self.pseudo, "#loupsgarous", message)
 
+    def messageChanParadis(self, message):
+        self.irc.sendEvent("pubmsg", self.pseudo, "#paradis", message)
+
     def messageMdj(self, message):
         self.irc.sendEvent("privmsg", self.pseudo, "Maitredujeu", message)
 
@@ -109,6 +112,9 @@ class FakeJoueur():
 
     def meurt(self):
         print u"- {} - Est mort".format(self.pseudo)
+        self.rejoindreCanal("#paradis")
+        self.messageChanParadis("!roles")
+
         self.getJoueurs().remove(self)
 
     def donnerVoice(self):
