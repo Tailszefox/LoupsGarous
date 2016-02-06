@@ -2030,7 +2030,7 @@ class Bot(BotParentClass):
 
 			return copieVotes, maxVotes, maxJoueurs
 
-		return None, None, None
+		return copieVotes, 0, []
 
 	# Donne les résultats temporaires aux joueurs, ainsi que le temps restant
 	# TODO : adapter pour personnalité
@@ -2045,11 +2045,12 @@ class Bot(BotParentClass):
 
 		self.envoyer(self.chanJeu, u"Temps restant : {} minutes - Votes exprimés : {}/{}".format(restant, len(self.votes), total))
 
-		# Égalité
-		if(len(maxJoueurs) > 1):
-			self.envoyer(self.chanJeu, u"Égalité entre {} avec {} votes".format(" et ".join(maxJoueurs), maxVotes))
-		else:
-			self.envoyer(self.chanJeu, u"Joueur ayant le plus de votes : {} avec {} votes".format(maxJoueurs[0], maxVotes))
+		if(len(votesActuels) > 0):
+			# Égalité
+			if(len(maxJoueurs) > 1):
+				self.envoyer(self.chanJeu, u"Égalité entre {} avec {} votes".format(" et ".join(maxJoueurs), maxVotes))
+			else:
+				self.envoyer(self.chanJeu, u"Joueur ayant le plus de votes : {} avec {} votes".format(maxJoueurs[0], maxVotes))
 
 	# Avertit qu'il ne reste qu'une minute
 	# TODO: fusionner avec la fonction précédente
@@ -2063,12 +2064,12 @@ class Bot(BotParentClass):
 
 		votesActuels, maxVotes, maxJoueurs = self.resultatsActuelsLapidation()
 
-		# Égalité
-		if(len(maxJoueurs) > 1):
-			self.envoyer(self.chanJeu, "LAPIDATION_UNE_MINUTE_EGALITE")
-		else:
-			self.envoyer(self.chanJeu, "LAPIDATION_UNE_MINUTE_GAGNANT_ACTUEL", [maxJoueurs[0].capitalize()])
-
+		if(len(votesActuels) > 0):
+			# Égalité
+			if(len(maxJoueurs) > 1):
+				self.envoyer(self.chanJeu, "LAPIDATION_UNE_MINUTE_EGALITE")
+			else:
+				self.envoyer(self.chanJeu, "LAPIDATION_UNE_MINUTE_GAGNANT_ACTUEL", [maxJoueurs[0].capitalize()])
 	
 	def faireLapidation(self, serv, nbAppels, noVote):
 		self.debug(u"FaireLapidation : " + self.statut + " " + str(noVote) + " " + str(self.noVote))
