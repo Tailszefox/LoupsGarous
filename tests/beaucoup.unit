@@ -1,0 +1,4 @@
+[unit]
+
+nombre_joueurs_min = 24
+nombre_joueurs_max = 30
