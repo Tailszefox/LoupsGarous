@@ -1881,10 +1881,36 @@ class Bot(BotParentClass):
 		
 		#serv.execute_delayed(30, self.avertissementLapidation, [serv, self.noVote])
 		#serv.execute_delayed(60, self.faireLapidation, [serv, 0, self.noVote])
+
+		# Quatre, trois, et deux minutes restantes
+		serv.execute_delayed(60,	self.avertissementPlusieursMinutesLapidation, [serv, self.noVote, 4])
+		serv.execute_delayed(120,	self.avertissementPlusieursMinutesLapidation, [serv, self.noVote, 3])
+		serv.execute_delayed(180,	self.avertissementPlusieursMinutesLapidation, [serv, self.noVote, 2])
 		
-		serv.execute_delayed(240, self.avertissementLapidation, [serv, self.noVote])
+		# Une minute restante
+		serv.execute_delayed(240, self.avertissementUneMinuteLapidation, [serv, self.noVote])
+
+		# Fin de lapidation
 		serv.execute_delayed(300, self.faireLapidation, [serv, 0, self.noVote])
 	
+
+	# Retourne le nombre total de votes possibles
+	def calculerTotalLapidation(self):
+		if(self.maire is not None and len(self.joueurs) >= 10):
+			total = len(self.joueurs) + 1
+		else:
+			total = len(self.joueurs)
+			
+		if(not self.idiotVote):
+			self.debug(u"Idiot ne vote pas")
+			total -= 1
+
+		if(self.chantage is not None):
+			self.debug(u"Joueur menacé ne vote pas")
+			total -= 1
+
+		return total
+
 	#Ajoute le vote
 	def compterVoteLapidation(self, joueur, message):
 		messageSplit = message.split(" ", 1)
@@ -1918,18 +1944,7 @@ class Bot(BotParentClass):
 							
 						self.debug(self.votes)
 						
-						if(self.maire is not None and len(self.joueurs) >= 10):
-							total = len(self.joueurs) + 1
-						else:
-							total = len(self.joueurs)
-							
-						if(not self.idiotVote):
-							self.debug(u"Idiot ne vote pas")
-							total -= 1
-
-						if(self.chantage is not None):
-							self.debug(u"Joueur menacé ne vote pas")
-							total -= 1
+						total = self.calculerTotalLapidation()
 							
 						majorite = round(total / 2) + 1
 						actuel = self.votes.values().count(pseudo)
@@ -1972,15 +1987,8 @@ class Bot(BotParentClass):
 				self.debug(u"Tous les joueurs ont voté")
 				self.lapidation(self.connection, 0)
 
-	# Avertit qu'il ne reste qu'une minute
-	def avertissementLapidation(self, serv, noVote):
-		self.debug(u"Avertissement : " + self.statut + " " + str(noVote) + " " + str(self.noVote))
-		
-		if(self.statut != "votesLapidation" or noVote != self.noVote):
-			return
-		
-		self.envoyer(self.chanJeu, "LAPIDATION_UNE_MINUTE")
-
+	# Retourne les résultats actuels de la lapidation
+	def resultatsActuelsLapidation(self):
 		self.debug(u"Votes actuels :")
 		self.debug(self.votes)
 
@@ -2010,11 +2018,46 @@ class Bot(BotParentClass):
 
 			self.debug(u"Résultats actuels : {} avec {}".format(maxJoueurs, maxVotes))
 
-			# Égalité
-			if(len(maxJoueurs) > 1):
-				self.envoyer(self.chanJeu, "LAPIDATION_UNE_MINUTE_EGALITE")
-			else:
-				self.envoyer(self.chanJeu, "LAPIDATION_UNE_MINUTE_GAGNANT_ACTUEL", [maxJoueurs[0].capitalize()])
+			return copieVotes, maxVotes, maxJoueurs
+
+		return None, None, None
+
+	# Donne les résultats temporaires aux joueurs, ainsi que le temps restant
+	# TODO : adapter pour personnalité
+	def avertissementPlusieursMinutesLapidation(self, serv, noVote, restant):
+		self.debug(u"Avertissement " + str(restant) + " : " + self.statut + " " + str(noVote) + " " + str(self.noVote))
+		
+		if(self.statut != "votesLapidation" or noVote != self.noVote):
+			return
+
+		votesActuels, maxVotes, maxJoueurs = self.resultatsActuelsLapidation()
+		total = self.calculerTotalLapidation()
+
+		self.envoyer(self.chanJeu, u"Temps restant : {} minutes - Votes exprimés : {}/{}".format(restant, len(self.votes), total))
+
+		# Égalité
+		if(len(maxJoueurs) > 1):
+			self.envoyer(self.chanJeu, u"Égalité entre {} avec {} votes".format(" et ".join(maxJoueurs), maxVotes))
+		else:
+			self.envoyer(self.chanJeu, u"Joueur ayant le plus de votes : {} avec {} votes".format(maxJoueurs[0], maxVotes))
+
+	# Avertit qu'il ne reste qu'une minute
+	# TODO: fusionner avec la fonction précédente
+	def avertissementUneMinuteLapidation(self, serv, noVote):
+		self.debug(u"Avertissement : " + self.statut + " " + str(noVote) + " " + str(self.noVote))
+		
+		if(self.statut != "votesLapidation" or noVote != self.noVote):
+			return
+		
+		self.envoyer(self.chanJeu, "LAPIDATION_UNE_MINUTE")
+
+		votesActuels, maxVotes, maxJoueurs = self.resultatsActuelsLapidation()
+
+		# Égalité
+		if(len(maxJoueurs) > 1):
+			self.envoyer(self.chanJeu, "LAPIDATION_UNE_MINUTE_EGALITE")
+		else:
+			self.envoyer(self.chanJeu, "LAPIDATION_UNE_MINUTE_GAGNANT_ACTUEL", [maxJoueurs[0].capitalize()])
 
 	
 	def faireLapidation(self, serv, nbAppels, noVote):
