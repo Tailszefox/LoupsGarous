@@ -482,7 +482,7 @@ class Bot(BotParentClass):
 			self.tableauPersonnalitesVote[nb] = personnaliteVote
 			nb += 1
 			
-		serv.execute_delayed(3, self.envoyer, [self.chanJeu, u"Nous avons de nombreux présentateurs aujourd'hui. Votez pour votre préféré, en donnant simplement son chiffre. Chaque personalitée est accompagnée du pourcentage de répliques qui ont été adaptées. Voici maintenant les présentateurs proposés :"])
+		serv.execute_delayed(3, self.envoyer, [self.chanJeu, u"Nous avons de nombreux présentateurs aujourd'hui. Votez pour votre préféré, en donnant simplement son chiffre. Chaque personnalité est accompagnée du pourcentage de répliques qui ont été adaptées. Voici maintenant les présentateurs proposés :"])
 		serv.execute_delayed(3, self.envoyer, [self.chanJeu, stringPersonnaliteVote])
 		
 		self.statut = "votePresentateurs"
