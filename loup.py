@@ -1362,14 +1362,21 @@ class Bot(BotParentClass):
 
 	# On prévient les loups qu'ils doivent se dépêcher
 	def prevenirLoups(self, serv):
-		self.debug(u"Check loups : " + str(self.statut))
+		self.debug(u"Check loups avertissement : " + str(self.statut))
 		if(self.victimeLoups == None and self.statut == "traiterCanalLoups"):
 			self.envoyer(self.chanLoups, "LOUPS_QUELQUES_SECONDES", [self.declencheurs['tuerLoups']])
 
 	#Si les loups n'ont pas encore choisi de victime, on zappe
 	def verifierLoups(self, serv):
-		self.debug(u"Check loups : " + str(self.statut))
-		if("traiterCanalLoups" in self.statut):
+		self.debug(u"Check loups terminé : " + str(self.statut))
+		if(self.statut == "traiterCanalLoups"):
+			self.statut = "attaqueLoup"
+			self.kickerLoups(serv)
+
+	# Si le maitre n'a pas choisi de victime, on zappe
+	def verifierLoupsMaitre(self, serv):
+		self.debug(u"Check loups maitre terminé : " + str(self.statut))
+		if(self.statut == "traiterCanalLoups_maitre"):
 			self.statut = "attaqueLoup"
 			self.kickerLoups(serv)
 	
@@ -1421,6 +1428,7 @@ class Bot(BotParentClass):
 		else:
 			self.statut = "traiterCanalLoups_maitre"
 			self.envoyer(self.chanLoups, "APPEL_MAITRE_PSEUDO", [irclib.nm_to_n(self.maitre)])
+			serv.execute_delayed(30, self.verifierLoupsMaitre, [serv])
 	
 	#Kick les loups une fois qu'ils ont choisi quelqu'un à tuer
 	def kickerLoups(self, serv):
