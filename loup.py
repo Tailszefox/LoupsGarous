@@ -2331,9 +2331,10 @@ class Bot(BotParentClass):
 		self.suivante = self.passerNuit
 		
 		self.debug(u"Spritisme ? Jour " + str(self.noJour))
+		self.debug(u"Spritisme ? Loups : {} ; Traitre : {}".format(len(self.loups), self.traitre))
 		
-		# Tous les deux jours
-		if(self.noJour % 2 == 0 and len(self.sprFonctions) > 0):
+		# Tous les deux jours, uniquement s'il y a assez de loups en jeu
+		if(self.noJour % 2 == 0 and len(self.sprFonctions) > 0 and (len(self.loups) >= 2 or self.traitre is not None)):
 			self.envoyer(self.chanJeu, "SPR_DEBUT")
 			self.statut = "spr"
 			self.spr_statut = 0
