@@ -2802,13 +2802,27 @@ class Bot(BotParentClass):
 
 	# Quelqu'un sur le paradis demande les rôles
 	def envoyerRolesAutresJoueurs(self, source):
-		listeRoles = ""
-		
+		listeRolesLoups = ""
+		listeRolesSV = ""
+		listeRolesVillageois = ""
+
 		for joueur in self.joueurs:
-			pseudo = irclib.nm_to_n(joueur)
-			listeRoles += pseudo + ' : ' + self.identite(joueur) + ". "
-			
-		self.envoyer(irclib.nm_to_n(source), listeRoles)
+			if(joueur in self.loups):
+				if(joueur == self.maitre):
+					listeRolesLoups += " {} (maitre),".format(irclib.nm_to_n(joueur))
+				else:
+					listeRolesLoups += " {},".format(irclib.nm_to_n(joueur))
+			elif(self.identiteBrute(joueur) == "villageois"):
+				listeRolesSV += " {},".format(irclib.nm_to_n(joueur))
+			else:
+				listeRolesVillageois += "{} : {}, ".format(self.identiteBrute(joueur).capitalize(), irclib.nm_to_n(joueur))
+
+		if(len(listeRolesLoups) > 0):
+			self.envoyer(irclib.nm_to_n(source), "Loups : {}.".format(listeRolesLoups[:-1]))
+		if(len(listeRolesSV) > 0):
+			self.envoyer(irclib.nm_to_n(source), "Simple villageois : {}.".format(listeRolesSV[:-1]))
+		if(len(listeRolesVillageois) > 0):
+			self.envoyer(irclib.nm_to_n(source), listeRolesVillageois[:-2])
 	
 	#############
 	# SPIRITISME
