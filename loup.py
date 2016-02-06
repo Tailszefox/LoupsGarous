@@ -1428,11 +1428,13 @@ class Bot(BotParentClass):
 				serv.kick(self.chanLoups, irclib.nm_to_n(loup))
 			
 		if(self.victimeLoups == None):
-			self.envoyer(self.chanJeu, "LOUPS_LENTS")
 			self.addLog('action', "", {'type' : 'loup'}, 'tour')
 		else:
-			self.envoyer(self.chanJeu, "LOUPS_ONT_CHOISI")
 			self.addLog('action', self.victimeLoups, {'type' : 'loup'}, 'tour')
+
+		# TODO : changer phrase
+		self.debug(u"Victime loups : {}".format(self.victimeLoups))
+		self.envoyer(self.chanJeu, "LOUPS_ONT_CHOISI")
 		
 		for joueur in self.joueurs:
 			if(self.chantage is not None and self.chantage.lower() == irclib.nm_to_n(joueur).lower()):
