@@ -12,6 +12,7 @@ import re
 import xml.dom.minidom
 import copy
 import ConfigParser
+import glob
 from datetime import datetime
 
 toFile = False
@@ -121,7 +122,7 @@ class Bot(BotParentClass):
 	#Donne une liste de personnalités au hasard parmi celles disponibles
 	def listePersonnalites(self):
 		try:
-			fichiers = os.listdir('./personnalites/accepted')
+			fichiers = [os.path.basename(f) for f in glob.glob('./personnalites/accepted/*.xml')]
 		except:
 			fichiers = []
 			
