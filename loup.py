@@ -2763,7 +2763,7 @@ class Bot(BotParentClass):
 			self.envoyer(self.chanJeu, "FIN")
 
 			if(isTest):
-				f = open('./last_game.xml', 'w')
+				f = open('logs/01_01_70_00_00_00.xml', 'w')
 			else:
 				f = open('logs/' + str(datetime.today().strftime('%d_%m_%y_%H_%M_%S')) + '.xml', 'w')
 
