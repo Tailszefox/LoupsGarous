@@ -93,7 +93,7 @@ if(isset($_GET['annee']) && in_array($_GET['annee'], $annees))
 else
     $annee = "-1";
 
-$dir = new DirectoryIterator('./logs');
+$dir = new GlobIterator('./logs/*.xml');
 
 // Initialisation
 $totalParties = 0;

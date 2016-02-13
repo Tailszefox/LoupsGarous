@@ -2,11 +2,11 @@
 //Liste de tous les fichiers en attente (admin)
 if ($user->data['user_id'] == 3)
 {
-	$dir = new DirectoryIterator('./personnalites/pending');
+	$dir = new GlobIterator('./personnalites/pending/*.xml');
 	$nb = 0;
 	foreach ($dir as $file)
 	{
-		if ($file->isFile() && $file->isDot() == false)
+		if ($file->isFile())
 			$pendingAdmin[] = $file->getFilename();
 	}
 	
@@ -30,7 +30,7 @@ if ($user->data['user_id'] == 3)
 }
 
 //Liste de tous les fichiers validés
-$dir = new DirectoryIterator('./personnalites/accepted');
+$dir = new GlobIterator('./personnalites/accepted/*.xml');
 $nb = 0;
 foreach ($dir as $file)
 {
@@ -66,7 +66,7 @@ if(isset($accepted))
 }
 
 //Liste de tous les fichiers non soumis
-$dir = new DirectoryIterator('./personnalites/awaiting');
+$dir = new GlobIterator('./personnalites/awaiting/*.xml');
 $nb = 0;
 foreach ($dir as $file)
 {
@@ -97,7 +97,7 @@ foreach ($dir as $file)
 <?php
 
 //Liste de tous les fichiers refusés
-$dir = new DirectoryIterator('./personnalites/awaiting');
+$dir = new GlobIterator('./personnalites/awaiting/*.xml');
 $nb = 0;
 if(isset($awaiting))
 {
@@ -126,7 +126,7 @@ if(isset($awaiting))
 }
 
 //Liste de tous les fichiers en attente
-$dir = new DirectoryIterator('./personnalites/pending');
+$dir = new GlobIterator('./personnalites/pending/*.xml');
 $nb = 0;
 foreach ($dir as $file)
 {
@@ -155,7 +155,7 @@ if(isset($pending))
 }
 
 //Liste de tous les fichiers disponibles
-$dir = new DirectoryIterator('./personnalites/accepted');
+$dir = new GlobIterator('./personnalites/accepted/*.xml');
 $nb = 0;
 
 $default = simplexml_load_file('./personnalites/default/default.xml');

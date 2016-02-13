@@ -1,6 +1,6 @@
 <?php
 
-$dir = new DirectoryIterator('./logs');
+$dir = new GlobIterator('./logs/*.xml');
 $nb = 0;
 foreach ($dir as $file)
 {
