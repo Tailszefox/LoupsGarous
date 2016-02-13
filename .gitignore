@@ -3,9 +3,16 @@ prefs.ini
 
 # Logs des parties
 /logs/*.xml
+log.txt
+log_launch.txt
 
-# Personalités validés
+# Fichier conternant le pid de l'instance actuelle
+pid.pid
+
+# Personalités
 /personnalites/accepted/*.xml
+/personnalites/awaiting/*.xml
+/personnalites/pending/*.xml
 
 # Backups
 *.bak
