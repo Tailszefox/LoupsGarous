@@ -11,8 +11,8 @@ import string
 import re
 import xml.dom.minidom
 import copy
-from datetime import datetime
 import ConfigParser
+from datetime import datetime
 
 toFile = False
 isTest = False
