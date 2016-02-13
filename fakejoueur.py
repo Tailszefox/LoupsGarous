@@ -191,7 +191,11 @@ class FakeJoueur():
 
         for j in joueurs:
             if(j is not self):
+                if(self.autreAmoureux is not None and self.autreAmoureux.lower() == j.pseudo.lower()):
+                    print u"Le chasseur ne tue pas son amoureux {}.".format(j.pseudo)
+                    continue
                 self.messageMdj(j.pseudo)
+                return
 
     def sorciereVieDemande(self, pseudoMort):
         # Si c'est nous et que la sorcière se sauve toujours
