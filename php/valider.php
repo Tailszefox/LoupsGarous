@@ -1,6 +1,6 @@
 <?php
-$phpbb_root_path = '../Forum/';
-include('../is_connected.php');
+$phpbb_root_path = '/www/Forum/';
+require_once('/www/is_connected.php');
 if($_GET['type'] == 'admin' && $user->data['user_id'] != 3)
 	die('?_?');
 if(($_GET['type'] != 'admin') && (!$connected || ($_GET['type'] != 'accepted' && $_GET['type'] != 'awaiting' && $_GET['type'] != 'new') || !is_numeric($_GET['id'])))
