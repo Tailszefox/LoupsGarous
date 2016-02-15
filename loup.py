@@ -368,7 +368,7 @@ class Bot(BotParentClass):
 		elif('non' in self.declencheurs and self.declencheurs['non'] in message):
 			self.envoyerRole(serv, ev.source())
 		#Jeu démarré, joueur voulant connaitre les équivalences
-		elif('roles' in self.declencheurs and self.declencheurs['roles'] in message and ev.target().lower() == self.chanJeu.lower()):
+		elif('roles' in self.declencheurs and (self.declencheurs['roles'] in message or self.declencheursDefault['roles'] in message) and ev.target().lower() == self.chanJeu.lower()):
 			self.equivalencesRoles(serv, ev.source())
 		#Message des loups sur qui ils veulent tuer
 		elif("traiterCanalLoups" in self.statut and ev.target().lower() == self.chanLoups.lower()):
