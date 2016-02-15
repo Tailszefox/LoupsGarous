@@ -1118,10 +1118,18 @@ class Bot(BotParentClass):
 	#Donne l'équivalent des roles
 	def equivalencesRoles(self, serv, source):
 		pseudo = irclib.nm_to_n(source)
-		tout = ""
-		for key in self.roles:
-			tout += self.roles[key].capitalize() + ' = ' + self.rolesDefault[key].capitalize() + '. '
-		self.envoyer(pseudo, tout);
+		identite = self.identiteBrute(source)
+		if(identite == "villageois"):
+			identite = "sv"
+
+		# On commence par le rôle du joueur
+		tout = u"{} = {} - ".format(self.rolesDefault[identite].capitalize(), self.roles[identite].capitalize())
+
+		for role in sorted(self.rolesDefault.keys()):
+			if(role != identite):
+				tout += u"{} = {} - ".format(self.rolesDefault[role].capitalize(), self.roles[role].capitalize())
+
+		self.envoyer(pseudo, tout[:-3]);
 	
 	#Passe à l'étape de nuit
 	def passerNuit(self, serv):
