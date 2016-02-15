@@ -158,7 +158,8 @@ class Connection():
 
             # Les joueurs peuvent demander les équivalences
             if("DIRE_EQUIVALENCES_ROLES" in message):
-                self.joueurs[0].messageChan("!roles")
+                for j in self.joueurs:
+                    j.messageChan("!roles")
 
             # Les loups peuvent tuer
             elif("INSTRUCTIONS_LOUPS" in message):
