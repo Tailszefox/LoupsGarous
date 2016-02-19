@@ -30,6 +30,11 @@ autoriser_autres_roles = True
 # False La voyante ne sera pas attribuée du tout
 roles_voyante = True
 
+# Empêche les joueurs de parler (presque tout le temps)
+# True  Les joueurs ne diront rien
+# False Les joueurs se comporteront normalement
+joueurs_inactifs = False
+
 # Tente de faire gagner le camp désigné
 # <vide>                                Pas de changements
 # villageois/loups/amoureux/ange/nul    Camp qui doit gagner en priorité

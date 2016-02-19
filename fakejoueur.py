@@ -51,20 +51,32 @@ class FakeJoueur():
 
     # Messages
 
-    def messageChan(self, message):
+    def messageChan(self, message, forced = False):
         if(not self.estVoice and self.irc.demarre):
             print "- {} n'est pas voice et ne peut donc pas dire : \"{}\"".format(self.pseudo, message)
             return
 
+        if(self.irc.unitB("joueurs_inactifs") and not forced):
+            return
+
         self.irc.sendEvent("pubmsg", self.pseudo, "#placeduvillage", message)
 
-    def messageChanLoup(self, message):
+    def messageChanLoup(self, message, forced = False):
+        if(self.irc.unitB("joueurs_inactifs") and not forced):
+            return
+
         self.irc.sendEvent("pubmsg", self.pseudo, "#loupsgarous", message)
 
-    def messageChanParadis(self, message):
+    def messageChanParadis(self, message, forced = False):
+        if(self.irc.unitB("joueurs_inactifs") and not forced):
+            return
+
         self.irc.sendEvent("pubmsg", self.pseudo, "#paradis", message)
 
-    def messageMdj(self, message):
+    def messageMdj(self, message, forced = False):
+        if(self.irc.unitB("joueurs_inactifs") and not forced):
+            return
+            
         self.irc.sendEvent("privmsg", self.pseudo, "Maitredujeu", message)
 
     # Actions

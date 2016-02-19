@@ -122,7 +122,7 @@ class Connection():
 
             self.joueurs.append(FakeJoueur(self.irc, "{}".format(nomAleatoire)))
 
-        self.joueurs[0].messageChan("!jouer")
+        self.joueurs[0].messageChan("!jouer", forced=True)
 
     def ajouterVictoire(self, message):
         if("VICTOIRE_VILLAGEOIS" in message):
@@ -154,7 +154,7 @@ class Connection():
             # Les joueurs peuvent annoncer leur participation
             if("DIRE_PARTICIPER" in message or "PAS_ASSEZ_DE_JOUEURS" in message):
                 for j in self.joueurs:
-                    j.messageChan("!participer")
+                    j.messageChan("!participer", forced=True)
 
             # Les joueurs peuvent demander les équivalences
             if("DIRE_EQUIVALENCES_ROLES" in message):
@@ -232,7 +232,7 @@ class Connection():
                         break
 
                 if("SPR_ROLEEXISTE_0" in message):
-                    joueurDire.messageChan(str(random.randint(1, 4)))
+                    joueurDire.messageChan(str(random.randint(1, 4)), forced=True)
                 elif("SPR_MEMECAMP_" in message or "SPR_ESTSV_0" in message):
                     while True:
                         j1 = random.sample(self.joueurs, 1)[0].pseudo
@@ -241,10 +241,10 @@ class Connection():
                         if(j1 != j2):
                             break
 
-                    joueurDire.messageChan(j1)
-                    joueurDire.messageChan(j2)
+                    joueurDire.messageChan(j1, forced=True)
+                    joueurDire.messageChan(j2, forced=True)
                 elif("SPR_NOMBREROLES_0" in message):
-                    joueurDire.messageChan(str(random.randint(1, 3)))
+                    joueurDire.messageChan(str(random.randint(1, 3)), forced=True)
 
             # Un joueur est mort suite à une crise cardiaque
             elif("CRISE_CARDIAQUE " in message):
