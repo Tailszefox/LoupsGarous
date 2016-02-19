@@ -258,6 +258,7 @@ class Bot(BotParentClass):
 			#message = message.replace(" de le ", " du ")
 			message = message.replace("1 votes", "1 vote")
 			message = message.replace("1 personnes", "1 personne")
+			message = message.replace("1 minutes", "1 minute")
 			message = message.replace(self.chanLoups + ".", self.chanLoups + " .")
 			message = message.replace(self.chanLoups + ",", self.chanLoups + " ,")
 			message = message.replace(self.chanLoups + "!", self.chanLoups + " !")
@@ -1903,13 +1904,11 @@ class Bot(BotParentClass):
 		#serv.execute_delayed(30, self.avertissementLapidation, [serv, self.noVote])
 		#serv.execute_delayed(60, self.faireLapidation, [serv, 0, self.noVote])
 
-		# Quatre, trois, et deux minutes restantes
-		serv.execute_delayed(60,	self.avertissementPlusieursMinutesLapidation, [serv, self.noVote, 4])
-		serv.execute_delayed(120,	self.avertissementPlusieursMinutesLapidation, [serv, self.noVote, 3])
-		serv.execute_delayed(180,	self.avertissementPlusieursMinutesLapidation, [serv, self.noVote, 2])
-		
-		# Une minute restante
-		serv.execute_delayed(240, self.avertissementUneMinuteLapidation, [serv, self.noVote])
+		# Donner un résumé à chaque minute restante
+		serv.execute_delayed(60,	self.donnerResultatsPartielsLapidation, [serv, self.noVote, 4])
+		serv.execute_delayed(120,	self.donnerResultatsPartielsLapidation, [serv, self.noVote, 3])
+		serv.execute_delayed(180,	self.donnerResultatsPartielsLapidation, [serv, self.noVote, 2])
+		serv.execute_delayed(240,	self.donnerResultatsPartielsLapidation, [serv, self.noVote, 1])
 
 		# Fin de lapidation
 		serv.execute_delayed(300, self.faireLapidation, [serv, 0, self.noVote])
@@ -2044,8 +2043,7 @@ class Bot(BotParentClass):
 		return copieVotes, 0, []
 
 	# Donne les résultats temporaires aux joueurs, ainsi que le temps restant
-	# TODO : adapter pour personnalité
-	def avertissementPlusieursMinutesLapidation(self, serv, noVote, restant):
+	def donnerResultatsPartielsLapidation(self, serv, noVote, restant):
 		self.debug(u"Avertissement " + str(restant) + " : " + self.statut + " " + str(noVote) + " " + str(self.noVote))
 		
 		if(self.statut != "votesLapidation" or noVote != self.noVote):
@@ -2054,33 +2052,14 @@ class Bot(BotParentClass):
 		votesActuels, maxVotes, maxJoueurs = self.resultatsActuelsLapidation()
 		total = self.calculerTotalLapidation()
 
-		self.envoyer(self.chanJeu, u"Temps restant : {} minutes - Votes exprimés : {}/{}".format(restant, len(self.votes), total))
+		self.envoyer(self.chanJeu, "LAPIDATION_TEMPS_RESTANT", [str(restant), str(len(self.votes)), str(total)])
 
 		if(len(votesActuels) > 0):
 			# Égalité
 			if(len(maxJoueurs) > 1):
-				self.envoyer(self.chanJeu, u"Égalité entre {} avec {} votes".format(" et ".join(maxJoueurs), maxVotes))
+				self.envoyer(self.chanJeu, "LAPIDATION_RESULTATS_ACTUELS", [" et ".join(maxJoueurs), str(maxVotes)])
 			else:
-				self.envoyer(self.chanJeu, u"Joueur ayant le plus de votes : {} avec {} votes".format(maxJoueurs[0], maxVotes))
-
-	# Avertit qu'il ne reste qu'une minute
-	# TODO: fusionner avec la fonction précédente
-	def avertissementUneMinuteLapidation(self, serv, noVote):
-		self.debug(u"Avertissement : " + self.statut + " " + str(noVote) + " " + str(self.noVote))
-		
-		if(self.statut != "votesLapidation" or noVote != self.noVote):
-			return
-		
-		self.envoyer(self.chanJeu, "LAPIDATION_UNE_MINUTE")
-
-		votesActuels, maxVotes, maxJoueurs = self.resultatsActuelsLapidation()
-
-		if(len(votesActuels) > 0):
-			# Égalité
-			if(len(maxJoueurs) > 1):
-				self.envoyer(self.chanJeu, "LAPIDATION_UNE_MINUTE_EGALITE")
-			else:
-				self.envoyer(self.chanJeu, "LAPIDATION_UNE_MINUTE_GAGNANT_ACTUEL", [maxJoueurs[0].capitalize()])
+				self.envoyer(self.chanJeu, "LAPIDATION_RESULTATS_ACTUELS", [maxJoueurs[0], str(maxVotes)])
 	
 	def faireLapidation(self, serv, nbAppels, noVote):
 		self.debug(u"FaireLapidation : " + self.statut + " " + str(noVote) + " " + str(self.noVote))
