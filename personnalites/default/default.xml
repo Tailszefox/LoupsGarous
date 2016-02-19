@@ -455,19 +455,11 @@
 			</phrases>
 		</dire>
 		<dire>
-			<cle>LOUPS_LENTS</cle>
-			<contexte>Les loups n'ont pas réagit dans le temps imparti.</contexte>
+			<cle>PHASE_LOUPS_TERMINEE</cle>
+			<contexte>La phase des loups est terminée. On ne sait pas s'ils ont choisi une victime ou non.</contexte>
 			<variables></variables>
 			<phrases>
-				<phrase>On dirait que les loups garous n'ont pas réussi à se mettre d'accord. N'y aura-t-il aucune victime cette nuit ?</phrase>
-			</phrases>
-		</dire>
-		<dire>
-			<cle>LOUPS_ONT_CHOISI</cle>
-			<contexte>Les loups ont choisi une victime, la nouvelle est annoncée aux villageois.</contexte>
-			<variables></variables>
-			<phrases>
-				<phrase>Les loups garous ont fait leur choix. La victime qu'ils ont choisi va-t-elle survivre à cette nuit ?</phrase>
+				<phrase>Les loups garous ont eu le temps de se concerter. Ont-ils choisi une victime ? Nous verrons bien...</phrase>
 			</phrases>
 		</dire>
 		<dire>
