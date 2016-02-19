@@ -3170,6 +3170,7 @@ class Bot(BotParentClass):
 			if(ev.source() in self.loups):
 				# On vérifie d'abord qu'on est bien en phase des loups
 				if("appelLoups" in self.statut or "traiterCanalLoups" in self.statut):
+					self.debug(u"Voice du loup {}".format(ev.source()))
 					serv.mode(self.chanLoups, "+v " + irclib.nm_to_n(ev.source()))
 					self.loupsSurCanal.append(ev.source())
 					
