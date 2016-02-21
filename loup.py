@@ -479,8 +479,12 @@ class Bot(BotParentClass):
 		
 		nb = 1
 		for personnaliteVote in personnalitesVote:
-		        nomAlt, nbRepliquesAlt = self.extraireNomEtRepliques('./personnalites/accepted/' + personnaliteVote)
-		        pourcent = int(round((nbRepliquesAlt / nbRepliques) * 100)) 
+			nomAlt, nbRepliquesAlt = self.extraireNomEtRepliques('./personnalites/accepted/' + personnaliteVote)
+			pourcent = int(round((nbRepliquesAlt / nbRepliques) * 100))
+
+			# Si supérieur à 100%, la perso possède des phrases obsolètes
+			if(pourcent > 100):
+				pourcent = 99
 			
 			stringPersonnaliteVote += "%s : %s (%s%%). " % (str(nb), nomAlt, pourcent)
 			self.tableauPersonnalitesVote[nb] = personnaliteVote
