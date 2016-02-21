@@ -1136,14 +1136,30 @@ class Bot(BotParentClass):
 			if(identite == "villageois"):
 				identite = "sv"
 
+			# Liste des messages qui seront envoyés
+			messagesEnvoyes = []
+
 			# On commence par le rôle du joueur
-			tout = u"{} = {} - ".format(self.rolesDefault[identite].capitalize(), self.roles[identite].capitalize())
+			messageActuel = u"{} = {} - ".format(self.rolesDefault[identite].capitalize(), self.roles[identite].capitalize())
 
 			for role in sorted(self.rolesDefault.keys()):
 				if(role != identite):
-					tout += u"{} = {} - ".format(self.rolesDefault[role].capitalize(), self.roles[role].capitalize())
+					messageActuel += u"{} = {} - ".format(self.rolesDefault[role].capitalize(), self.roles[role].capitalize())
 
-			self.envoyer(pseudo, tout[:-3]);
+				# Si le message devient trop long, on en crée un nouveau
+				if(len(messageActuel) > 400):
+					messagesEnvoyes.append(messageActuel)
+					messageActuel = ""
+
+			if(len(messageActuel) > 0):
+				messagesEnvoyes.append(messageActuel)
+
+			self.debug(u"equivalencesRoles - Messages envoyés :")
+			self.debug(messagesEnvoyes)
+
+			for message in messagesEnvoyes:
+				self.envoyer(pseudo, message[:-3]);
+
 		except:
 			self.debug(u"Erreur d'envoi de l'équivalence des rôles")
 	
