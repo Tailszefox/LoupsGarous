@@ -582,7 +582,7 @@ class Bot(BotParentClass):
 		self.sv = []
 		self.whisperProbaJoueurs = {}
 		
-		self.sprFonctions = [self.spr_memeCamp, self.spr_nombreRoles, self.spr_roleExiste, self.spr_sorcierePseudo, self.spr_loupsPseudo, self.spr_maireSV, self.spr_voyanteLoup, self.spr_estSV]
+		self.sprFonctions = [self.spr_memeCamp, self.spr_nombreRoles, self.spr_roleExiste, self.spr_sorcierePseudo, self.spr_maireSV, self.spr_voyanteLoup, self.spr_estSV]
 
 		#Rôles spéciaux
 		self.rolesSpeciauxDefault = [
