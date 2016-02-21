@@ -962,7 +962,7 @@ class Bot(BotParentClass):
 		#serv.execute_delayed(3, self.lireMurs, [serv])
 		
 		# LE VRAI
-		serv.execute_delayed(attente + 20, self.passerNuit, [serv])
+		serv.execute_delayed(attente + 60, self.passerNuit, [serv])
 	
 	#Retourne le rôle d'un joueur à partir de son domaine
 	def identite(self, joueur):
