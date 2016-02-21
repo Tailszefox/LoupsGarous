@@ -90,7 +90,7 @@ class Bot(BotParentClass):
 		if(isTest):
 			from testunit import TestUnit
 			self.testUnit = TestUnit(isTest_filename)
-		
+
 		self.personnalite = None
 		self.joueurs = []
 		self.repliques = {}
@@ -111,7 +111,7 @@ class Bot(BotParentClass):
 		
 		self.nbPersonnalites = 10
 		self.minDisabled = 80
-		
+
 		random.seed()
 		
 		self.debug("Test d'encodage : Hé hé hé")
@@ -461,6 +461,8 @@ class Bot(BotParentClass):
 		serv.execute_delayed(4, serv.mode, [self.chanLoups, "+i"])
 		serv.execute_delayed(4, serv.mode, [self.chanLoups, "+s"])
 		serv.execute_delayed(4, serv.mode, [self.chanParadis, "+i"])
+
+		random.seed()
 		
 		#Inviter Meuh
 		#serv.execute_delayed(1, serv.invite, ["Meuh", self.chanParadis])
@@ -770,9 +772,15 @@ class Bot(BotParentClass):
 		self.debug(u"Nombre minimal de SV : ")
 		self.debug(self.minSv)
 		
+		self.debug(u"Participants avant shuffle :")
+		self.debug(self.joueurs)
+
 		random.shuffle(self.joueurs)
 		random.shuffle(self.rolesSpeciaux)
 		random.shuffle(self.rolesSpeciauxDefault)
+
+		self.debug(u"Participants après shuffle :")
+		self.debug(self.joueurs)
 		
 		self.addLog('joueurs')
 		
