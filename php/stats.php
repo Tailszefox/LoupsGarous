@@ -1296,7 +1296,10 @@ foreach($dir as $file)
 
             foreach (array_reverse($joueursVotesBlanc, true) as $pseudo => $nbVotesBlancs)
             {
-                printf("<li><strong>%s</strong> a voté blanc %d fois</li>", $pseudos[$pseudo], $joueursVotesBlanc[$pseudo]);
+                if($i++ < 10)
+                {
+                    printf("<li><strong>%s</strong> a voté blanc %d fois</li>", $pseudos[$pseudo], $joueursVotesBlanc[$pseudo]);
+                }
             }
             ?>
         </ol>
