@@ -1295,7 +1295,7 @@ class Bot(BotParentClass):
 			self.envoyer(self.chanJeu, "APPEL_VOYANTE")
 			if(self.voyante != self.enPrison):
 				self.envoyer(irclib.nm_to_n(self.voyante), "DEMANDE_VOYANTE")
-			serv.execute_delayed(30, self.appelSalvateur, [serv])
+			serv.execute_delayed(45, self.appelSalvateur, [serv])
 		
 	#Répond à la voyante
 	def messageVoyante(self, serv, message):
