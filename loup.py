@@ -1140,11 +1140,18 @@ class Bot(BotParentClass):
 			messagesEnvoyes = []
 
 			# On commence par le rôle du joueur
-			messageActuel = u"{} = {} - ".format(self.rolesDefault[identite].capitalize(), self.roles[identite].capitalize())
+			try:
+				messageActuel = u"{} = {} - ".format(self.rolesDefault[identite].capitalize(), self.roles[identite].capitalize())
+			except KeyError:
+				self.debug(u"{} (rôle du joueur) n'a pas d'équivalent dans la personnalité".format(identite))
+				messageActuel = ""
 
 			for role in sorted(self.rolesDefault.keys()):
 				if(role != identite):
-					messageActuel += u"{} = {} - ".format(self.rolesDefault[role].capitalize(), self.roles[role].capitalize())
+					try:
+						messageActuel += u"{} = {} - ".format(self.rolesDefault[role].capitalize(), self.roles[role].capitalize())
+					except KeyError:
+						self.debug(u"{} n'a pas d'équivalent dans la personnalité".format(role))
 
 				# Si le message devient trop long, on en crée un nouveau
 				if(len(messageActuel) > 400):
