@@ -2359,11 +2359,11 @@ class Bot(BotParentClass):
 	def verifierSpr(self, serv):
 		self.suivante = self.passerNuit
 		
-		self.debug(u"Spritisme ? Jour " + str(self.noJour))
-		self.debug(u"Spritisme ? Loups : {} ; Traitre : {}".format(len(self.loups), self.traitre))
+		self.debug(u"Spiritisme ? Jour " + str(self.noJour))
+		self.debug(u"Spiritisme ? Loups : {} ; Traitre : {}".format(len(self.loups), self.traitre))
 		
 		# Tous les deux jours, uniquement s'il y a assez de loups en jeu
-		if(self.noJour % 2 == 0 and len(self.sprFonctions) > 0 and (len(self.loups) >= 2 or self.traitre is not None)):
+		if(self.noJour % 2 == 0 and len(self.sprFonctions) > 0 and (len(self.loups) > 2)):
 			self.envoyer(self.chanJeu, "SPR_DEBUT")
 			self.statut = "spr"
 			self.spr_statut = 0
@@ -2376,6 +2376,7 @@ class Bot(BotParentClass):
 			self.connection.execute_delayed(10, self.choix_spr, [serv])
 			#self.sprFonctions[self.choix_spr](serv)
 		else:
+			self.debug(u"Pas de spiritisme")
 			self.suivante(serv)
 	
 	#Tue la personne en l'enlevant de la liste des joueurs, etc
