@@ -441,7 +441,7 @@ if(preg_match("#^[0-9]+_[0-9]+_[0-9]+_[0-9]+_[0-9]+_[0-9]+$#", $logName) != 1)
 	die('Nope.');
 }
 
-$log = simplexml_load_file('./logs/' . $logName . '.xml');
+$log = @simplexml_load_file('./logs/' . $logName . '.xml');
 
 if($log === false)
 {
@@ -449,7 +449,7 @@ if($log === false)
 
 	// Retirer les caractères Unicode invalides
 	// http://www.phpwact.org/php/i18n/charsets
-	$logRaw = preg_replace('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', ' ', $logRaw);
+	preg_replace('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', ' ', $logRaw);
 	$log = simplexml_load_string($logRaw);
 
 	if($log === false)
