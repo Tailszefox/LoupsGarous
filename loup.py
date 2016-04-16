@@ -371,6 +371,9 @@ class Bot(BotParentClass):
 		#Jeu démarré, joueur voulant connaitre les équivalences
 		elif('roles' in self.declencheurs and (self.declencheurs['roles'] in message or self.declencheursDefault['roles'] in message) and ev.target().lower() == self.chanJeu.lower()):
 			self.equivalencesRoles(serv, ev.source())
+		# Demande d'abandon
+		elif(self.demarre and message.startswith("!abandon") and self.noNuit <= 1 and ev.target().lower() == self.chanJeu.lower()):
+			self.demandeAbandon(ev.source())
 		#Message des loups sur qui ils veulent tuer
 		elif("traiterCanalLoups" in self.statut and ev.target().lower() == self.chanLoups.lower()):
 			self.traiterMessageLoups(serv, ev.source(), message, messageNormal)
@@ -581,6 +584,7 @@ class Bot(BotParentClass):
 		self.villageois = []
 		self.sv = []
 		self.whisperProbaJoueurs = {}
+		self.demandesAbandon = []
 		
 		self.sprFonctions = [self.spr_memeCamp, self.spr_nombreRoles, self.spr_roleExiste, self.spr_sorcierePseudo, self.spr_maireSV, self.spr_voyanteLoup, self.spr_estSV]
 
@@ -1177,6 +1181,26 @@ class Bot(BotParentClass):
 
 		except:
 			self.debug(u"Erreur d'envoi de l'équivalence des rôles")
+
+	# Traite une demande d'abandon
+	def demandeAbandon(self, source):
+		self.debug(u"{} demande à abandonner".format(source))
+
+		# Si le joueur n'a pas déjà demandé à abandonner
+		if(source not in self.demandesAbandon):
+			self.demandesAbandon.append(source)
+			self.debug(self.demandesAbandon)
+
+			# Minimum 3/4 des joueurs
+			minAbandon = int((float(3) / float(4)) * len(self.joueurs))
+			self.debug(u"Actuel : {} -- 3/4 de {} = {}".format(len(self.demandesAbandon), len(self.joueurs), minAbandon))
+
+			# Limite atteinte, on abandonne la partie
+			if(len(self.demandesAbandon) >= minAbandon):
+				self.debug(u"Abandon de la partie")
+				self.finir(self.connection, True)
+		else:
+			self.debug(u"{} a déjà demandé à abandonner".format(source))
 	
 	#Passe à l'étape de nuit
 	def passerNuit(self, serv):
@@ -2815,6 +2839,12 @@ class Bot(BotParentClass):
 		serv.execute_delayed(5, serv.mode, [self.chanParadis, "-i"])
 		for joueur in self.joueurs :
 			serv.mode(self.chanJeu, " -v " + irclib.nm_to_n(joueur))
+
+		# On force le bot à quitter afin qu'il n'y ait pas de fonctions prévues encore en cours
+		if(abandon and not isTest):
+			serv.execute_delayed(10, self.connection.disconnect, ["Le maitre du jeu abandonne la partie et revient de suite..."])
+			serv.execute_delayed(10, self.connection.close)
+			serv.execute_delayed(15, sys.exit)
 			
 		self.statut = "attente"
 		self.demarre = False
