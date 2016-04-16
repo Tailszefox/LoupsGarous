@@ -757,6 +757,14 @@ class Bot(BotParentClass):
 		serv.execute_delayed(3, self.devoicerNonJoueurs, [serv])
 
 		self.whisper = False
+
+		# S'il n'y a qu'un loup, on enlève le rôle de maitre chanteur
+		if(self.maxLoups == 1):
+			self.debug(u"Un seul loup : pas de maître chanteur")
+
+			self.rolesSpeciaux[:] = [role for role in self.rolesSpeciaux if role != self.roleMaitre]
+			if(isTest and len(self.unitA("roles_presents")) > 0 and self.unitB("autoriser_autres_roles")):
+				self.rolesSpeciauxDefault[:] = [role for role in self.rolesSpeciauxDefault if role != self.roleMaitre]
 		
 		self.envoyer(self.chanJeu, "PARTIE_VA_COMMENCER")
 		serv.execute_delayed(3, self.envoyer, [self.chanJeu, "VA_ENVOYER_ROLES"])
