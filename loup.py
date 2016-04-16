@@ -693,7 +693,7 @@ class Bot(BotParentClass):
 	#Vérifie que le nombre de joueur est suffisant. Si oui, passe à l'étape suivante. Sinon, attend encore
 	def verifierSuffisant(self, serv, nbAppels):
 		if(len(self.joueurs) < 4):
-			if (nbAppels == 10):
+			if (nbAppels >= 4):
 				self.finir(serv, True);
 			else:
 				self.envoyer(self.chanJeu, "PAS_ASSEZ_DE_JOUEURS", [self.declencheurs['participer']])
