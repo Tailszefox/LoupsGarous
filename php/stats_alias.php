@@ -13,7 +13,7 @@ $alias = array(
 
     "bestluigi"             => "goupi",
     "sarthur"               => "goupi",
-    "sarthy"		    => "goupi",
+    "sarthy"                => "goupi",
 
     "kirby-jaune"           => "darphal",
     "super___amy"           => "darphal",
