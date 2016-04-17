@@ -131,7 +131,7 @@ require_once('/www/is_connected.php');
 				}
 			}
 			echo '<br /><input type="button" class="add_line" value="Ajouter une autre phrase" /></p></div>';
-		}p
+		}
 		?>
 	</div>
 	
