@@ -3357,17 +3357,25 @@ print sys.stdout.encoding
 try:
 	bot.start()
 except KeyboardInterrupt:
+	# Ctrl+C
 	if(toFile):
 		sys.stdout = sys.__stdout__
 		f.close()
 	bot.connection.disconnect("Le maitre du jeu se retire...")
 	bot.connection.close()
-except:
+except SystemExit:
+	# Abandon de la partie
 	if(toFile):
 		sys.stdout = sys.__stdout__
 		f.close()
-	bot.erreur(sys.exc_info()[1])
+except:
+	# Plantage
+	if(toFile):
+		sys.stdout = sys.__stdout__
+		f.close()
 	print(sys.exc_info()[1])
 	traceback.print_exc()
+
+	bot.erreur(sys.exc_info()[1])
 	bot.connection.disconnect("Le maitre du jeu se retire après avoir planté...")
 	bot.connection.close()
