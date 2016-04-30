@@ -3369,5 +3369,5 @@ except:
 	bot.erreur(sys.exc_info()[1])
 	print(sys.exc_info()[1])
 	traceback.print_exc()
-	bot.connection.disconnect(u"Le maitre du jeu se retire après avoir planté...")
+	bot.connection.disconnect("Le maitre du jeu se retire après avoir planté...")
 	bot.connection.close()
