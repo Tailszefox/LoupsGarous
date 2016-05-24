@@ -89,6 +89,7 @@ class FakeJoueur():
     def quitterCanal(self, canal):
         try:
             self.canaux.remove(canal)
+            self.irc.sendEvent("part", self.pseudo, canal)
             print u"- {} - A quitté {}".format(self.pseudo, canal)
         except:
             raise Exception(u"Le joueur {} n'est pas sur le canal {}".format(self.pseudo, canal))
