@@ -3213,7 +3213,14 @@ class Bot(BotParentClass):
 			
 			#S'il s'agit d'un joueur encore en vie, on le voice
 			if (ev.source() in self.joueurs and (self.demarre or self.statut == "appelJoueurs")):
-				serv.mode(self.chanJeu, "+v " + irclib.nm_to_n(ev.source()))
+				# Sauf si on est en phase loup
+				if("appelLoups" in self.statut or "traiterCanalLoups" in self.statut):
+					self.debug(u"Joueur {} non voicé - Phase des loups".format(ev.source()))
+				# Ou si le joueur est victime de chantage
+				elif(self.chantage is not None and self.chantage.lower() == irclib.nm_to_n(ev.source()).lower()):
+					self.debug(u"Joueur {} non voicé - Victime de chantage".format(ev.source()))
+				else:
+					serv.mode(self.chanJeu, "+v " + irclib.nm_to_n(ev.source()))
 		
 		#Canal des loups
 		elif(ev.target().lower() == self.chanLoups.lower() and self.statut != "attente"):
