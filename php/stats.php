@@ -136,6 +136,7 @@ $totalPhasesSpiritisme = 0;
 
 $totalVictimesLoups = 0;
 $victimesLoups = array();
+$victimesLoupsPremierTour = array();
 
 $totalVictimesLapidation = 0;
 $totalVictimesLapidationAncien = 0;
@@ -143,6 +144,7 @@ $totalVictimesLapidationLoups = 0;
 $totalVictimesLapidationIdiot = 0;
 $victimesLapidation = array();
 $victimesLapidationVillageois = array();
+$victimesLapidationPremierTour = array();
 
 $totalVictimesChasseur = 0;
 $totalVictimesChasseurLoups = 0;
@@ -291,6 +293,13 @@ foreach($dir as $file)
             }
         }
 
+        // Première décision des loups
+        $premiereVictimeLoups = strval($log->xpath("//action[@type='loup']")[0]);
+        if(!empty($premiereVictimeLoups))
+        {
+            increment($victimesLoupsPremierTour, $premiereVictimeLoups);
+        }
+
         // Lapidation
         foreach($log->xpath("//votes[@type='lapidation']") as $lapidation)
         {
@@ -321,6 +330,17 @@ foreach($dir as $file)
                             increment($joueursVotesContreLoups, $votant);
                     }
                 }
+            }
+        }
+
+        // Première victime de la lapidation
+        $premiereLapidation = $log->xpath("//votes[@type='lapidation']")[0];
+        if(! is_null($premiereLapidation) && ! $premiereLapidation->xpath("./resultat[@type='egalite']"))
+        {
+            $premiereVictimeLapidation = strval($log->xpath("//action[@typeMort='lapidation']")[0]);
+            if(!empty($premiereVictimeLapidation))
+            {
+                increment($victimesLapidationPremierTour, $premiereVictimeLapidation);
             }
         }
 
@@ -1138,6 +1158,55 @@ foreach($dir as $file)
             </div>
         </div>
 
+        <h2><a href="#joueurs_victime_loups_premier_tour" id="joueurs_victime_loups_premier_tour">Victimes préférées des loups au premier tour</a></h2>
+
+        <div class="flex">
+            <div>
+                <h3>Valeur absolue</h3>
+
+                <ol>
+                    <?php
+                    $vicimesLoupsPremierTourRatio = array();
+                    asort($victimesLoupsPremierTour,  SORT_NUMERIC);
+                    $i = 0;
+
+                    foreach (array_reverse($victimesLoupsPremierTour, true) as $pseudo => $nbVictimesLoups)
+                    {
+                        $ratio = $nbVictimesLoups / $joueursParticipations[$pseudo];
+
+                        if($joueursParticipations[$pseudo] >= MIN_PARTICIPATIONS)
+                            $vicimesLoupsPremierTourRatio[$pseudo] = $ratio;
+
+                        if($i++ < 10)
+                        {
+                            printf("<li><strong>%s</strong> a été visé par les loups au premier tour %d fois</li>", $pseudos[$pseudo], $nbVictimesLoups);
+                        }
+                    }
+                    ?>
+                </ol>
+            </div>
+
+            <div>
+                <h3>Pourcentage</h3>
+
+                <ol>
+                    <?php
+                    asort($vicimesLoupsPremierTourRatio,  SORT_NUMERIC);
+                    $i = 0;
+
+                    foreach (array_reverse($vicimesLoupsPremierTourRatio, true) as $pseudo => $ratio)
+                    {
+                        if($i++ < 10)
+                        {
+                            printf("<li><strong>%s</strong> a été visé par les loups au premier tour dans %d%% (%d/%d) de ses parties</li>",
+                                $pseudos[$pseudo], round($ratio*100), $victimesLoupsPremierTour[$pseudo], $joueursParticipations[$pseudo]);
+                        }
+                    }
+                    ?>
+                </ol>
+            </div>
+        </div>
+
         <h2><a href="#joueurs_victime_villageois" id="joueurs_victime_villageois">Victimes préférées des villageois</a></h2>
 
         <div class="flex">
@@ -1231,6 +1300,55 @@ foreach($dir as $file)
                         {
                             printf("<li><strong>%s</strong> a été lapidé dans %d%% (%d/%d) de ses parties en tant que villageois</li>",
                                 $pseudos[$pseudo], round($ratio*100), $victimesLapidationVillageois[$pseudo], $joueursRoleVillageois[$pseudo]);
+                        }
+                    }
+                    ?>
+                </ol>
+            </div>
+        </div>
+
+        <h2><a href="#joueurs_victime_lapidation_premier_tour" id="joueurs_victime_lapidation_premier_tour">Victimes préférées des villageois au premier tour</a></h2>
+
+        <div class="flex">
+            <div>
+                <h3>Valeur absolue</h3>
+
+                <ol>
+                    <?php
+                    $vicimesLapidationPremierTourRatio = array();
+                    asort($victimesLapidationPremierTour,  SORT_NUMERIC);
+                    $i = 0;
+
+                    foreach (array_reverse($victimesLapidationPremierTour, true) as $pseudo => $nbVictimesLapidation)
+                    {
+                        $ratio = $nbVictimesLapidation / $joueursParticipations[$pseudo];
+
+                        if($joueursParticipations[$pseudo] >= MIN_PARTICIPATIONS)
+                            $vicimesLapidationPremierTourRatio[$pseudo] = $ratio;
+
+                        if($i++ < 10)
+                        {
+                            printf("<li><strong>%s</strong> a été lapidé au premier tour %d fois</li>", $pseudos[$pseudo], $nbVictimesLapidation);
+                        }
+                    }
+                    ?>
+                </ol>
+            </div>
+
+            <div>
+                <h3>Pourcentage</h3>
+
+                <ol>
+                    <?php
+                    asort($vicimesLapidationPremierTourRatio,  SORT_NUMERIC);
+                    $i = 0;
+
+                    foreach (array_reverse($vicimesLapidationPremierTourRatio, true) as $pseudo => $ratio)
+                    {
+                        if($i++ < 10)
+                        {
+                            printf("<li><strong>%s</strong> a été lapidé au premier tour dans %d%% (%d/%d) de ses parties</li>",
+                                $pseudos[$pseudo], round($ratio*100), $victimesLapidationPremierTour[$pseudo], $joueursParticipations[$pseudo]);
                         }
                     }
                     ?>
