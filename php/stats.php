@@ -334,13 +334,19 @@ foreach($dir as $file)
         }
 
         // Première victime de la lapidation
-        $premiereLapidation = $log->xpath("//votes[@type='lapidation']")[0];
-        if(! is_null($premiereLapidation) && ! $premiereLapidation->xpath("./resultat[@type='egalite']"))
+        if( count($log->xpath("//votes[@type='lapidation']")) > 0 )
         {
-            $premiereVictimeLapidation = strval($log->xpath("//action[@typeMort='lapidation']")[0]);
-            if(!empty($premiereVictimeLapidation))
+            $premiereLapidation = $log->xpath("//votes[@type='lapidation']")[0];
+            if(! is_null($premiereLapidation) && ! $premiereLapidation->xpath("./resultat[@type='egalite']"))
             {
-                increment($victimesLapidationPremierTour, $premiereVictimeLapidation);
+                if( count($log->xpath("//action[@typeMort='lapidation']")) > 0 )
+                {
+                    $premiereVictimeLapidation = strval($log->xpath("//action[@typeMort='lapidation']")[0]);
+                    if(!empty($premiereVictimeLapidation))
+                    {
+                        increment($victimesLapidationPremierTour, $premiereVictimeLapidation);
+                    }
+                }
             }
         }
 
