@@ -762,9 +762,9 @@ class Bot(BotParentClass):
 
 		self.whisper = False
 
-		# S'il n'y a qu'un loup, on enlève le rôle de maitre chanteur
-		if(self.maxLoups == 1):
-			self.debug(u"Un seul loup : pas de maître chanteur")
+		# S'il n'y a qu'un loup ou moins de huit joueurs, on enlève le rôle de maitre chanteur
+		if(self.maxLoups == 1 or len(self.joueurs) < 8):
+			self.debug(u"Un seul loup / moins de huit joueurs : pas de maître chanteur")
 
 			self.rolesSpeciaux[:] = [role for role in self.rolesSpeciaux if role != self.roleMaitre]
 			if(isTest and len(self.unitA("roles_presents")) > 0 and self.unitB("autoriser_autres_roles")):
