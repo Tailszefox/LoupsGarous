@@ -833,6 +833,15 @@ foreach($dir as $file)
         <?php
         // Nombre minimum de participations pour être pris en compte dans les stats
         define("MIN_PARTICIPATIONS", 10);
+
+        // Affiche un message si le tableau passé est vide
+        function warn_if_empty($array)
+        {
+            if(count($array) == 0)
+            {
+                ?><li><em>Pas assez de parties jouées pour calculer ces stats.</em></li><?php
+            }
+        }
         ?>
 
         <div class="flex">
@@ -883,6 +892,8 @@ foreach($dir as $file)
                 asort($joueursRoleSimpleRatio,  SORT_NUMERIC);
                 $i = 0;
 
+                warn_if_empty($joueursRoleSimpleRatio);
+
                 foreach (array_reverse($joueursRoleSimpleRatio, true) as $pseudo => $ratio)
                 {
                     if($i++ < 10)
@@ -901,6 +912,8 @@ foreach($dir as $file)
                 <?php
                 asort($joueursRoleLoupRatio,  SORT_NUMERIC);
                 $i = 0;
+
+                warn_if_empty($joueursRoleLoupRatio);
 
                 foreach (array_reverse($joueursRoleLoupRatio, true) as $pseudo => $ratio)
                 {
@@ -953,6 +966,8 @@ foreach($dir as $file)
                     asort($joueursSurviesRatio,  SORT_NUMERIC);
                     $i = 0;
 
+                    warn_if_empty($joueursSurviesRatio);
+
                     foreach (array_reverse($joueursSurviesRatio, true) as $pseudo => $ratio)
                     {
                         if($i++ < 10)
@@ -1004,6 +1019,8 @@ foreach($dir as $file)
                     asort($joueursVictoiresRatio,  SORT_NUMERIC);
                     $i = 0;
 
+                    warn_if_empty($joueursVictoiresRatio);
+
                     foreach (array_reverse($joueursVictoiresRatio, true) as $pseudo => $ratio)
                     {
                         if($i++ < 10)
@@ -1052,6 +1069,8 @@ foreach($dir as $file)
                     <?php
                     asort($joueursMortsRatio,  SORT_NUMERIC);
                     $i = 0;
+
+                    warn_if_empty($joueursMortsRatio);
 
                     foreach (array_reverse($joueursMortsRatio, true) as $pseudo => $ratio)
                     {
@@ -1102,6 +1121,8 @@ foreach($dir as $file)
                     asort($joueursDefaitesRatio,  SORT_NUMERIC);
                     $i = 0;
 
+                    warn_if_empty($joueursDefaitesRatio);
+
                     foreach (array_reverse($joueursDefaitesRatio, true) as $pseudo => $ratio)
                     {
                         if($i++ < 10)
@@ -1150,6 +1171,8 @@ foreach($dir as $file)
                     <?php
                     asort($vicimesLoupsRatio,  SORT_NUMERIC);
                     $i = 0;
+
+                    warn_if_empty($vicimesLoupsRatio);
 
                     foreach (array_reverse($vicimesLoupsRatio, true) as $pseudo => $ratio)
                     {
@@ -1200,6 +1223,8 @@ foreach($dir as $file)
                     asort($vicimesLoupsPremierTourRatio,  SORT_NUMERIC);
                     $i = 0;
 
+                    warn_if_empty($vicimesLoupsPremierTourRatio);
+
                     foreach (array_reverse($vicimesLoupsPremierTourRatio, true) as $pseudo => $ratio)
                     {
                         if($i++ < 10)
@@ -1248,6 +1273,8 @@ foreach($dir as $file)
                     <?php
                     asort($victimesLapidationRatio,  SORT_NUMERIC);
                     $i = 0;
+
+                    warn_if_empty($victimesLapidationRatio);
 
                     foreach (array_reverse($victimesLapidationRatio, true) as $pseudo => $ratio)
                     {
@@ -1300,6 +1327,8 @@ foreach($dir as $file)
                     asort($victimesLapidationVillageoisRatio,  SORT_NUMERIC);
                     $i = 0;
 
+                    warn_if_empty($victimesLapidationVillageoisRatio);
+
                     foreach (array_reverse($victimesLapidationVillageoisRatio, true) as $pseudo => $ratio)
                     {
                         if($i++ < 10)
@@ -1348,6 +1377,8 @@ foreach($dir as $file)
                     <?php
                     asort($vicimesLapidationPremierTourRatio,  SORT_NUMERIC);
                     $i = 0;
+
+                    warn_if_empty($vicimesLapidationPremierTourRatio);
 
                     foreach (array_reverse($vicimesLapidationPremierTourRatio, true) as $pseudo => $ratio)
                     {
