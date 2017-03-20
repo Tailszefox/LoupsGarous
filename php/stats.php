@@ -86,7 +86,7 @@ function formatRole($role, $nb)
 }
 
 // Années disponibles pour le calcul des stats
-$annees = array("2011", "2012", "2013-2014", "2015", "2016");
+$annees = array("2011", "2012", "2013-2014", "2015", "2016", "2017");
 
 if(isset($_GET['annee']) && in_array($_GET['annee'], $annees))
     $annee = strval($_GET['annee']);
