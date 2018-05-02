@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Lance le bot si on est dans une semaine paire, redirige l'output et le fait redémarrer en cas de plantage
+
 weekNb=`date +"%W"`
 
 echo "Week $weekNb"

@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# Lance le bot, redirige l'output et le fait redémarrer en cas de plantage
+
 cd /etc/unrealircd/loup/
 killall loup.py
 
