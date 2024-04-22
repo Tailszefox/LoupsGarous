@@ -4,7 +4,7 @@
 import sys
 import codecs
 import traceback
-import irclib
+import irc.client as irclib
 import random
 import os
 import string
@@ -54,7 +54,7 @@ if isTest:
 	import fakeirc
 	BotParentClass = fakeirc.FakeIrc
 else:
-	import ircbot
+	import irc.bot as ircbot
 	BotParentClass = ircbot.SingleServerIRCBot
 
 class Bot(BotParentClass):
@@ -75,12 +75,14 @@ class Bot(BotParentClass):
 		self.chanParadis = config.get("prefs", "chanParadis")
 		self.chanLoups = config.get("prefs", "chanLoups")
 		serveur = config.get("prefs", "serveur")
+		sslServeur = config.get("prefs", "ssl")
 		port = config.getint("prefs", "port")
 		
 		print u"Configuration :"
 		print u"\tPseudo :", self.pseudo
 		print u"\tMot de passe :", "oui" if len(self.mdp) > 0 else "non"
 		print u"\tServeur :", serveur + ":" + str(port)
+		print u"\tSSL:", "oui" if sslServeur == "True" else "non"
 		print u"\tCanal de jeu :", self.chanJeu
 		print u"\tCanal des loups : ", self.chanLoups
 		print u"\tCanal du paradis : ", self.chanParadis
@@ -116,7 +118,7 @@ class Bot(BotParentClass):
 		
 		self.debug("Test d'encodage : Hé hé hé")
 		
-		BotParentClass.__init__(self, [(serveur, port)], self.pseudo, "Maitre du jeu du loup garou")
+		BotParentClass.__init__(self, [(serveur, port)], self.pseudo, "Maitre du jeu du loup garou", ssl=(sslServeur == "True"))
 		self.debug(u"Connexion...")
 	
 	#Donne une liste de personnalités au hasard parmi celles disponibles

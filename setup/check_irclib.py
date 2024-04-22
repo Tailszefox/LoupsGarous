@@ -9,5 +9,5 @@ try:
 except ImportError:
     print("Le module irclib n'est pas installé. Veuillez installer le module pour la version actuelle de Python 2.")
     print("Si pip est installé, vous pouvez exécuter la commande suivante :")
-    print("pip2 install https://downloads.sourceforge.net/project/python-irclib/python-irclib/0.4.8/python-irclib-0.4.8.tar.gz")
+    print("pip2 install git+https://github.com/jaraco/irc.git@c4097183e57ffef083e0fc185a377eeca7454725")
     sys.exit(1)
