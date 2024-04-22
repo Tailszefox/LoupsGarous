@@ -287,8 +287,8 @@ class Bot(BotParentClass):
 			
 			
 		self.debug(u"(" + destination + ") ["+ self.statut +"] <" + self.pseudo + "> " + message)
-		
-		self.connection.privmsg(destination, message.encode("utf-8", "ignore"))
+
+		self.connection.privmsg(destination, message)
 
 	#Affiche un message en console
 	def debug(self, message, gras = True):
@@ -336,8 +336,11 @@ class Bot(BotParentClass):
 	def traiterMessage(self, serv, ev):
 		try:
 			message = ev.arguments()[0].strip().decode('utf-8')
-		except UnicodeDecodeError:
-			message = ev.arguments()[0].strip().decode('iso-8859-15')
+		except UnicodeEncodeError:
+			try:
+				message = ev.arguments()[0].strip().decode('iso-8859-15')
+			except UnicodeEncodeError:
+				message = ev.arguments()[0].strip()
 
 		regex = re.compile("\x1f|\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?", re.UNICODE)
 		message = regex.sub("", message)
@@ -399,8 +402,11 @@ class Bot(BotParentClass):
 	def traiterMessagePrive(self, serv, ev):
 		try:
 			message = ev.arguments()[0].strip().decode('utf-8')
-		except UnicodeDecodeError:
-			message = ev.arguments()[0].strip().decode('iso-8859-15')
+		except UnicodeEncodeError:
+			try:
+				message = ev.arguments()[0].strip().decode('iso-8859-15')
+			except UnicodeEncodeError:
+				message = ev.arguments()[0].strip()
 
 		regex = re.compile("\x1f|\x02|\x03(?:\d{1,2}(?:,\d{1,2})?)?", re.UNICODE)
 		message = regex.sub("", message)
